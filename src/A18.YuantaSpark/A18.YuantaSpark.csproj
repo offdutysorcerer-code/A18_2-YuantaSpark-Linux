@@ -1,0 +1,17 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+  </PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="../A18.Realtime.Core/A18.Realtime.Core.csproj" />
+    <FrameworkReference Include="Microsoft.AspNetCore.App" />
+    <Reference Include="YuantaSparkAPI">
+      <HintPath>../../vendor/yuanta/YuantaSparkAPI.dll</HintPath>
+      <Private>true</Private>
+    </Reference>
+    <None Include="../../vendor/yuanta/runtimes/**/*" Link="runtimes/%(RecursiveDir)%(Filename)%(Extension)" CopyToOutputDirectory="PreserveNewest" />
+    <None Include="../../vendor/yuanta/runtimes/linux-x64/native/libCGCGCrypt.so" Link="libCGCGCrypt.so" CopyToOutputDirectory="PreserveNewest" CopyToPublishDirectory="PreserveNewest" />
+  </ItemGroup>
+</Project>

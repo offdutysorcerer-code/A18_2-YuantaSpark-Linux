@@ -1,0 +1,27 @@
+services:
+  a18-realtime:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: a18-realtime:dev
+    ports:
+      - "${A18_HTTP_PORT:-5220}:8080"
+    environment:
+      TZ: Asia/Taipei
+      ASPNETCORE_ENVIRONMENT: Production
+      A18__Provider: ${A18_PROVIDER:-Stub}
+      Yuanta__Environment: ${YUANTA_ENV:-PROD}
+      Yuanta__LoginDelayMilliseconds: ${YUANTA_LOGIN_DELAY_MS:-10000}
+      Yuanta__ReadyFreshnessSeconds: ${YUANTA_READY_FRESHNESS_SECONDS:-300}
+      Yuanta__SessionRebuildHour: ${YUANTA_SESSION_REBUILD_HOUR:-8}
+      Yuanta__SessionRebuildMinute: ${YUANTA_SESSION_REBUILD_MINUTE:-45}
+      Yuanta__LogDirectory: /logs/yuanta
+      Yuanta__Account: ${YUANTA_ACCOUNT:-}
+      Yuanta__Password: ${YUANTA_PASSWORD:-}
+      Yuanta__CertificatePath: ${YUANTA_PFX_PATH:-/run/secrets/yuanta.pfx}
+      Yuanta__CertificatePassword: ${YUANTA_PFX_PASSWORD:-}
+    volumes:
+      - ./data:/data
+      - ./logs:/logs
+      - ./secrets/yuanta.pfx:/run/secrets/yuanta.pfx:ro
+    restart: unless-stopped

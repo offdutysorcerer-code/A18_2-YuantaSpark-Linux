@@ -1,0 +1,17 @@
+bin/
+obj/
+.env
+appsettings.local.json
+data/
+logs/
+vendor/yuanta/
+.vs/
+.vscode/
+.idea/
+*.user
+*.suo
+secrets/
+*.cer
+*.crt
+*.pfx
+*.p12
