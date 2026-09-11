@@ -1,10 +1,13 @@
 using System.Collections.Concurrent;
 using A18.Realtime.Core;
+using A18.Realtime.Api;
 using A18.YuantaSpark;
 
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.Configure<YuantaSparkOptions>(builder.Configuration.GetSection("Yuanta"));
+string symbolsPath = builder.Configuration["A18:SymbolsPath"]?.Trim() ?? "/data/reference/symbols.csv";
+builder.Services.AddSingleton(new TaiwanSymbolDirectory(symbolsPath));
 
 string providerName = builder.Configuration["A18:Provider"]?.Trim() ?? "Stub";
 if (providerName.Equals("Yuanta", StringComparison.OrdinalIgnoreCase))
@@ -25,6 +28,7 @@ builder.Services.AddHostedService<MarketDataProviderHostedService>();
 var app = builder.Build();
 
 app.MapGet("/", () => Results.Content(DiagnosticUi.Html, "text/html; charset=utf-8"));
+app.MapGet("/swing", () => Results.Content(SwingUi.Html, "text/html; charset=utf-8"));
 
 app.MapGet("/health/live", () => Results.Ok(new
 {
@@ -41,6 +45,21 @@ app.MapGet("/health/ready", (IMarketDataProvider provider) =>
 app.MapGet("/api/session", (IMarketDataProvider provider) => Results.Ok(provider.GetSessionStatus()));
 
 app.MapGet("/api/subscriptions", (IMarketDataProvider provider) => Results.Ok(provider.GetSubscriptions()));
+
+app.MapGet("/api/readiness", (string? symbols, IMarketDataProvider provider) =>
+{
+    try
+    {
+        string[]? requested = string.IsNullOrWhiteSpace(symbols)
+            ? null
+            : symbols.Split(',', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
+        return Results.Ok(provider.GetReadiness(requested));
+    }
+    catch (ArgumentException ex)
+    {
+        return Results.BadRequest(new { error = ex.Message });
+    }
+});
 
 app.MapPost("/api/subscriptions/{market}/{symbol}", async (
     string market,
@@ -82,6 +101,96 @@ app.MapGet("/api/ticks/{symbol}/latest", (string symbol, IMarketDataProvider pro
     }
 });
 
+app.MapGet("/api/ticks/{symbol}", (string symbol, string? date, IMarketDataProvider provider, TaiwanSymbolDirectory symbols) =>
+{
+    try
+    {
+        var taipei = TimeZoneInfo.FindSystemTimeZoneById("Asia/Taipei");
+        var today = DateOnly.FromDateTime(TimeZoneInfo.ConvertTime(DateTimeOffset.UtcNow, taipei).Date);
+        var requested = string.IsNullOrWhiteSpace(date) ? today : DateOnly.ParseExact(date, "yyyy-MM-dd");
+        var ticks = provider.GetTicks(symbol, requested);
+        var normalizedSymbol = symbol.Trim().ToUpperInvariant();
+        return Results.Ok(new
+        {
+            symbol = normalizedSymbol,
+            name = symbols.GetName(normalizedSymbol),
+            tradeDate = requested,
+            hasData = ticks.Count > 0,
+            dataState = ticks.Count > 0 ? "AVAILABLE" : "NO_DATA_YET",
+            ticks
+        });
+    }
+    catch (FormatException)
+    {
+        return Results.BadRequest(new { error = "date must be yyyy-MM-dd" });
+    }
+    catch (ArgumentException ex)
+    {
+        return Results.BadRequest(new { error = ex.Message });
+    }
+});
+
+app.MapGet("/api/bars/{symbol}", (string symbol, string? date, int? interval, IMarketDataProvider provider, TaiwanSymbolDirectory symbols) =>
+{
+    try
+    {
+        var taipei = TimeZoneInfo.FindSystemTimeZoneById("Asia/Taipei");
+        var today = DateOnly.FromDateTime(TimeZoneInfo.ConvertTime(DateTimeOffset.UtcNow, taipei).Date);
+        var requested = string.IsNullOrWhiteSpace(date) ? today : DateOnly.ParseExact(date, "yyyy-MM-dd");
+        int seconds = interval ?? 60;
+        if (seconds is not (5 or 60 or 300))
+            return Results.BadRequest(new { error = "interval must be one of 5, 60, 300 seconds" });
+
+        var ticks = provider.GetTicks(symbol, requested)
+            .Where(x => x.Price > 0)
+            .OrderBy(x => x.ExchangeAt)
+            .ToArray();
+
+        var bars = ticks
+            .GroupBy(x =>
+            {
+                long bucket = x.ExchangeAt.ToUnixTimeSeconds() / seconds * seconds;
+                return DateTimeOffset.FromUnixTimeSeconds(bucket).ToOffset(x.ExchangeAt.Offset);
+            })
+            .OrderBy(g => g.Key)
+            .Select(g =>
+            {
+                var rows = g.OrderBy(x => x.ExchangeAt).ToArray();
+                return new
+                {
+                    startTime = g.Key,
+                    open = rows[0].Price,
+                    high = rows.Max(x => x.Price),
+                    low = rows.Min(x => x.Price),
+                    close = rows[^1].Price,
+                    volume = rows.Sum(x => x.Quantity),
+                    tickCount = rows.Length
+                };
+            })
+            .ToArray();
+
+        var normalizedSymbol = symbol.Trim().ToUpperInvariant();
+        return Results.Ok(new
+        {
+            symbol = normalizedSymbol,
+            name = symbols.GetName(normalizedSymbol),
+            tradeDate = requested,
+            intervalSeconds = seconds,
+            hasData = bars.Length > 0,
+            dataState = bars.Length > 0 ? "AVAILABLE" : "NO_DATA_YET",
+            bars
+        });
+    }
+    catch (FormatException)
+    {
+        return Results.BadRequest(new { error = "date must be yyyy-MM-dd" });
+    }
+    catch (ArgumentException ex)
+    {
+        return Results.BadRequest(new { error = ex.Message });
+    }
+});
+
 app.Run();
 
 sealed class MarketDataProviderHostedService(
@@ -96,7 +205,8 @@ sealed class MarketDataProviderHostedService(
         try
         {
             await provider.ConnectAsync(cancellationToken);
-            logger.LogInformation("Market data provider {Provider} connected", provider.Name);
+            await provider.PrepareRequiredSubscriptionsAsync(cancellationToken);
+            logger.LogInformation("Market data provider {Provider} connected and required subscriptions prepared", provider.Name);
 
             _maintenanceCts = new CancellationTokenSource();
             _maintenanceTask = Task.Run(() => MaintainLoopAsync(_maintenanceCts.Token), CancellationToken.None);
@@ -166,6 +276,7 @@ sealed class StubMarketDataProvider : IMarketDataProvider
     public Task ConnectAsync(CancellationToken cancellationToken) => Task.CompletedTask;
     public Task DisconnectAsync(CancellationToken cancellationToken) => Task.CompletedTask;
     public Task MaintainSessionAsync(CancellationToken cancellationToken) => Task.CompletedTask;
+    public Task PrepareRequiredSubscriptionsAsync(CancellationToken cancellationToken) => Task.CompletedTask;
 
     public Task SubscribeAsync(string market, string symbol, CancellationToken cancellationToken)
     {
@@ -178,16 +289,21 @@ sealed class StubMarketDataProvider : IMarketDataProvider
         _subscriptions[symbol] = new SubscriptionStatus(
             symbol,
             market,
-            "SUBMITTED_WAITING_LIVE",
+            "ACK_CONFIRMED",
+            "CONFIRMED",
+            "NOT_REQUIRED",
             _bootId,
             Generation,
             DateOnly.FromDateTime(now.Date),
             now,
             now,
+            now,
             null,
             null,
             0,
-            "Stub provider does not connect to Yuanta SPARK.");
+            0,
+            "Stub provider does not connect to Yuanta SPARK.",
+            null);
         return Task.CompletedTask;
     }
 
@@ -212,6 +328,19 @@ sealed class StubMarketDataProvider : IMarketDataProvider
     }
 
     public NormalizedTick? GetLatest(string symbol) => null;
+    public IReadOnlyList<NormalizedTick> GetTicks(string symbol, DateOnly tradeDate) => Array.Empty<NormalizedTick>();
+    public MarketDataReadinessStatus GetReadiness(IReadOnlyCollection<string>? symbols = null)
+    {
+        var now = TaipeiNow();
+        var today = DateOnly.FromDateTime(now.Date);
+        string[] requested = symbols is { Count: > 0 }
+            ? symbols.Select(x => x.Trim().ToUpperInvariant()).Where(x => x.Length > 0).Distinct().ToArray()
+            : _subscriptions.Keys.OrderBy(x => x).ToArray();
+        int submitted = requested.Count(x => _subscriptions.ContainsKey(x));
+        return new(Name, _bootId, Generation, today, true, requested.Length > 0 && submitted == requested.Length,
+            false, false, requested.Length, submitted, 0, 0,
+            requested.Where(x => !_subscriptions.ContainsKey(x)).ToArray(), requested, Array.Empty<string>(), now);
+    }
 
     private static DateTimeOffset TaipeiNow() => TimeZoneInfo.ConvertTime(DateTimeOffset.UtcNow, TaipeiTimeZone);
 }
@@ -239,6 +368,7 @@ pre{white-space:pre-wrap;word-break:break-word;background:#0c0c0c;padding:12px;b
 </head>
 <body>
 <h1>A18_2 · Yuanta SPARK Realtime Diagnostics</h1>
+<p><a href="/swing" style="color:#54a8ff">開啟 K線波段轉折觀察台 →</a></p>
 <div class="card">
   <div class="row">
     <span class="badge" id="liveBadge">LIVE ?</span>
@@ -261,11 +391,15 @@ pre{white-space:pre-wrap;word-break:break-word;background:#0c0c0c;padding:12px;b
     <label>股票代號
       <input id="symbol" value="2330" inputmode="numeric" autocomplete="off">
     </label>
+    <label>資料日期
+      <input id="tradeDate" type="date">
+    </label>
     <button onclick="subscribeSymbol()">訂閱</button>
-    <button onclick="loadLatest()">查最新 Tick</button>
+    <button onclick="loadLatest()">查今日最新 Tick</button>
+    <button onclick="loadDay()">查指定日期</button>
   </div>
-  <div class="small">SUBMITTED_WAITING_LIVE 只代表訂閱呼叫已送出；收到真正 callback 才會變成 LIVE_OBSERVED。</div>
-  <h2>Latest Tick</h2>
+  <div class="small">指定哪一天就只查哪一天；沒有資料回 NO_DATA_YET，不會 fallback 到前一交易日。SUBMITTED_WAITING_LIVE 只代表訂閱呼叫已送出；收到真正 callback 才會變成 LIVE_OBSERVED。</div>
+  <h2>Tick Data</h2>
   <pre id="latest">尚未查詢</pre>
 </div>
 <div class="card">
@@ -302,6 +436,15 @@ async function loadLatest(){
   const r=await getJson(`/api/ticks/${encodeURIComponent(symbol)}/latest`);
   document.getElementById('latest').textContent=r.status===404?'尚未收到本日 live callback (404)':pretty(r.body ?? {status:r.status});
 }
+async function loadDay(){
+  const symbol=document.getElementById('symbol').value.trim();
+  const date=document.getElementById('tradeDate').value;
+  if(!symbol||!date)return;
+  const r=await getJson(`/api/ticks/${encodeURIComponent(symbol)}?date=${encodeURIComponent(date)}`);
+  document.getElementById('latest').textContent=pretty(r.body ?? {status:r.status});
+}
+const now=new Date();
+document.getElementById('tradeDate').value=`${now.getFullYear()}-${String(now.getMonth()+1).padStart(2,'0')}-${String(now.getDate()).padStart(2,'0')}`;
 refreshAll();
 setInterval(refreshAll,5000);
 </script>

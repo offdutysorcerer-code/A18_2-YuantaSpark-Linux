@@ -16,12 +16,20 @@ services:
       Yuanta__SessionRebuildHour: ${YUANTA_SESSION_REBUILD_HOUR:-8}
       Yuanta__SessionRebuildMinute: ${YUANTA_SESSION_REBUILD_MINUTE:-45}
       Yuanta__LogDirectory: /logs/yuanta
+      Yuanta__DataDirectory: /data/intraday
+      Yuanta__RequiredSymbolsPath: /data/required-symbols.json
+      Yuanta__BackfillTimeoutSeconds: ${YUANTA_BACKFILL_TIMEOUT_SECONDS:-30}
+      Yuanta__MaxSubscriptions: ${YUANTA_MAX_SUBSCRIPTIONS:-300}
+      Yuanta__SubscriptionSubmitDelayMilliseconds: ${YUANTA_SUBMIT_DELAY_MS:-120}
+      Yuanta__NoLiveResubmitSeconds: ${YUANTA_NO_LIVE_RESUBMIT_SECONDS:-20}
+      Yuanta__AckVerifyDelayMilliseconds: ${YUANTA_ACK_VERIFY_DELAY_MS:-400}
       Yuanta__Account: ${YUANTA_ACCOUNT:-}
       Yuanta__Password: ${YUANTA_PASSWORD:-}
       Yuanta__CertificatePath: ${YUANTA_PFX_PATH:-/run/secrets/yuanta.pfx}
       Yuanta__CertificatePassword: ${YUANTA_PFX_PASSWORD:-}
     volumes:
       - ./data:/data
+      - ../A18_10_量化交易資料倉庫/market/Taiwan/symbols.csv:/data/reference/symbols.csv:ro
       - ./logs:/logs
       - ./secrets/yuanta.pfx:/run/secrets/yuanta.pfx:ro
     restart: unless-stopped
