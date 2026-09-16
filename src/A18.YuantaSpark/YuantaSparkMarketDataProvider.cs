@@ -36,6 +36,7 @@ public sealed class YuantaSparkMarketDataProvider : IMarketDataProvider, IDispos
     private long _sessionGeneration;
     private DateOnly? _sessionTradeDate;
     private DateTimeOffset? _connectedAt;
+    private DateTimeOffset? _lastLiveReceivedAt;
     private volatile bool _connected;
 
     public YuantaSparkMarketDataProvider(IOptions<YuantaSparkOptions> options)
@@ -88,10 +89,23 @@ public sealed class YuantaSparkMarketDataProvider : IMarketDataProvider, IDispos
 
         if (_sessionTradeDate == today)
         {
-            RearmSubmittedWithoutLive(now);
-            // Idempotent for healthy subscriptions; FAILED/REARM_REQUIRED symbols are retried with pacing.
-            await PrepareRequiredSubscriptionsAsync(cancellationToken);
-            return;
+            if (IsLiveChannelStale(now))
+            {
+                await RebuildSessionAsync(cancellationToken);
+                return;
+            }
+
+            bool sessionStartedBeforeDailyRebuild = _connectedAt.HasValue
+                && _connectedAt.Value.Date == now.Date
+                && _connectedAt.Value.TimeOfDay < rebuildAt
+                && now.TimeOfDay >= rebuildAt;
+            if (!sessionStartedBeforeDailyRebuild)
+            {
+                RearmSubmittedWithoutLive(now);
+                // Idempotent for healthy subscriptions; FAILED/REARM_REQUIRED symbols are retried with pacing.
+                await PrepareRequiredSubscriptionsAsync(cancellationToken);
+                return;
+            }
         }
         if (now.TimeOfDay < rebuildAt) return;
 
@@ -171,8 +185,10 @@ public sealed class YuantaSparkMarketDataProvider : IMarketDataProvider, IDispos
             lock (state.Gate) return state.SessionGeneration == generation && state.TradeDate == today;
         });
 
-        return new(Name, _bootId, generation, _sessionTradeDate, _connectedAt, today, _connected,
-            _connected && _sessionTradeDate == today, IsReady, _desiredSubscriptions.Count, currentCount);
+        bool liveChannelHealthy = !IsLiveChannelStale(now);
+        bool effectiveConnected = _connected && liveChannelHealthy;
+        return new(Name, _bootId, generation, _sessionTradeDate, _connectedAt, today, effectiveConnected,
+            effectiveConnected && _sessionTradeDate == today, IsReady, _desiredSubscriptions.Count, currentCount);
     }
 
     public NormalizedTick? GetLatest(string symbol)
@@ -282,6 +298,7 @@ public sealed class YuantaSparkMarketDataProvider : IMarketDataProvider, IDispos
         var now = TaipeiNow();
         _sessionTradeDate = DateOnly.FromDateTime(now.Date);
         _connectedAt = now;
+        _lastLiveReceivedAt = null;
         _connected = true;
         _subscriptions.Clear();
     }
@@ -424,6 +441,7 @@ public sealed class YuantaSparkMarketDataProvider : IMarketDataProvider, IDispos
 
         dynamic response;
         lock (_sdkGate) response = _api.GetQuoteListSync(_sessionAccount);
+        if (response is null) return;
         var now = TaipeiNow();
         var generation = Interlocked.Read(ref _sessionGeneration);
         var tradeDate = _sessionTradeDate.Value;
@@ -458,6 +476,44 @@ public sealed class YuantaSparkMarketDataProvider : IMarketDataProvider, IDispos
                 }
             }
         }
+    }
+
+
+    private bool IsLiveChannelStale(DateTimeOffset now)
+    {
+        if (!_connected || !_sessionTradeDate.HasValue || _sessionTradeDate.Value != DateOnly.FromDateTime(now.Date)) return false;
+
+        var open = new TimeSpan(Math.Clamp(_options.MarketOpenHour, 0, 23), Math.Clamp(_options.MarketOpenMinute, 0, 59), 0);
+        var close = new TimeSpan(Math.Clamp(_options.MarketCloseHour, 0, 23), Math.Clamp(_options.MarketCloseMinute, 0, 59), 0);
+        if (now.TimeOfDay < open || now.TimeOfDay > close) return false;
+
+        var threshold = TimeSpan.FromSeconds(Math.Max(30, _options.ChannelStaleSeconds));
+        var baseline = _lastLiveReceivedAt ?? _connectedAt;
+        if (!baseline.HasValue || now - baseline.Value < threshold) return false;
+
+        return _subscriptions.Values.Any(state =>
+        {
+            lock (state.Gate)
+                return state.SessionGeneration == Interlocked.Read(ref _sessionGeneration)
+                    && state.TradeDate == _sessionTradeDate.Value
+                    && state.SubmittedAt.HasValue
+                    && state.State is "ACK_CONFIRMED" or "LIVE_OBSERVED" or "SUBMITTED";
+        });
+    }
+
+    private async Task RebuildSessionAsync(CancellationToken cancellationToken)
+    {
+        await _sessionGate.WaitAsync(cancellationToken);
+        try
+        {
+            var now = TaipeiNow();
+            if (!IsLiveChannelStale(now)) return;
+            DisconnectCore(markDeactivated: true);
+            await ConnectCoreAsync(cancellationToken);
+        }
+        finally { _sessionGate.Release(); }
+
+        await PrepareRequiredSubscriptionsAsync(cancellationToken);
     }
 
     private void RearmSubmittedWithoutLive(DateTimeOffset now)
@@ -508,6 +564,7 @@ public sealed class YuantaSparkMarketDataProvider : IMarketDataProvider, IDispos
             _connected = false;
             _sessionAccount = null;
             _api = null;
+            _lastLiveReceivedAt = null;
             foreach (var pending in _pendingBackfills.Values)
                 pending.Ready.TrySetException(new InvalidOperationException("SPARK session disconnected during backfill."));
             _pendingBackfills.Clear();
@@ -580,6 +637,7 @@ public sealed class YuantaSparkMarketDataProvider : IMarketDataProvider, IDispos
             state.State = "LIVE_OBSERVED";
             state.FirstReceivedAt ??= receivedAt;
             state.LastReceivedAt = receivedAt;
+            _lastLiveReceivedAt = receivedAt;
             state.CallbackCount++;
             _tickChannel.Writer.TryWrite(tick);
         }

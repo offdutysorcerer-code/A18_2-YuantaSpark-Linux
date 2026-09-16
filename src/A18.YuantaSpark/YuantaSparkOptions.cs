@@ -18,6 +18,11 @@ public sealed class YuantaSparkOptions
     public int NoLiveResubmitSeconds { get; set; } = 20;
     public int AckVerifyDelayMilliseconds { get; set; } = 400;
     public int ReadyFreshnessSeconds { get; set; } = 300;
+    public int ChannelStaleSeconds { get; set; } = 90;
+    public int MarketOpenHour { get; set; } = 9;
+    public int MarketOpenMinute { get; set; } = 0;
+    public int MarketCloseHour { get; set; } = 13;
+    public int MarketCloseMinute { get; set; } = 30;
     public int SessionRebuildHour { get; set; } = 8;
     public int SessionRebuildMinute { get; set; } = 45;
 }
