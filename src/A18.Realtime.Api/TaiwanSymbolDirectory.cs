@@ -3,6 +3,7 @@ namespace A18.Realtime.Api;
 internal sealed class TaiwanSymbolDirectory
 {
     private readonly Dictionary<string, string> _names = new(StringComparer.OrdinalIgnoreCase);
+    private readonly Dictionary<string, string> _markets = new(StringComparer.OrdinalIgnoreCase);
 
     public TaiwanSymbolDirectory(string path)
     {
@@ -15,6 +16,7 @@ internal sealed class TaiwanSymbolDirectory
             var name = cols[1].Trim();
             if (symbol.Length == 0 || name.Length == 0) continue;
             _names[symbol] = name;
+            if (cols.Count > 3) _markets[symbol] = cols[3].Trim();
         }
     }
 
@@ -22,6 +24,14 @@ internal sealed class TaiwanSymbolDirectory
     {
         symbol = symbol.Trim().ToUpperInvariant();
         return _names.TryGetValue(symbol, out var name) ? name : null;
+    }
+
+    public string GetMarket(string symbol)
+    {
+        symbol = symbol.Trim().ToUpperInvariant();
+        if (symbol == "IX0001") return "TWSE";
+        if (!_markets.TryGetValue(symbol, out var market)) return "TWSE";
+        return market.Equals("TPEx", StringComparison.OrdinalIgnoreCase) ? "TPEX" : market.ToUpperInvariant();
     }
 
     private static List<string> ParseCsv(string line)

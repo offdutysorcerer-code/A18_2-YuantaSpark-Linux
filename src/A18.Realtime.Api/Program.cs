@@ -24,6 +24,7 @@ else
 }
 
 builder.Services.AddHostedService<MarketDataProviderHostedService>();
+builder.Services.AddSingleton<HistoricalSecondBars>();
 
 var app = builder.Build();
 
@@ -130,7 +131,7 @@ app.MapGet("/api/ticks/{symbol}", (string symbol, string? date, IMarketDataProvi
     }
 });
 
-app.MapGet("/api/bars/{symbol}", (string symbol, string? date, int? interval, IMarketDataProvider provider, TaiwanSymbolDirectory symbols) =>
+app.MapGet("/api/bars/{symbol}", async (string symbol, string? date, int? interval, IMarketDataProvider provider, TaiwanSymbolDirectory symbols, HistoricalSecondBars history, CancellationToken ct) =>
 {
     try
     {
@@ -138,14 +139,45 @@ app.MapGet("/api/bars/{symbol}", (string symbol, string? date, int? interval, IM
         var today = DateOnly.FromDateTime(TimeZoneInfo.ConvertTime(DateTimeOffset.UtcNow, taipei).Date);
         var requested = string.IsNullOrWhiteSpace(date) ? today : DateOnly.ParseExact(date, "yyyy-MM-dd");
         int seconds = interval ?? 60;
-        if (seconds is not (5 or 60 or 300))
-            return Results.BadRequest(new { error = "interval must be one of 5, 60, 300 seconds" });
+        if (seconds is not (1 or 5 or 60 or 300))
+            return Results.BadRequest(new { error = "interval must be one of 1, 5, 60, 300 seconds" });
 
-        var ticks = provider.GetTicks(symbol, requested)
-            .Where(x => x.Price > 0)
-            .OrderBy(x => x.ExchangeAt)
-            .ToArray();
+        if (requested < today)
+        {
+            var historical = await history.GetAsync(symbol, requested, ct);
+            var secondBars = historical.Bars;
+            var historicalBars = secondBars
+                .GroupBy(x => x.StartTime.ToUnixTimeSeconds() / seconds * seconds)
+                .OrderBy(g => g.Key)
+                .Select(g => new
+                {
+                    startTime = DateTimeOffset.FromUnixTimeSeconds(g.Key).ToOffset(TimeSpan.FromHours(8)),
+                    open = g.First().Open,
+                    high = g.Max(x => x.High),
+                    low = g.Min(x => x.Low),
+                    close = g.Last().Close,
+                    volume = g.Sum(x => x.Volume),
+                    tickCount = g.Sum(x => x.TickCount)
+                }).ToArray();
+            var normalizedHistoricalSymbol = symbol.Trim().ToUpperInvariant();
+            return Results.Ok(new { symbol = normalizedHistoricalSymbol, name = symbols.GetName(normalizedHistoricalSymbol), tradeDate = requested, intervalSeconds = seconds, hasData = historicalBars.Length > 0, dataState = historicalBars.Length > 0 ? "AVAILABLE" : "NO_DATA_YET", source = historical.Source, bars = historicalBars });
+        }
 
+        var normalizedTodaySymbol = symbol.Trim().ToUpperInvariant();
+        var ticks = provider.GetTicks(normalizedTodaySymbol, requested).Where(x => x.Price > 0).OrderBy(x => x.ExchangeAt).ToArray();
+        if (requested == today)
+        {
+            try { await provider.SubscribeAsync(symbols.GetMarket(normalizedTodaySymbol), normalizedTodaySymbol, ct); } catch (InvalidOperationException) { }
+            if (ticks.Length == 0)
+            {
+                var historical = await history.GetAsync(normalizedTodaySymbol, requested, ct);
+                if (historical.Bars.Count > 0)
+                {
+                    var backfillBars = historical.Bars.GroupBy(x => x.StartTime.ToUnixTimeSeconds() / seconds * seconds).OrderBy(g => g.Key).Select(g => new { startTime = DateTimeOffset.FromUnixTimeSeconds(g.Key).ToOffset(TimeSpan.FromHours(8)), open = g.First().Open, high = g.Max(x => x.High), low = g.Min(x => x.Low), close = g.Last().Close, volume = g.Sum(x => x.Volume), tickCount = g.Sum(x => x.TickCount) }).ToArray();
+                    return Results.Ok(new { symbol = normalizedTodaySymbol, name = symbols.GetName(normalizedTodaySymbol), tradeDate = requested, intervalSeconds = seconds, hasData = true, dataState = "AVAILABLE", source = historical.Source, bars = backfillBars });
+                }
+            }
+        }
         var bars = ticks
             .GroupBy(x =>
             {

@@ -10,6 +10,12 @@ services:
       TZ: Asia/Taipei
       ASPNETCORE_ENVIRONMENT: Production
       A18__Provider: ${A18_PROVIDER:-Stub}
+      History__SecondRoot: /warehouse/market/Taiwan/KLines/Second
+      History__Python: /opt/shioaji/.venv/bin/python
+      History__Fetcher: /opt/shioaji/history_fetch.py
+      SJ_API_KEY: ${SJ_API_KEY:-}
+      SJ_SEC_KEY: ${SJ_SEC_KEY:-}
+      SJ_PRODUCTION: ${SJ_PRODUCTION:-true}
       Yuanta__Environment: ${YUANTA_ENV:-PROD}
       Yuanta__LoginDelayMilliseconds: ${YUANTA_LOGIN_DELAY_MS:-10000}
       Yuanta__ReadyFreshnessSeconds: ${YUANTA_READY_FRESHNESS_SECONDS:-300}
@@ -29,6 +35,7 @@ services:
       Yuanta__CertificatePassword: ${YUANTA_PFX_PASSWORD:-}
     volumes:
       - ./data:/data
+      - /mnt/d/AIProjects/A18_10_量化交易資料倉庫:/warehouse
       - ../A18_10_量化交易資料倉庫/market/Taiwan/symbols.csv:/data/reference/symbols.csv:ro
       - ./logs:/logs
       - ./secrets/yuanta.pfx:/run/secrets/yuanta.pfx:ro

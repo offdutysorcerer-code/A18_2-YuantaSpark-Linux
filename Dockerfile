@@ -11,6 +11,9 @@ COPY src/ src/
 RUN dotnet publish src/A18.Realtime.Api/A18.Realtime.Api.csproj -c Release -o /app/publish --no-restore
 
 FROM mcr.microsoft.com/dotnet/aspnet:8.0 AS runtime
+RUN apt-get update && apt-get install -y --no-install-recommends python3 python3-venv python3-pip && rm -rf /var/lib/apt/lists/*
+COPY shioaji /opt/shioaji
+RUN python3 -m venv /opt/shioaji/.venv && /opt/shioaji/.venv/bin/pip install --no-cache-dir "shioaji>=1.7.2"
 WORKDIR /app
 ENV ASPNETCORE_URLS=http://+:8080
 ENV TZ=Asia/Taipei

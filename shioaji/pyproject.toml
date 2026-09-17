@@ -1,0 +1,5 @@
+[project]
+name = "a18-shioaji-history"
+version = "0.1.0"
+requires-python = ">=3.11,<3.14"
+dependencies = ["shioaji>=1.7.2"]
