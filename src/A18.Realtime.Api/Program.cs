@@ -148,6 +148,12 @@ app.MapGet("/api/bars/{symbol}", async (string symbol, string? date, int? interv
         if (seconds is not (1 or 5 or 60 or 300))
             return Results.BadRequest(new { error = "interval must be one of 1, 5, 60, 300 seconds" });
 
+        if (requested > today)
+        {
+            var futureSymbol = symbol.Trim().ToUpperInvariant();
+            return Results.Ok(new { symbol = futureSymbol, name = symbols.GetName(futureSymbol), tradeDate = requested, intervalSeconds = seconds, hasData = false, dataState = "FUTURE_DATE", source = "NONE", bars = Array.Empty<object>() });
+        }
+
         if (requested < today)
         {
             var historical = await history.GetAsync(symbol, requested, ct);
