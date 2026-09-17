@@ -131,6 +131,12 @@ app.MapGet("/api/ticks/{symbol}", (string symbol, string? date, IMarketDataProvi
     }
 });
 
+app.MapGet("/api/calendar/non-trading/{date}", (string date, HistoricalSecondBars history) =>
+{
+    if (!DateOnly.TryParseExact(date, "yyyy-MM-dd", out var d)) return Results.BadRequest(new { error = "date must be yyyy-MM-dd" });
+    return Results.Ok(new { date, nonTrading = history.IsKnownNonTradingDay(d) });
+});
+
 app.MapGet("/api/bars/{symbol}", async (string symbol, string? date, int? interval, IMarketDataProvider provider, TaiwanSymbolDirectory symbols, HistoricalSecondBars history, CancellationToken ct) =>
 {
     try

@@ -13,12 +13,14 @@ public sealed class HistoricalSecondBars(ILogger<HistoricalSecondBars> logger, I
     private readonly string _python = config["History:Python"] ?? "/opt/shioaji/.venv/bin/python";
     private readonly string _fetcher = config["History:Fetcher"] ?? "/opt/shioaji/history_fetch.py";
     private readonly SemaphoreSlim _fetchLock = new(1,1);
+    private readonly string _nonTradingDaysPath = config["History:NonTradingDaysPath"] ?? "/data/reference/non-trading-days.txt";
 
     public async Task<HistoricalSecondBarsResult> GetAsync(string symbol, DateOnly date, CancellationToken ct)
     {
         symbol=symbol.Trim().ToUpperInvariant();
         var path=Path.Combine(_root,symbol,$"{date:yyyy-MM-dd}.csv");
         if (File.Exists(path)) return new("A18_10_SECOND", Read(path));
+        if (IsKnownNonTradingDay(date)) return new("KNOWN_NON_TRADING_DAY", Array.Empty<SecondBar>());
         await _fetchLock.WaitAsync(ct);
         try
         {
@@ -28,12 +30,28 @@ public sealed class HistoricalSecondBars(ILogger<HistoricalSecondBars> logger, I
             using var p=Process.Start(psi) ?? throw new InvalidOperationException("Unable to start Shioaji history fetcher");
             using var timeout=CancellationTokenSource.CreateLinkedTokenSource(ct); timeout.CancelAfter(Timeout);
             await p.WaitForExitAsync(timeout.Token); var stdout=await p.StandardOutput.ReadToEndAsync(); var stderr=await p.StandardError.ReadToEndAsync();
-            if (!File.Exists(path) && stdout.Contains("\"status\": \"NO_DATA\"", StringComparison.OrdinalIgnoreCase)) return new("SINOPAC_SHIOAJI_NO_DATA", Array.Empty<SecondBar>());
+            if (!File.Exists(path) && stdout.Contains("\"status\": \"NO_DATA\"", StringComparison.OrdinalIgnoreCase)) { MarkNonTradingDay(date); return new("SINOPAC_SHIOAJI_NO_DATA", Array.Empty<SecondBar>()); }
             if (p.ExitCode!=0 || !File.Exists(path)) throw new InvalidOperationException($"Shioaji history fetch failed ({p.ExitCode}): {stderr.Trim()} {stdout.Trim()}");
             logger.LogInformation("Historical second bars fetched via Shioaji: {Symbol} {Date} {Output}",symbol,date,stdout.Trim());
             return new("SINOPAC_SHIOAJI_FETCHED", Read(path));
         }
         finally { _fetchLock.Release(); }
+    }
+
+    public bool IsKnownNonTradingDay(DateOnly date)
+    {
+        if (!File.Exists(_nonTradingDaysPath)) return false;
+        var key = date.ToString("yyyy-MM-dd");
+        return File.ReadLines(_nonTradingDaysPath).Any(x => x.Trim() == key);
+    }
+
+    private void MarkNonTradingDay(DateOnly date)
+    {
+        if (IsKnownNonTradingDay(date)) return;
+        var dir = Path.GetDirectoryName(_nonTradingDaysPath);
+        if (!string.IsNullOrWhiteSpace(dir)) Directory.CreateDirectory(dir);
+        File.AppendAllText(_nonTradingDaysPath, date.ToString("yyyy-MM-dd") + Environment.NewLine);
+        logger.LogInformation("Marked {Date} as non-trading day after Shioaji returned no data.", date);
     }
 
     private static IReadOnlyList<SecondBar> Read(string path)
