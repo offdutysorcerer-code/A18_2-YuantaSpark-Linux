@@ -25,6 +25,8 @@ else
 
 builder.Services.AddHostedService<MarketDataProviderHostedService>();
 builder.Services.AddSingleton<HistoricalSecondBars>();
+builder.Services.AddSingleton<SwingGroups>();
+builder.Services.AddSingleton<SwingState>();
 
 var app = builder.Build();
 
@@ -42,6 +44,22 @@ app.MapGet("/health/ready", (IMarketDataProvider provider) =>
     provider.IsReady
         ? Results.Ok(new { status = "ready", provider = provider.Name, at = DateTimeOffset.Now })
         : Results.Json(new { status = "not_ready", provider = provider.Name, at = DateTimeOffset.Now }, statusCode: 503));
+
+app.MapGet("/api/symbols/names", (TaiwanSymbolDirectory symbols) => Results.Ok(symbols.AllNames()));
+
+app.MapGet("/api/swing/state", (SwingState state) => Results.Ok(state.Read()));
+app.MapPut("/api/swing/state", async (HttpRequest request, SwingState state) =>
+{
+    var incoming=await request.ReadFromJsonAsync<SwingBrowseState>() ?? new();
+    return Results.Ok(state.Save(incoming));
+});
+
+app.MapGet("/api/swing/groups", (SwingGroups groups) => Results.Ok(groups.Read()));
+app.MapPut("/api/swing/groups", async (HttpRequest request, SwingGroups groups) =>
+{
+    var incoming = await request.ReadFromJsonAsync<Dictionary<string,string[]>>() ?? new();
+    return Results.Ok(groups.Save(incoming));
+});
 
 app.MapGet("/api/session", (IMarketDataProvider provider) => Results.Ok(provider.GetSessionStatus()));
 

@@ -26,6 +26,8 @@ internal sealed class TaiwanSymbolDirectory
         return _names.TryGetValue(symbol, out var name) ? name : null;
     }
 
+    public IReadOnlyDictionary<string,string> AllNames() => _names;
+
     public string GetMarket(string symbol)
     {
         symbol = symbol.Trim().ToUpperInvariant();
