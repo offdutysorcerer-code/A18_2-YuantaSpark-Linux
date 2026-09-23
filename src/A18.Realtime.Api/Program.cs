@@ -27,6 +27,7 @@ builder.Services.AddHostedService<MarketDataProviderHostedService>();
 builder.Services.AddSingleton<HistoricalSecondBars>();
 builder.Services.AddSingleton<SwingGroups>();
 builder.Services.AddSingleton<SwingState>();
+builder.Services.AddSingleton<SwingAnnotations>();
 
 var app = builder.Build();
 
@@ -60,6 +61,36 @@ app.MapPut("/api/swing/groups", async (HttpRequest request, SwingGroups groups) 
     var incoming = await request.ReadFromJsonAsync<Dictionary<string,string[]>>() ?? new();
     return Results.Ok(groups.Save(incoming));
 });
+
+app.MapGet("/api/swing/annotations", (string? symbol, string? date, SwingAnnotations annotations) =>
+{
+    if (!string.IsNullOrWhiteSpace(date) && !DateOnly.TryParseExact(date, "yyyy-MM-dd", out _))
+        return Results.BadRequest(new { error = "date must be yyyy-MM-dd" });
+    var tradeDate = string.IsNullOrWhiteSpace(date) ? (DateOnly?)null : DateOnly.ParseExact(date, "yyyy-MM-dd");
+    try { return Results.Ok(annotations.Read(symbol, tradeDate)); }
+    catch (ArgumentException ex) { return Results.BadRequest(new { error = ex.Message }); }
+});
+app.MapPost("/api/swing/annotations", async (HttpRequest request, SwingAnnotations annotations) =>
+{
+    try
+    {
+        var input = await request.ReadFromJsonAsync<SwingAnnotationInput>();
+        return input is null ? Results.BadRequest(new { error = "request body is required" }) : Results.Ok(annotations.Create(input));
+    }
+    catch (ArgumentException ex) { return Results.BadRequest(new { error = ex.Message }); }
+});
+app.MapPut("/api/swing/annotations/{id:guid}", async (Guid id, HttpRequest request, SwingAnnotations annotations) =>
+{
+    try
+    {
+        var input = await request.ReadFromJsonAsync<SwingAnnotationInput>();
+        return input is null ? Results.BadRequest(new { error = "request body is required" }) : Results.Ok(annotations.Update(id, input));
+    }
+    catch (ArgumentException ex) { return Results.BadRequest(new { error = ex.Message }); }
+    catch (KeyNotFoundException) { return Results.NotFound(); }
+});
+app.MapDelete("/api/swing/annotations/{id:guid}", (Guid id, SwingAnnotations annotations) =>
+    annotations.Delete(id) ? Results.NoContent() : Results.NotFound());
 
 app.MapGet("/api/session", (IMarketDataProvider provider) => Results.Ok(provider.GetSessionStatus()));
 
