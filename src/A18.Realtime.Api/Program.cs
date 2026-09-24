@@ -58,6 +58,8 @@ runtime21.MapPost("/entries", (JsonElement request, Runtime21Bridge bridge, Canc
     bridge.PostAsync("api/entries", request, ct));
 runtime21.MapPost("/entries/{id:guid}/cancel", (Guid id, Runtime21Bridge bridge, CancellationToken ct) =>
     bridge.PostAsync($"api/entries/{id}/cancel", null, ct));
+runtime21.MapDelete("/entries/{id:guid}", (Guid id, Runtime21Bridge bridge, CancellationToken ct) =>
+    bridge.DeleteAsync($"api/entries/{id}", ct));
 runtime21.MapGet("/takeovers", (Runtime21Bridge bridge, CancellationToken ct) =>
     bridge.GetAsync("api/takeovers", ct));
 runtime21.MapGet("/takeovers/{id:guid}", (Guid id, Runtime21Bridge bridge, CancellationToken ct) =>
