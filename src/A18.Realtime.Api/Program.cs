@@ -1,4 +1,5 @@
 using System.Collections.Concurrent;
+using System.Text.Json;
 using A18.Realtime.Core;
 using A18.Realtime.Api;
 using A18.YuantaSpark;
@@ -28,11 +29,49 @@ builder.Services.AddSingleton<HistoricalSecondBars>();
 builder.Services.AddSingleton<SwingGroups>();
 builder.Services.AddSingleton<SwingState>();
 builder.Services.AddSingleton<SwingAnnotations>();
+builder.Services.AddHttpClient<Runtime21Bridge>((services, client) =>
+{
+    string configured = builder.Configuration["Runtime21:BaseUrl"]?.Trim()
+        ?? "https://runtime-21.offdutylab.xyz";
+    if (!Uri.TryCreate(configured.TrimEnd('/') + "/", UriKind.Absolute, out Uri? baseUri) ||
+        baseUri.Scheme is not ("http" or "https"))
+        throw new InvalidOperationException("Runtime21:BaseUrl must be an absolute HTTP(S) URL.");
+    client.BaseAddress = baseUri;
+    client.Timeout = TimeSpan.FromSeconds(8);
+});
 
 var app = builder.Build();
 
 app.MapGet("/", () => Results.Content(DiagnosticUi.Html, "text/html; charset=utf-8"));
 app.MapGet("/swing", () => Results.Content(SwingUi.Html, "text/html; charset=utf-8"));
+
+var runtime21 = app.MapGroup("/api/runtime21");
+runtime21.MapGet("/health", (Runtime21Bridge bridge, CancellationToken ct) =>
+    bridge.GetAsync("api/health", ct));
+runtime21.MapGet("/trading-control", (Runtime21Bridge bridge, CancellationToken ct) =>
+    bridge.GetAsync("api/trading-control", ct));
+runtime21.MapGet("/entries", (Runtime21Bridge bridge, CancellationToken ct) =>
+    bridge.GetAsync("api/entries", ct));
+runtime21.MapGet("/entries/{id:guid}", (Guid id, Runtime21Bridge bridge, CancellationToken ct) =>
+    bridge.GetCollectionItemAsync("api/entries", id, ct));
+runtime21.MapPost("/entries", (JsonElement request, Runtime21Bridge bridge, CancellationToken ct) =>
+    bridge.PostAsync("api/entries", request, ct));
+runtime21.MapPost("/entries/{id:guid}/cancel", (Guid id, Runtime21Bridge bridge, CancellationToken ct) =>
+    bridge.PostAsync($"api/entries/{id}/cancel", null, ct));
+runtime21.MapGet("/takeovers", (Runtime21Bridge bridge, CancellationToken ct) =>
+    bridge.GetAsync("api/takeovers", ct));
+runtime21.MapGet("/takeovers/{id:guid}", (Guid id, Runtime21Bridge bridge, CancellationToken ct) =>
+    bridge.GetCollectionItemAsync("api/takeovers", id, ct));
+runtime21.MapGet("/decisions", (Guid? takeoverId, int? limit, Runtime21Bridge bridge, CancellationToken ct) =>
+{
+    var query = new List<string>();
+    if (takeoverId is not null) query.Add($"takeoverId={Uri.EscapeDataString(takeoverId.Value.ToString())}");
+    if (limit is not null) query.Add($"limit={Math.Clamp(limit.Value, 1, 1000)}");
+    string path = "api/decisions" + (query.Count == 0 ? string.Empty : "?" + string.Join('&', query));
+    return bridge.GetAsync(path, ct);
+});
+runtime21.MapGet("/orders", (Runtime21Bridge bridge, CancellationToken ct) =>
+    bridge.GetAsync("api/orders", ct));
 
 app.MapGet("/health/live", () => Results.Ok(new
 {
