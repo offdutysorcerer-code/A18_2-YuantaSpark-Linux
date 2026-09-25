@@ -1,5 +1,6 @@
 using System.Collections.Concurrent;
 using System.Text.Json;
+using System.Text.Json.Nodes;
 using A18.Realtime.Core;
 using A18.Realtime.Api;
 using A18.YuantaSpark;
@@ -26,8 +27,10 @@ else
 
 builder.Services.AddHostedService<MarketDataProviderHostedService>();
 builder.Services.AddSingleton<HistoricalSecondBars>();
+builder.Services.AddSingleton<DailyKlineEnsureService>();
 builder.Services.AddSingleton<SwingGroups>();
 builder.Services.AddSingleton<SwingState>();
+builder.Services.AddSingleton<RequiredSymbolsRegistry>();
 builder.Services.AddSingleton<SwingAnnotations>();
 builder.Services.AddHttpClient<Runtime21Bridge>((services, client) =>
 {
@@ -90,10 +93,18 @@ app.MapGet("/health/ready", (IMarketDataProvider provider) =>
 app.MapGet("/api/symbols/names", (TaiwanSymbolDirectory symbols) => Results.Ok(symbols.AllNames()));
 
 app.MapGet("/api/swing/state", (SwingState state) => Results.Ok(state.Read()));
-app.MapPut("/api/swing/state", async (HttpRequest request, SwingState state) =>
+app.MapPut("/api/swing/state", async (HttpRequest request, SwingState state, RequiredSymbolsRegistry requiredSymbols, TaiwanSymbolDirectory symbols, IMarketDataProvider provider, CancellationToken ct) =>
 {
-    var incoming=await request.ReadFromJsonAsync<SwingBrowseState>() ?? new();
-    return Results.Ok(state.Save(incoming));
+    var incoming = await request.ReadFromJsonAsync<SwingBrowseState>(cancellationToken: ct) ?? new();
+    var saved = state.Save(incoming);
+    if (!string.IsNullOrWhiteSpace(saved.Symbol) && (saved.Symbol == "IX0001" || symbols.GetName(saved.Symbol) is not null))
+    {
+        var market = symbols.GetMarket(saved.Symbol);
+        requiredSymbols.Ensure(saved.Symbol, market);
+        try { await provider.SubscribeAsync(market, saved.Symbol, ct); }
+        catch (InvalidOperationException) { /* persisted; next current session will prepare it */ }
+    }
+    return Results.Ok(saved);
 });
 
 app.MapGet("/api/swing/groups", (SwingGroups groups) => Results.Ok(groups.Read()));
@@ -219,6 +230,12 @@ app.MapGet("/api/ticks/{symbol}", (string symbol, string? date, IMarketDataProvi
     {
         return Results.BadRequest(new { error = ex.Message });
     }
+});
+
+app.MapPost("/api/history/daily/{symbol}/ensure", async (string symbol, DailyKlineEnsureService daily, CancellationToken ct) =>
+{
+    try { return Results.Ok(await daily.EnsureAsync(symbol, ct)); }
+    catch (ArgumentException ex) { return Results.BadRequest(new { error = ex.Message }); }
 });
 
 app.MapGet("/api/calendar/non-trading/{date}", (string date, HistoricalSecondBars history) =>
@@ -586,3 +603,72 @@ setInterval(refreshAll,5000);
 </html>
 """;
 }
+
+
+internal sealed class RequiredSymbolsRegistry(IConfiguration config)
+{
+    private readonly string _path = config["Yuanta:RequiredSymbolsPath"] ?? "/data/required-symbols.json";
+    private readonly object _gate = new();
+
+    public bool Ensure(string symbol, string market, string source = "swing-dynamic")
+    {
+        symbol = (symbol ?? string.Empty).Trim().ToUpperInvariant();
+        market = (market ?? string.Empty).Trim().ToUpperInvariant();
+        if (symbol.Length == 0 || market.Length == 0) return false;
+
+        lock (_gate)
+        {
+            JsonObject root;
+            try
+            {
+                root = File.Exists(_path)
+                    ? JsonNode.Parse(File.ReadAllText(_path))?.AsObject() ?? new JsonObject()
+                    : new JsonObject();
+            }
+            catch (JsonException)
+            {
+                root = new JsonObject();
+            }
+
+            var rows = root["symbols"] as JsonArray ?? new JsonArray();
+            root["symbols"] = rows;
+            JsonObject? existing = rows.OfType<JsonObject>().FirstOrDefault(x =>
+                string.Equals(x["symbol"]?.GetValue<string>()?.Trim(), symbol, StringComparison.OrdinalIgnoreCase));
+
+            bool changed = false;
+            if (existing is null)
+            {
+                rows.Add(new JsonObject
+                {
+                    ["symbol"] = symbol,
+                    ["market"] = market,
+                    ["sources"] = new JsonArray { source }
+                });
+                changed = true;
+            }
+            else
+            {
+                if (!string.Equals(existing["market"]?.GetValue<string>()?.Trim(), market, StringComparison.OrdinalIgnoreCase))
+                {
+                    existing["market"] = market;
+                    changed = true;
+                }
+                var sources = existing["sources"] as JsonArray ?? new JsonArray();
+                existing["sources"] = sources;
+                if (!sources.Any(x => string.Equals(x?.GetValue<string>(), source, StringComparison.OrdinalIgnoreCase)))
+                {
+                    sources.Add(source);
+                    changed = true;
+                }
+            }
+
+            if (!changed) return false;
+            Directory.CreateDirectory(Path.GetDirectoryName(_path)!);
+            var tmp = _path + ".tmp";
+            File.WriteAllText(tmp, root.ToJsonString(new JsonSerializerOptions { WriteIndented = true, TypeInfoResolver = new System.Text.Json.Serialization.Metadata.DefaultJsonTypeInfoResolver() }));
+            File.Move(tmp, _path, true);
+            return true;
+        }
+    }
+}
+

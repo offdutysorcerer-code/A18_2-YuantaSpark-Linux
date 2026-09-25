@@ -30,7 +30,10 @@ public sealed class HistoricalSecondBars(ILogger<HistoricalSecondBars> logger, I
             using var p=Process.Start(psi) ?? throw new InvalidOperationException("Unable to start Shioaji history fetcher");
             using var timeout=CancellationTokenSource.CreateLinkedTokenSource(ct); timeout.CancelAfter(Timeout);
             await p.WaitForExitAsync(timeout.Token); var stdout=await p.StandardOutput.ReadToEndAsync(); var stderr=await p.StandardError.ReadToEndAsync();
-            if (!File.Exists(path) && stdout.Contains("\"status\": \"NO_DATA\"", StringComparison.OrdinalIgnoreCase)) { MarkNonTradingDay(date); return new("SINOPAC_SHIOAJI_NO_DATA", Array.Empty<SecondBar>()); }
+            // A single symbol returning NO_DATA does not prove the whole market was closed.
+            // Keep the date-level non-trading calendar authoritative and do not poison it from symbol-level history misses.
+            if (!File.Exists(path) && stdout.Contains("\"status\": \"NO_DATA\"", StringComparison.OrdinalIgnoreCase))
+                return new("SINOPAC_SHIOAJI_NO_DATA", Array.Empty<SecondBar>());
             if (p.ExitCode!=0 || !File.Exists(path)) throw new InvalidOperationException($"Shioaji history fetch failed ({p.ExitCode}): {stderr.Trim()} {stdout.Trim()}");
             logger.LogInformation("Historical second bars fetched via Shioaji: {Symbol} {Date} {Output}",symbol,date,stdout.Trim());
             return new("SINOPAC_SHIOAJI_FETCHED", Read(path));
@@ -43,15 +46,6 @@ public sealed class HistoricalSecondBars(ILogger<HistoricalSecondBars> logger, I
         if (!File.Exists(_nonTradingDaysPath)) return false;
         var key = date.ToString("yyyy-MM-dd");
         return File.ReadLines(_nonTradingDaysPath).Any(x => x.Trim() == key);
-    }
-
-    private void MarkNonTradingDay(DateOnly date)
-    {
-        if (IsKnownNonTradingDay(date)) return;
-        var dir = Path.GetDirectoryName(_nonTradingDaysPath);
-        if (!string.IsNullOrWhiteSpace(dir)) Directory.CreateDirectory(dir);
-        File.AppendAllText(_nonTradingDaysPath, date.ToString("yyyy-MM-dd") + Environment.NewLine);
-        logger.LogInformation("Marked {Date} as non-trading day after Shioaji returned no data.", date);
     }
 
     private static IReadOnlyList<SecondBar> Read(string path)

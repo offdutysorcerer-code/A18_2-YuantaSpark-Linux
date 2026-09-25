@@ -11,6 +11,7 @@ services:
       ASPNETCORE_ENVIRONMENT: Production
       A18__Provider: ${A18_PROVIDER:-Stub}
       History__SecondRoot: /warehouse/market/Taiwan/KLines/Second
+      History__DailyRoot: /warehouse/market/Taiwan/KLines/Daily
       History__Python: /opt/shioaji/.venv/bin/python
       History__Fetcher: /opt/shioaji/history_fetch.py
       SJ_API_KEY: ${SJ_API_KEY:-}

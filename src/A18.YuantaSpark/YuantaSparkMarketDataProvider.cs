@@ -9,6 +9,8 @@ using YuantaOneAPI;
 
 namespace A18.YuantaSpark;
 
+public sealed record DailyKlineCandle(DateOnly Date, decimal Open, decimal High, decimal Low, decimal Close, long Volume);
+
 public sealed class YuantaSparkMarketDataProvider : IMarketDataProvider, IDisposable
 {
     private static readonly TimeZoneInfo TaipeiTimeZone = TimeZoneInfo.FindSystemTimeZoneById("Asia/Taipei");
@@ -19,6 +21,8 @@ public sealed class YuantaSparkMarketDataProvider : IMarketDataProvider, IDispos
     private readonly object _tickGate = new();
     private readonly SemaphoreSlim _sessionGate = new(1, 1);
     private readonly SemaphoreSlim _backfillGate = new(1, 1);
+    private readonly SemaphoreSlim _dailyKlineGate = new(1, 1);
+    private TaskCompletionSource<IReadOnlyList<DailyKlineCandle>>? _pendingDailyKline;
     private readonly ConcurrentDictionary<string, SubscriptionState> _subscriptions = new(StringComparer.OrdinalIgnoreCase);
     private readonly ConcurrentDictionary<string, string> _desiredSubscriptions = new(StringComparer.OrdinalIgnoreCase);
     private readonly ConcurrentDictionary<string, NormalizedTick> _latest = new(StringComparer.OrdinalIgnoreCase);
@@ -170,6 +174,38 @@ public sealed class YuantaSparkMarketDataProvider : IMarketDataProvider, IDispos
 
         await SubmitSubscriptionAsync(marketName, symbol, cancellationToken);
         QueueBackfillIfNeeded(marketName, symbol);
+    }
+
+
+    public async Task<IReadOnlyList<DailyKlineCandle>> QueryDailyKlineAsync(string market, string symbol, DateOnly start, DateOnly end, CancellationToken cancellationToken)
+    {
+        if (end < start) return Array.Empty<DailyKlineCandle>();
+        await _dailyKlineGate.WaitAsync(cancellationToken);
+        try
+        {
+            if (!_connected || _api is null || string.IsNullOrWhiteSpace(_sessionAccount))
+                throw new InvalidOperationException("Yuanta SPARK is not connected.");
+            var ready = new TaskCompletionSource<IReadOnlyList<DailyKlineCandle>>(TaskCreationOptions.RunContinuationsAsynchronously);
+            _pendingDailyKline = ready;
+            bool accepted;
+            lock (_sdkGate)
+            {
+                accepted = _api.GetKLine(
+                    _sessionAccount,
+                    (KLineType)11,
+                    ParseMarket(market),
+                    NormalizeSymbol(symbol),
+                    start.ToString("yyyy/MM/dd", CultureInfo.InvariantCulture),
+                    end.ToString("yyyy/MM/dd", CultureInfo.InvariantCulture));
+            }
+            if (!accepted) throw new InvalidOperationException("Yuanta GetKLine() was not accepted.");
+            return await ready.Task.WaitAsync(TimeSpan.FromSeconds(Math.Max(10, _options.BackfillTimeoutSeconds)), cancellationToken);
+        }
+        finally
+        {
+            _pendingDailyKline = null;
+            _dailyKlineGate.Release();
+        }
     }
 
     public IReadOnlyCollection<SubscriptionStatus> GetSubscriptions() => _subscriptions.Values
@@ -592,6 +628,23 @@ public sealed class YuantaSparkMarketDataProvider : IMarketDataProvider, IDispos
             return;
         }
 
+
+        if (responseFunction == "GetKLine" && responseValue is KLineResult kline)
+        {
+            var rows = kline.KLineList
+                .Select(x => new DailyKlineCandle(
+                    DateOnly.FromDateTime(x.TimeStamp),
+                    Convert.ToDecimal(x.OpenPrice, CultureInfo.InvariantCulture),
+                    Convert.ToDecimal(x.HighPrice, CultureInfo.InvariantCulture),
+                    Convert.ToDecimal(x.LowPrice, CultureInfo.InvariantCulture),
+                    Convert.ToDecimal(x.ClosePrice, CultureInfo.InvariantCulture),
+                    Convert.ToInt64(x.DealVol, CultureInfo.InvariantCulture)))
+                .OrderBy(x => x.Date)
+                .ToArray();
+            _pendingDailyKline?.TrySetResult(rows);
+            return;
+        }
+
         if (responseFunction == "GetStkTickDetail" && responseValue is StickDetailResult detail)
         {
             string symbol = detail.StockCode?.Trim().ToUpperInvariant() ?? string.Empty;
@@ -766,6 +819,7 @@ public sealed class YuantaSparkMarketDataProvider : IMarketDataProvider, IDispos
         _writerCts.Dispose();
         _sessionGate.Dispose();
         _backfillGate.Dispose();
+        _dailyKlineGate.Dispose();
     }
 
     private sealed record PendingBackfill(long SessionGeneration, DateOnly TradeDate, TaskCompletionSource<IReadOnlyList<NormalizedTick>> Ready);
