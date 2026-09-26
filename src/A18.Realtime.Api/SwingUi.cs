@@ -26,7 +26,7 @@ header{display:flex;align-items:center;justify-content:space-between;gap:16px;pa
 </head>
 <body>
 <header>
-  <div style="display:flex;gap:10px;align-items:center"><h1>A18_2 · K線波段轉折觀察</h1><span class="tag">LIVE / HISTORY</span></div>
+  <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap"><h1>A18_2 · K線波段轉折觀察</h1><span class="tag">LIVE / HISTORY</span><nav style="display:flex;gap:4px"><a href="/swing" style="padding:5px 9px;border:1px solid #2787d5;border-radius:5px;background:#1769aa;color:#fff;text-decoration:none">完整操作</a><a href="/simple" style="padding:5px 9px;border:1px solid var(--line);border-radius:5px;background:#0b1420;color:var(--muted);text-decoration:none">精簡操作</a></nav></div>
   <form id="controls" class="controls"><span class="section-no">1</span>
     <label>股票 <input id="symbol" value="2330" maxlength="12"></label>
     <button type="button" id="prevDay">← 上一日</button>

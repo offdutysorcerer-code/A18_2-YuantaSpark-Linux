@@ -47,6 +47,7 @@ var app = builder.Build();
 
 app.MapGet("/", () => Results.Content(DiagnosticUi.Html, "text/html; charset=utf-8"));
 app.MapGet("/swing", () => Results.Content(SwingUi.Html, "text/html; charset=utf-8"));
+app.MapGet("/simple", () => Results.Content(SimpleOperationUi.Html, "text/html; charset=utf-8"));
 
 var runtime21 = app.MapGroup("/api/runtime21");
 runtime21.MapGet("/health", (Runtime21Bridge bridge, CancellationToken ct) =>
