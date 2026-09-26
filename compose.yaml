@@ -32,8 +32,11 @@ services:
       Yuanta__AckVerifyDelayMilliseconds: ${YUANTA_ACK_VERIFY_DELAY_MS:-400}
       Yuanta__Account: ${YUANTA_ACCOUNT:-}
       Yuanta__Password: ${YUANTA_PASSWORD:-}
+      Runtime21__BaseUrl: ${RUNTIME21_BASE_URL:-http://host.docker.internal:5281}
       Yuanta__CertificatePath: ${YUANTA_PFX_PATH:-/run/secrets/yuanta.pfx}
       Yuanta__CertificatePassword: ${YUANTA_PFX_PASSWORD:-}
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
     volumes:
       - ./data:/data
       - /mnt/d/AIProjects/A18_10_量化交易資料倉庫:/warehouse
