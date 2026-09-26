@@ -255,8 +255,9 @@ app.MapGet("/api/bars/{symbol}", async (string symbol, string? date, int? interv
         var today = DateOnly.FromDateTime(TimeZoneInfo.ConvertTime(DateTimeOffset.UtcNow, taipei).Date);
         var requested = string.IsNullOrWhiteSpace(date) ? today : DateOnly.ParseExact(date, "yyyy-MM-dd");
         int seconds = interval ?? 60;
-        if (seconds is not (1 or 5 or 60 or 300))
-            return Results.BadRequest(new { error = "interval must be one of 1, 5, 60, 300 seconds" });
+        int[] supportedIntervals = [1, 5, 15, 30, 60, 180, 300, 600, 900, 1800, 3600];
+        if (!supportedIntervals.Contains(seconds))
+            return Results.BadRequest(new { error = "interval must be one of 1, 5, 15, 30, 60, 180, 300, 600, 900, 1800, 3600 seconds" });
 
         if (requested > today)
         {
