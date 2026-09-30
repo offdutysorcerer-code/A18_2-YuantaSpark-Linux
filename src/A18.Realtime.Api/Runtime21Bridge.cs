@@ -12,6 +12,9 @@ internal sealed class Runtime21Bridge(HttpClient client)
     public Task<IResult> PostAsync(string path, JsonElement? body, CancellationToken cancellationToken) =>
         ForwardAsync(HttpMethod.Post, path, body, cancellationToken);
 
+    public Task<IResult> PutAsync(string path, JsonElement body, CancellationToken cancellationToken) =>
+        ForwardAsync(HttpMethod.Put, path, body, cancellationToken);
+
     public Task<IResult> DeleteAsync(string path, CancellationToken cancellationToken) =>
         ForwardAsync(HttpMethod.Delete, path, null, cancellationToken);
 

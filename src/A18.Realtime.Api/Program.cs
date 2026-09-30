@@ -66,10 +66,20 @@ runtime21.MapDelete("/entries/{id:guid}", (Guid id, Runtime21Bridge bridge, Canc
     bridge.DeleteAsync($"api/entries/{id}", ct));
 runtime21.MapGet("/monitor/positions", (Runtime21Bridge bridge, CancellationToken ct) =>
     bridge.GetAsync("api/monitor/positions", ct));
+runtime21.MapGet("/account", (Runtime21Bridge bridge, CancellationToken ct) =>
+    bridge.GetAsync("api/account", ct));
+runtime21.MapPost("/account/refresh", (Runtime21Bridge bridge, CancellationToken ct) =>
+    bridge.PostAsync("api/account/refresh", null, ct));
 runtime21.MapGet("/takeovers", (Runtime21Bridge bridge, CancellationToken ct) =>
     bridge.GetAsync("api/takeovers", ct));
 runtime21.MapGet("/takeovers/{id:guid}", (Guid id, Runtime21Bridge bridge, CancellationToken ct) =>
     bridge.GetCollectionItemAsync("api/takeovers", id, ct));
+runtime21.MapPost("/takeovers", (JsonElement request, Runtime21Bridge bridge, CancellationToken ct) =>
+    bridge.PostAsync("api/takeovers", request, ct));
+runtime21.MapPut("/takeovers/{id:guid}", (Guid id, JsonElement request, Runtime21Bridge bridge, CancellationToken ct) =>
+    bridge.PutAsync($"api/takeovers/{id}", request, ct));
+runtime21.MapPost("/takeovers/{id:guid}/holding-mode", (Guid id, JsonElement request, Runtime21Bridge bridge, CancellationToken ct) =>
+    bridge.PostAsync($"api/takeovers/{id}/holding-mode", request, ct));
 runtime21.MapGet("/decisions", (Guid? takeoverId, int? limit, Runtime21Bridge bridge, CancellationToken ct) =>
 {
     var query = new List<string>();
@@ -675,4 +685,3 @@ internal sealed class RequiredSymbolsRegistry(IConfiguration config)
         }
     }
 }
-
