@@ -56,7 +56,7 @@ internal sealed class DailyKlineEnsureService(
                     foreach (var c in fetched)
                     {
                         if (c.Date < start || c.Date > through) continue;
-                        rows[c.Date] = new(c.Date, c.Open, c.High, c.Low, c.Close, c.Volume);
+                        rows[c.Date] = new(c.Date, c.Open, c.High, c.Low, c.Close, c.Volume, null, null);
                         yuantaDates.Add(c.Date);
                         yuantaAdded++;
                     }
@@ -75,7 +75,7 @@ internal sealed class DailyKlineEnsureService(
             for (var d = start; d <= through; d = d.AddDays(1))
             {
                 ct.ThrowIfCancellationRequested();
-                if (d.DayOfWeek is DayOfWeek.Saturday or DayOfWeek.Sunday) continue;
+                if (d.DayOfWeek is DayOfWeek.Saturday or DayOfWeek.Sunday || history.IsKnownNonTradingDay(d)) continue;
                 if (rows.ContainsKey(d)) continue;
 
                 try
@@ -89,7 +89,9 @@ internal sealed class DailyKlineEnsureService(
                         ordered.Max(x => x.High),
                         ordered.Min(x => x.Low),
                         ordered[^1].Close,
-                        ordered.Sum(x => x.Volume));
+                        ordered.Sum(x => x.Volume),
+                        null,
+                        null);
                     shioajiAdded++;
                 }
                 catch (Exception ex)
@@ -127,7 +129,9 @@ internal sealed class DailyKlineEnsureService(
             if (!decimal.TryParse(p[3], NumberStyles.Any, CultureInfo.InvariantCulture, out var l)) continue;
             if (!decimal.TryParse(p[4], NumberStyles.Any, CultureInfo.InvariantCulture, out var c)) continue;
             if (!long.TryParse(p[5], NumberStyles.Any, CultureInfo.InvariantCulture, out var v)) continue;
-            result[d] = new(d, o, h, l, c, v);
+            long? volumeShares = p.Length > 6 && long.TryParse(p[6], NumberStyles.Any, CultureInfo.InvariantCulture, out var vs) ? vs : null;
+            decimal? turnover = p.Length > 7 && decimal.TryParse(p[7], NumberStyles.Any, CultureInfo.InvariantCulture, out var tv) ? tv : null;
+            result[d] = new(d, o, h, l, c, v, volumeShares, turnover);
         }
         return result;
     }
@@ -137,13 +141,13 @@ internal sealed class DailyKlineEnsureService(
         string tmp = path + ".tmp";
         using (var w = new StreamWriter(tmp, false, new System.Text.UTF8Encoding(false)))
         {
-            w.WriteLine("date,open,high,low,close,volume");
+            w.WriteLine("date,open,high,low,close,volume,volumeShares,turnover");
             foreach (var r in rows.OrderBy(x => x.Date))
-                w.WriteLine($"{r.Date:yyyy-MM-dd},{F(r.Open)},{F(r.High)},{F(r.Low)},{F(r.Close)},{r.Volume}");
+                w.WriteLine($"{r.Date:yyyy-MM-dd},{F(r.Open)},{F(r.High)},{F(r.Low)},{F(r.Close)},{r.Volume},{r.VolumeShares?.ToString(CultureInfo.InvariantCulture) ?? ""},{(r.Turnover is decimal tv ? F(tv) : "")}");
         }
         File.Move(tmp, path, true);
     }
 
     private static string F(decimal v) => v.ToString(CultureInfo.InvariantCulture);
-    private sealed record DailyRow(DateOnly Date, decimal Open, decimal High, decimal Low, decimal Close, long Volume);
+    private sealed record DailyRow(DateOnly Date, decimal Open, decimal High, decimal Low, decimal Close, long Volume, long? VolumeShares, decimal? Turnover);
 }
