@@ -69,7 +69,21 @@ def main():
     accepted=[]
     try:
         time.sleep(max(0,(args.session-1)*3))
-        api.login(api_key=key,secret_key=sec,subscribe_trade=False)
+        login_ok=False
+        for attempt in range(1,13):
+            try:
+                api.login(api_key=key,secret_key=sec,subscribe_trade=False)
+                login_ok=True
+                break
+            except Exception as exc:
+                message=str(exc)
+                if "451" not in message and "Too Many Connections" not in message:
+                    raise
+                delay=min(30,10+attempt*2)
+                print(json.dumps({"event":"login-retry","session":args.session,"attempt":attempt,"delaySeconds":delay,"reason":"451 Too Many Connections"}),flush=True)
+                time.sleep(delay)
+        if not login_ok:
+            raise RuntimeError(f"session {args.session} login quota did not recover after retries")
         api.set_on_tick_stk_v1_callback(on_tick)
         for i,symbol in enumerate(symbols,1):
             c=contract(api,symbol)
