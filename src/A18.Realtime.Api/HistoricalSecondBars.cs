@@ -21,18 +21,35 @@ public sealed class HistoricalSecondBars(ILogger<HistoricalSecondBars> logger, I
     {
         symbol=symbol.Trim().ToUpperInvariant();
         var intradayPath=Path.Combine(_intradayRoot,date.ToString("yyyy-MM-dd"),$"{symbol}.ticks.jsonl");
-        if (File.Exists(intradayPath))
-        {
-            var localTicks=ReadIntradayTicks(intradayPath);
-            if (localTicks.Count>0) return new("A18_2_INTRADAY_TICKS",localTicks);
-        }
+        var localTicks=File.Exists(intradayPath) ? ReadIntradayTicks(intradayPath) : Array.Empty<SecondBar>();
         var path=Path.Combine(_root,symbol,$"{date:yyyy-MM-dd}.csv");
-        if (File.Exists(path)) return new("A18_10_SECOND", Read(path));
-        if (IsKnownNonTradingDay(date)) return new("KNOWN_NON_TRADING_DAY", Array.Empty<SecondBar>());
+
+        // Historical intraday captures may be partial (for example when A18_2 was
+        // started after the open or stopped before the close). Never let the mere
+        // presence of an intraday file suppress a more complete historical source.
+        if (File.Exists(path))
+        {
+            var warehouse=Read(path);
+            if (localTicks.Count==0) return new("A18_10_SECOND", warehouse);
+            return new("A18_2_INTRADAY_TICKS+A18_10_SECOND", MergePreferLocal(warehouse,localTicks));
+        }
+        if (IsKnownNonTradingDay(date))
+            return localTicks.Count>0
+                ? new("A18_2_INTRADAY_TICKS",localTicks)
+                : new("KNOWN_NON_TRADING_DAY", Array.Empty<SecondBar>());
+
         await _fetchLock.WaitAsync(ct);
         try
         {
-            if (File.Exists(path)) return new("A18_10_SECOND", Read(path));
+            // Another request may have materialized the warehouse file while this
+            // request waited for the fetch lock.
+            if (File.Exists(path))
+            {
+                var warehouse=Read(path);
+                if (localTicks.Count==0) return new("A18_10_SECOND",warehouse);
+                return new("A18_2_INTRADAY_TICKS+A18_10_SECOND",MergePreferLocal(warehouse,localTicks));
+            }
+
             var psi=new ProcessStartInfo(_python) { RedirectStandardOutput=true, RedirectStandardError=true, UseShellExecute=false };
             psi.ArgumentList.Add(_fetcher); psi.ArgumentList.Add(symbol); psi.ArgumentList.Add(date.ToString("yyyy-MM-dd")); psi.ArgumentList.Add(path);
             using var p=Process.Start(psi) ?? throw new InvalidOperationException("Unable to start Shioaji history fetcher");
@@ -41,12 +58,31 @@ public sealed class HistoricalSecondBars(ILogger<HistoricalSecondBars> logger, I
             // A single symbol returning NO_DATA does not prove the whole market was closed.
             // Keep the date-level non-trading calendar authoritative and do not poison it from symbol-level history misses.
             if (!File.Exists(path) && stdout.Contains("\"status\": \"NO_DATA\"", StringComparison.OrdinalIgnoreCase))
-                return new("SINOPAC_SHIOAJI_NO_DATA", Array.Empty<SecondBar>());
-            if (p.ExitCode!=0 || !File.Exists(path)) throw new InvalidOperationException($"Shioaji history fetch failed ({p.ExitCode}): {stderr.Trim()} {stdout.Trim()}");
+                return localTicks.Count>0
+                    ? new("A18_2_INTRADAY_TICKS",localTicks)
+                    : new("SINOPAC_SHIOAJI_NO_DATA", Array.Empty<SecondBar>());
+            if (p.ExitCode!=0 || !File.Exists(path))
+            {
+                if (localTicks.Count>0)
+                {
+                    logger.LogWarning("Historical backfill failed; using partial intraday ticks: {Symbol} {Date} Exit={Exit} Error={Error}",symbol,date,p.ExitCode,$"{stderr.Trim()} {stdout.Trim()}");
+                    return new("A18_2_INTRADAY_TICKS_PARTIAL",localTicks);
+                }
+                throw new InvalidOperationException($"Shioaji history fetch failed ({p.ExitCode}): {stderr.Trim()} {stdout.Trim()}");
+            }
             logger.LogInformation("Historical second bars fetched via Shioaji: {Symbol} {Date} {Output}",symbol,date,stdout.Trim());
-            return new("SINOPAC_SHIOAJI_FETCHED", Read(path));
+            var fetched=Read(path);
+            if (localTicks.Count==0) return new("SINOPAC_SHIOAJI_FETCHED",fetched);
+            return new("A18_2_INTRADAY_TICKS+SINOPAC_SHIOAJI_FETCHED",MergePreferLocal(fetched,localTicks));
         }
         finally { _fetchLock.Release(); }
+    }
+
+    private static IReadOnlyList<SecondBar> MergePreferLocal(IReadOnlyList<SecondBar> historical, IReadOnlyList<SecondBar> local)
+    {
+        var merged=historical.ToDictionary(x=>x.StartTime.ToUnixTimeSeconds());
+        foreach(var row in local) merged[row.StartTime.ToUnixTimeSeconds()]=row;
+        return merged.OrderBy(x=>x.Key).Select(x=>x.Value).ToArray();
     }
 
     public bool IsKnownNonTradingDay(DateOnly date)
