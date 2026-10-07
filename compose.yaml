@@ -10,6 +10,13 @@ services:
       TZ: Asia/Taipei
       ASPNETCORE_ENVIRONMENT: Production
       A18__Provider: ${A18_PROVIDER:-Stub}
+      A18__OperationMode: ${A18_OPERATION_MODE:-Legacy}
+      A18__FullMarketPlanPath: /warehouse/market/Taiwan/realtime_subscription_plan.json
+      A18__FullMarketYuantaRequiredSymbolsPath: /data/fullmarket-required-symbols.json
+      A18__FullMarketShioajiPython: /opt/shioaji/.venv/bin/python
+      A18__FullMarketShioajiCollector: /opt/shioaji/fullmarket_stream.py
+      A18__FullMarketStartShioajiCollectors: ${A18_FULLMARKET_START_SHIOAJI:-true}
+      A18__FullMarketIngestEndpoint: http://127.0.0.1:8080/api/fullmarket/ticks
       History__SecondRoot: /warehouse/market/Taiwan/KLines/Second
       History__Python: /opt/shioaji/.venv/bin/python
       History__Fetcher: /opt/shioaji/history_fetch.py

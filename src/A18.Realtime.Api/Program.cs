@@ -7,7 +7,17 @@ using A18.YuantaSpark;
 
 var builder = WebApplication.CreateBuilder(args);
 
+var operationMode = new A18OperationModeState(builder.Configuration["A18:OperationMode"]);
+builder.Services.AddSingleton(operationMode);
 builder.Services.Configure<YuantaSparkOptions>(builder.Configuration.GetSection("Yuanta"));
+builder.Services.PostConfigure<YuantaSparkOptions>(options =>
+{
+    if (operationMode.IsFullMarketExperimental)
+    {
+        options.RequiredSymbolsPath = builder.Configuration["A18:FullMarketYuantaRequiredSymbolsPath"] ?? "/data/fullmarket-required-symbols.json";
+        options.MaxSubscriptions = 200;
+    }
+});
 string symbolsPath = builder.Configuration["A18:SymbolsPath"]?.Trim() ?? "/data/reference/symbols.csv";
 builder.Services.AddSingleton(new TaiwanSymbolDirectory(symbolsPath));
 
@@ -25,7 +35,10 @@ else
     throw new InvalidOperationException($"Unsupported A18 provider: {providerName}");
 }
 
+builder.Services.AddSingleton<FullMarketStateStore>();
+builder.Services.AddHostedService<FullMarketBootstrapHostedService>();
 builder.Services.AddHostedService<MarketDataProviderHostedService>();
+builder.Services.AddHostedService<FullMarketYuantaMirrorHostedService>();
 builder.Services.AddSingleton<HistoricalSecondBars>();
 builder.Services.AddSingleton<DailyKlineEnsureService>();
 builder.Services.AddSingleton<SwingGroups>();
@@ -164,6 +177,23 @@ app.MapDelete("/api/swing/annotations/{id:guid}", (Guid id, SwingAnnotations ann
     annotations.Delete(id) ? Results.NoContent() : Results.NotFound());
 
 app.MapGet("/api/session", (IMarketDataProvider provider) => Results.Ok(provider.GetSessionStatus()));
+
+app.MapGet("/api/operation-mode", (A18OperationModeState mode) => Results.Ok(new
+{
+    mode = mode.Mode,
+    fullMarketExperimental = mode.IsFullMarketExperimental
+}));
+app.MapGet("/api/fullmarket/status", (FullMarketStateStore store, A18OperationModeState mode) => Results.Ok(store.Status(mode)));
+app.MapGet("/api/fullmarket/state", (int? take, FullMarketStateStore store) => Results.Ok(store.Snapshot(take ?? 2000)));
+app.MapPost("/api/fullmarket/ticks", (FullMarketIngressTick[] ticks, FullMarketStateStore store, A18OperationModeState mode) =>
+{
+    if (!mode.IsFullMarketExperimental)
+        return Results.Conflict(new { error = "full-market experimental mode is disabled" });
+    if (ticks.Length == 0 || ticks.Length > 10000)
+        return Results.BadRequest(new { error = "ticks must contain 1..10000 rows" });
+    var accepted = ticks.Count(store.Publish);
+    return Results.Ok(new { accepted, rejected = ticks.Length - accepted });
+});
 
 app.MapGet("/api/subscriptions", (IMarketDataProvider provider) => Results.Ok(provider.GetSubscriptions()));
 
