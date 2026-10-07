@@ -14,7 +14,7 @@ services:
       A18__FullMarketPlanPath: /warehouse/market/Taiwan/realtime_subscription_plan.json
       A18__FullMarketYuantaRequiredSymbolsPath: /data/fullmarket-required-symbols.json
       A18__FullMarketShioajiPython: /opt/shioaji/.venv/bin/python
-      A18__FullMarketShioajiCollector: /opt/shioaji/fullmarket_stream.py
+      A18__FullMarketShioajiCollector: /opt/shioaji-runtime/fullmarket_stream.py
       A18__FullMarketStartShioajiCollectors: ${A18_FULLMARKET_START_SHIOAJI:-true}
       A18__FullMarketIngestEndpoint: http://127.0.0.1:8080/api/fullmarket/ticks
       History__SecondRoot: /warehouse/market/Taiwan/KLines/Second
@@ -42,6 +42,7 @@ services:
       Yuanta__CertificatePassword: ${YUANTA_PFX_PASSWORD:-}
     volumes:
       - ./data:/data
+      - ./shioaji:/opt/shioaji-runtime:ro
       - /mnt/d/AIProjects/A18_10_量化交易資料倉庫:/warehouse
       - ../A18_10_量化交易資料倉庫/market/Taiwan/symbols.csv:/data/reference/symbols.csv:ro
       - ./logs:/logs
