@@ -23,7 +23,7 @@ def run(*args, cwd=ROOT):
 
 
 def api():
-    for _ in range(30):
+    for _ in range(120):
         try:
             with urllib.request.urlopen('http://127.0.0.1:5220/api/operation-mode',timeout=2) as r:
                 return json.load(r)
@@ -49,11 +49,23 @@ def main():
     cmd=['docker','compose','up','-d','--no-deps','--force-recreate']
     if args.build: cmd.append('--build')
     cmd.append('a18-realtime')
-    run(*cmd)
-    state=api()
-    print(json.dumps(state,ensure_ascii=False))
-    if state.get('mode')!=expected:
-        raise RuntimeError(f'expected mode {expected}, got {state}')
+    try:
+        run(*cmd)
+        state=api()
+        print(json.dumps(state,ensure_ascii=False))
+        if state.get('mode')!=expected:
+            raise RuntimeError(f'expected mode {expected}, got {state}')
+    except Exception as exc:
+        if args.mode=='fullmarket':
+            print(f'Full Market 啟動失敗，開始自動回滾 Legacy: {exc}', file=sys.stderr)
+            set_env('A18_OPERATION_MODE','Legacy')
+            set_env('A18_FULLMARKET_START_SHIOAJI','false')
+            run('docker','compose','up','-d','--no-deps','--force-recreate','a18-realtime')
+            rollback=api()
+            manager=A18_22/'scripts'/'manage_shioaji_collectors.py'
+            if manager.exists(): run('python3',str(manager),'start',cwd=A18_22)
+            raise RuntimeError(f'Full Market 啟動失敗，已自動回滾 {rollback.get("mode")}: {exc}')
+        raise
     if args.mode=='legacy':
         manager=A18_22/'scripts'/'manage_shioaji_collectors.py'
         if manager.exists():

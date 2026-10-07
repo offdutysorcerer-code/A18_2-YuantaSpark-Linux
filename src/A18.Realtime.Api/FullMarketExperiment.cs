@@ -166,7 +166,7 @@ public sealed class FullMarketBootstrapHostedService(
         Directory.CreateDirectory(Path.GetDirectoryName(requiredPath)!);
         var root = new JsonObject { ["symbols"] = rows };
         var tmp = requiredPath + ".tmp";
-        File.WriteAllText(tmp, root.ToJsonString(new JsonSerializerOptions { WriteIndented = true }));
+        File.WriteAllText(tmp, root.ToJsonString(new JsonSerializerOptions { WriteIndented = true, TypeInfoResolver = new System.Text.Json.Serialization.Metadata.DefaultJsonTypeInfoResolver() }));
         File.Move(tmp, requiredPath, true);
     }
 }
