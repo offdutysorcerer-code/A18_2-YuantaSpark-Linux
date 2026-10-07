@@ -9,6 +9,8 @@ using YuantaOneAPI;
 
 namespace A18.YuantaSpark;
 
+public sealed record DailyKlineCandle(DateOnly Date, decimal Open, decimal High, decimal Low, decimal Close, long Volume);
+
 public sealed class YuantaSparkMarketDataProvider : IMarketDataProvider, IDisposable
 {
     private static readonly TimeZoneInfo TaipeiTimeZone = TimeZoneInfo.FindSystemTimeZoneById("Asia/Taipei");
@@ -19,6 +21,8 @@ public sealed class YuantaSparkMarketDataProvider : IMarketDataProvider, IDispos
     private readonly object _tickGate = new();
     private readonly SemaphoreSlim _sessionGate = new(1, 1);
     private readonly SemaphoreSlim _backfillGate = new(1, 1);
+    private readonly SemaphoreSlim _dailyKlineGate = new(1, 1);
+    private TaskCompletionSource<IReadOnlyList<DailyKlineCandle>>? _pendingDailyKline;
     private readonly ConcurrentDictionary<string, SubscriptionState> _subscriptions = new(StringComparer.OrdinalIgnoreCase);
     private readonly ConcurrentDictionary<string, string> _desiredSubscriptions = new(StringComparer.OrdinalIgnoreCase);
     private readonly ConcurrentDictionary<string, NormalizedTick> _latest = new(StringComparer.OrdinalIgnoreCase);
@@ -170,6 +174,38 @@ public sealed class YuantaSparkMarketDataProvider : IMarketDataProvider, IDispos
 
         await SubmitSubscriptionAsync(marketName, symbol, cancellationToken);
         QueueBackfillIfNeeded(marketName, symbol);
+    }
+
+
+    public async Task<IReadOnlyList<DailyKlineCandle>> QueryDailyKlineAsync(string market, string symbol, DateOnly start, DateOnly end, CancellationToken cancellationToken)
+    {
+        if (end < start) return Array.Empty<DailyKlineCandle>();
+        await _dailyKlineGate.WaitAsync(cancellationToken);
+        try
+        {
+            if (!_connected || _api is null || string.IsNullOrWhiteSpace(_sessionAccount))
+                throw new InvalidOperationException("Yuanta SPARK is not connected.");
+            var ready = new TaskCompletionSource<IReadOnlyList<DailyKlineCandle>>(TaskCreationOptions.RunContinuationsAsynchronously);
+            _pendingDailyKline = ready;
+            bool accepted;
+            lock (_sdkGate)
+            {
+                accepted = _api.GetKLine(
+                    _sessionAccount,
+                    (KLineType)11,
+                    ParseMarket(market),
+                    NormalizeSymbol(symbol),
+                    start.ToString("yyyy/MM/dd", CultureInfo.InvariantCulture),
+                    end.ToString("yyyy/MM/dd", CultureInfo.InvariantCulture));
+            }
+            if (!accepted) throw new InvalidOperationException("Yuanta GetKLine() was not accepted.");
+            return await ready.Task.WaitAsync(TimeSpan.FromSeconds(Math.Max(10, _options.BackfillTimeoutSeconds)), cancellationToken);
+        }
+        finally
+        {
+            _pendingDailyKline = null;
+            _dailyKlineGate.Release();
+        }
     }
 
     public IReadOnlyCollection<SubscriptionStatus> GetSubscriptions() => _subscriptions.Values
@@ -331,6 +367,7 @@ public sealed class YuantaSparkMarketDataProvider : IMarketDataProvider, IDispos
         lock (state.Gate)
         {
             if (state.State is "SUBMITTED" or "ACK_CONFIRMED" or "LIVE_OBSERVED") return Task.CompletedTask;
+            bool forceRearm = state.State == "REARM_REQUIRED";
             state.State = "SUBMITTING";
             state.AckState = "PENDING";
             state.AckConfirmedAt = null;
@@ -339,6 +376,21 @@ public sealed class YuantaSparkMarketDataProvider : IMarketDataProvider, IDispos
             {
                 lock (_sdkGate)
                 {
+                    // SPARK may silently keep a stale per-symbol subscription when the same
+                    // SubscribeStockTick request is submitted repeatedly.  A rearm must first
+                    // remove the old SDK-side registration, then establish a fresh one.
+                    if (forceRearm)
+                    {
+                        try
+                        {
+                            _api.UnSubscribeStockTick(_sessionAccount, new List<StockTick>
+                            {
+                                new() { MarketType = marketType, StockCode = symbol }
+                            });
+                        }
+                        catch { /* best effort: still attempt a fresh subscribe */ }
+                    }
+
                     _api.SubscribeStockTick(_sessionAccount, new List<StockTick>
                     {
                         new() { MarketType = marketType, StockCode = symbol }
@@ -525,10 +577,20 @@ public sealed class YuantaSparkMarketDataProvider : IMarketDataProvider, IDispos
             lock (state.Gate)
             {
                 if (!state.SubmittedAt.HasValue) continue;
-                if (state.State == "ACK_MISSING" || (state.State == "SUBMITTED" && now - state.SubmittedAt.Value >= grace))
+                bool submittedTimedOut = state.State == "SUBMITTED" && now - state.SubmittedAt.Value >= grace;
+                bool ackedButNeverLive = state.State == "ACK_CONFIRMED"
+                    && !state.FirstReceivedAt.HasValue
+                    && now - state.SubmittedAt.Value >= grace;
+                if (state.State == "ACK_MISSING" || submittedTimedOut || ackedButNeverLive)
                 {
                     state.State = "REARM_REQUIRED";
-                    state.LastError = "SPARK subscription ACK was not confirmed; scheduling paced resubscribe.";
+                    // A new subscription attempt must also run a new 09:00->now backfill.
+                    // PersistTick deduplicates sequence numbers, so this safely fills only
+                    // the interval missed since the previous completed backfill.
+                    if (state.BackfillState == "COMPLETED") state.BackfillState = "NOT_REQUIRED";
+                    state.LastError = ackedButNeverLive
+                        ? "SPARK subscription was ACKed but no live callback arrived; scheduling unsubscribe/resubscribe and gap backfill."
+                        : "SPARK subscription ACK was not confirmed; scheduling unsubscribe/resubscribe and gap backfill.";
                 }
             }
         }
@@ -589,6 +651,23 @@ public sealed class YuantaSparkMarketDataProvider : IMarketDataProvider, IDispos
                 _loginReady.TrySetResult(login.LoginList[0].Account.Trim());
             else
                 _loginReady.TrySetException(new InvalidOperationException($"Yuanta login failed: {login.LoginStatus.MsgCode} {login.LoginStatus.MsgContent}"));
+            return;
+        }
+
+
+        if (responseFunction == "GetKLine" && responseValue is KLineResult kline)
+        {
+            var rows = kline.KLineList
+                .Select(x => new DailyKlineCandle(
+                    DateOnly.FromDateTime(x.TimeStamp),
+                    Convert.ToDecimal(x.OpenPrice, CultureInfo.InvariantCulture),
+                    Convert.ToDecimal(x.HighPrice, CultureInfo.InvariantCulture),
+                    Convert.ToDecimal(x.LowPrice, CultureInfo.InvariantCulture),
+                    Convert.ToDecimal(x.ClosePrice, CultureInfo.InvariantCulture),
+                    Convert.ToInt64(x.DealVol, CultureInfo.InvariantCulture)))
+                .OrderBy(x => x.Date)
+                .ToArray();
+            _pendingDailyKline?.TrySetResult(rows);
             return;
         }
 
@@ -766,6 +845,7 @@ public sealed class YuantaSparkMarketDataProvider : IMarketDataProvider, IDispos
         _writerCts.Dispose();
         _sessionGate.Dispose();
         _backfillGate.Dispose();
+        _dailyKlineGate.Dispose();
     }
 
     private sealed record PendingBackfill(long SessionGeneration, DateOnly TradeDate, TaskCompletionSource<IReadOnlyList<NormalizedTick>> Ready);

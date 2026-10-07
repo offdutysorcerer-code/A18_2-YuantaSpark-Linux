@@ -1,4 +1,6 @@
 using System.Collections.Concurrent;
+using System.Text.Json;
+using System.Text.Json.Nodes;
 using A18.Realtime.Core;
 using A18.Realtime.Api;
 using A18.YuantaSpark;
@@ -25,11 +27,75 @@ else
 
 builder.Services.AddHostedService<MarketDataProviderHostedService>();
 builder.Services.AddSingleton<HistoricalSecondBars>();
+builder.Services.AddSingleton<DailyKlineEnsureService>();
+builder.Services.AddSingleton<SwingGroups>();
+builder.Services.AddSingleton<SwingState>();
+builder.Services.AddSingleton<RequiredSymbolsRegistry>();
+builder.Services.AddSingleton<SwingAnnotations>();
+builder.Services.AddHttpClient<Runtime21Bridge>((services, client) =>
+{
+    string configured = builder.Configuration["Runtime21:BaseUrl"]?.Trim()
+        ?? "https://runtime-21.offdutylab.xyz";
+    if (!Uri.TryCreate(configured.TrimEnd('/') + "/", UriKind.Absolute, out Uri? baseUri) ||
+        baseUri.Scheme is not ("http" or "https"))
+        throw new InvalidOperationException("Runtime21:BaseUrl must be an absolute HTTP(S) URL.");
+    client.BaseAddress = baseUri;
+    client.Timeout = TimeSpan.FromSeconds(8);
+});
 
 var app = builder.Build();
 
 app.MapGet("/", () => Results.Content(DiagnosticUi.Html, "text/html; charset=utf-8"));
 app.MapGet("/swing", () => Results.Content(SwingUi.Html, "text/html; charset=utf-8"));
+app.MapGet("/simple", () => Results.Redirect("/swing#simple"));
+
+var runtime21 = app.MapGroup("/api/runtime21");
+runtime21.MapGet("/health", (Runtime21Bridge bridge, CancellationToken ct) =>
+    bridge.GetAsync("api/health", ct));
+runtime21.MapGet("/trading-control", (Runtime21Bridge bridge, CancellationToken ct) =>
+    bridge.GetAsync("api/trading-control", ct));
+runtime21.MapGet("/entries", (Runtime21Bridge bridge, CancellationToken ct) =>
+    bridge.GetAsync("api/entries", ct));
+runtime21.MapGet("/entries/{id:guid}", (Guid id, Runtime21Bridge bridge, CancellationToken ct) =>
+    bridge.GetCollectionItemAsync("api/entries", id, ct));
+runtime21.MapPost("/entries", (JsonElement request, Runtime21Bridge bridge, CancellationToken ct) =>
+    bridge.PostAsync("api/entries", request, ct));
+runtime21.MapPost("/entries/{id:guid}/cancel", (Guid id, Runtime21Bridge bridge, CancellationToken ct) =>
+    bridge.PostAsync($"api/entries/{id}/cancel", null, ct));
+runtime21.MapDelete("/entries/{id:guid}", (Guid id, Runtime21Bridge bridge, CancellationToken ct) =>
+    bridge.DeleteAsync($"api/entries/{id}", ct));
+runtime21.MapGet("/monitor/positions", (Runtime21Bridge bridge, CancellationToken ct) =>
+    bridge.GetAsync("api/monitor/positions", ct));
+runtime21.MapGet("/account", (Runtime21Bridge bridge, CancellationToken ct) =>
+    bridge.GetAsync("api/account", ct));
+runtime21.MapGet("/account/realized", (Runtime21Bridge bridge, CancellationToken ct) =>
+    bridge.GetAsync("api/account/realized", ct));
+runtime21.MapPost("/account/refresh", (Runtime21Bridge bridge, CancellationToken ct) =>
+    bridge.PostAsync("api/account/refresh", null, ct));
+runtime21.MapGet("/takeovers", (Runtime21Bridge bridge, CancellationToken ct) =>
+    bridge.GetAsync("api/takeovers", ct));
+runtime21.MapGet("/takeovers/{id:guid}", (Guid id, Runtime21Bridge bridge, CancellationToken ct) =>
+    bridge.GetCollectionItemAsync("api/takeovers", id, ct));
+runtime21.MapPost("/takeovers", (JsonElement request, Runtime21Bridge bridge, CancellationToken ct) =>
+    bridge.PostAsync("api/takeovers", request, ct));
+runtime21.MapPut("/takeovers/{id:guid}", (Guid id, JsonElement request, Runtime21Bridge bridge, CancellationToken ct) =>
+    bridge.PutAsync($"api/takeovers/{id}", request, ct));
+runtime21.MapPost("/takeovers/{id:guid}/holding-mode", (Guid id, JsonElement request, Runtime21Bridge bridge, CancellationToken ct) =>
+    bridge.PostAsync($"api/takeovers/{id}/holding-mode", request, ct));
+runtime21.MapPost("/takeovers/{id:guid}/exit", (Guid id, Runtime21Bridge bridge, CancellationToken ct) =>
+    bridge.PostAsync($"api/takeovers/{id}/exit", null, ct));
+runtime21.MapPost("/takeovers/{id:guid}/partial-exit", (Guid id, JsonElement request, Runtime21Bridge bridge, CancellationToken ct) =>
+    bridge.PostAsync($"api/takeovers/{id}/partial-exit", request, ct));
+runtime21.MapGet("/decisions", (Guid? takeoverId, int? limit, Runtime21Bridge bridge, CancellationToken ct) =>
+{
+    var query = new List<string>();
+    if (takeoverId is not null) query.Add($"takeoverId={Uri.EscapeDataString(takeoverId.Value.ToString())}");
+    if (limit is not null) query.Add($"limit={Math.Clamp(limit.Value, 1, 1000)}");
+    string path = "api/decisions" + (query.Count == 0 ? string.Empty : "?" + string.Join('&', query));
+    return bridge.GetAsync(path, ct);
+});
+runtime21.MapGet("/orders", (Runtime21Bridge bridge, CancellationToken ct) =>
+    bridge.GetAsync("api/orders", ct));
 
 app.MapGet("/health/live", () => Results.Ok(new
 {
@@ -42,6 +108,60 @@ app.MapGet("/health/ready", (IMarketDataProvider provider) =>
     provider.IsReady
         ? Results.Ok(new { status = "ready", provider = provider.Name, at = DateTimeOffset.Now })
         : Results.Json(new { status = "not_ready", provider = provider.Name, at = DateTimeOffset.Now }, statusCode: 503));
+
+app.MapGet("/api/symbols/names", (TaiwanSymbolDirectory symbols) => Results.Ok(symbols.AllNames()));
+
+app.MapGet("/api/swing/state", (SwingState state) => Results.Ok(state.Read()));
+app.MapPut("/api/swing/state", async (HttpRequest request, SwingState state, RequiredSymbolsRegistry requiredSymbols, TaiwanSymbolDirectory symbols, IMarketDataProvider provider, CancellationToken ct) =>
+{
+    var incoming = await request.ReadFromJsonAsync<SwingBrowseState>(cancellationToken: ct) ?? new();
+    var saved = state.Save(incoming);
+    if (!string.IsNullOrWhiteSpace(saved.Symbol) && (saved.Symbol == "IX0001" || symbols.GetName(saved.Symbol) is not null))
+    {
+        var market = symbols.GetMarket(saved.Symbol);
+        requiredSymbols.Ensure(saved.Symbol, market);
+        try { await provider.SubscribeAsync(market, saved.Symbol, ct); }
+        catch (InvalidOperationException) { /* persisted; next current session will prepare it */ }
+    }
+    return Results.Ok(saved);
+});
+
+app.MapGet("/api/swing/groups", (SwingGroups groups) => Results.Ok(groups.Read()));
+app.MapPut("/api/swing/groups", async (HttpRequest request, SwingGroups groups) =>
+{
+    var incoming = await request.ReadFromJsonAsync<Dictionary<string,string[]>>() ?? new();
+    return Results.Ok(groups.Save(incoming));
+});
+
+app.MapGet("/api/swing/annotations", (string? symbol, string? date, SwingAnnotations annotations) =>
+{
+    if (!string.IsNullOrWhiteSpace(date) && !DateOnly.TryParseExact(date, "yyyy-MM-dd", out _))
+        return Results.BadRequest(new { error = "date must be yyyy-MM-dd" });
+    var tradeDate = string.IsNullOrWhiteSpace(date) ? (DateOnly?)null : DateOnly.ParseExact(date, "yyyy-MM-dd");
+    try { return Results.Ok(annotations.Read(symbol, tradeDate)); }
+    catch (ArgumentException ex) { return Results.BadRequest(new { error = ex.Message }); }
+});
+app.MapPost("/api/swing/annotations", async (HttpRequest request, SwingAnnotations annotations) =>
+{
+    try
+    {
+        var input = await request.ReadFromJsonAsync<SwingAnnotationInput>();
+        return input is null ? Results.BadRequest(new { error = "request body is required" }) : Results.Ok(annotations.Create(input));
+    }
+    catch (ArgumentException ex) { return Results.BadRequest(new { error = ex.Message }); }
+});
+app.MapPut("/api/swing/annotations/{id:guid}", async (Guid id, HttpRequest request, SwingAnnotations annotations) =>
+{
+    try
+    {
+        var input = await request.ReadFromJsonAsync<SwingAnnotationInput>();
+        return input is null ? Results.BadRequest(new { error = "request body is required" }) : Results.Ok(annotations.Update(id, input));
+    }
+    catch (ArgumentException ex) { return Results.BadRequest(new { error = ex.Message }); }
+    catch (KeyNotFoundException) { return Results.NotFound(); }
+});
+app.MapDelete("/api/swing/annotations/{id:guid}", (Guid id, SwingAnnotations annotations) =>
+    annotations.Delete(id) ? Results.NoContent() : Results.NotFound());
 
 app.MapGet("/api/session", (IMarketDataProvider provider) => Results.Ok(provider.GetSessionStatus()));
 
@@ -131,6 +251,12 @@ app.MapGet("/api/ticks/{symbol}", (string symbol, string? date, IMarketDataProvi
     }
 });
 
+app.MapPost("/api/history/daily/{symbol}/ensure", async (string symbol, DailyKlineEnsureService daily, CancellationToken ct) =>
+{
+    try { return Results.Ok(await daily.EnsureAsync(symbol, ct)); }
+    catch (ArgumentException ex) { return Results.BadRequest(new { error = ex.Message }); }
+});
+
 app.MapGet("/api/calendar/non-trading/{date}", (string date, HistoricalSecondBars history) =>
 {
     if (!DateOnly.TryParseExact(date, "yyyy-MM-dd", out var d)) return Results.BadRequest(new { error = "date must be yyyy-MM-dd" });
@@ -145,8 +271,9 @@ app.MapGet("/api/bars/{symbol}", async (string symbol, string? date, int? interv
         var today = DateOnly.FromDateTime(TimeZoneInfo.ConvertTime(DateTimeOffset.UtcNow, taipei).Date);
         var requested = string.IsNullOrWhiteSpace(date) ? today : DateOnly.ParseExact(date, "yyyy-MM-dd");
         int seconds = interval ?? 60;
-        if (seconds is not (1 or 5 or 60 or 300))
-            return Results.BadRequest(new { error = "interval must be one of 1, 5, 60, 300 seconds" });
+        int[] supportedIntervals = [1, 5, 15, 30, 60, 180, 300, 600, 900, 1800, 3600];
+        if (!supportedIntervals.Contains(seconds))
+            return Results.BadRequest(new { error = "interval must be one of 1, 5, 15, 30, 60, 180, 300, 600, 900, 1800, 3600 seconds" });
 
         if (requested > today)
         {
@@ -495,4 +622,72 @@ setInterval(refreshAll,5000);
 </body>
 </html>
 """;
+}
+
+
+internal sealed class RequiredSymbolsRegistry(IConfiguration config)
+{
+    private readonly string _path = config["Yuanta:RequiredSymbolsPath"] ?? "/data/required-symbols.json";
+    private readonly object _gate = new();
+
+    public bool Ensure(string symbol, string market, string source = "swing-dynamic")
+    {
+        symbol = (symbol ?? string.Empty).Trim().ToUpperInvariant();
+        market = (market ?? string.Empty).Trim().ToUpperInvariant();
+        if (symbol.Length == 0 || market.Length == 0) return false;
+
+        lock (_gate)
+        {
+            JsonObject root;
+            try
+            {
+                root = File.Exists(_path)
+                    ? JsonNode.Parse(File.ReadAllText(_path))?.AsObject() ?? new JsonObject()
+                    : new JsonObject();
+            }
+            catch (JsonException)
+            {
+                root = new JsonObject();
+            }
+
+            var rows = root["symbols"] as JsonArray ?? new JsonArray();
+            root["symbols"] = rows;
+            JsonObject? existing = rows.OfType<JsonObject>().FirstOrDefault(x =>
+                string.Equals(x["symbol"]?.GetValue<string>()?.Trim(), symbol, StringComparison.OrdinalIgnoreCase));
+
+            bool changed = false;
+            if (existing is null)
+            {
+                rows.Add(new JsonObject
+                {
+                    ["symbol"] = symbol,
+                    ["market"] = market,
+                    ["sources"] = new JsonArray { source }
+                });
+                changed = true;
+            }
+            else
+            {
+                if (!string.Equals(existing["market"]?.GetValue<string>()?.Trim(), market, StringComparison.OrdinalIgnoreCase))
+                {
+                    existing["market"] = market;
+                    changed = true;
+                }
+                var sources = existing["sources"] as JsonArray ?? new JsonArray();
+                existing["sources"] = sources;
+                if (!sources.Any(x => string.Equals(x?.GetValue<string>(), source, StringComparison.OrdinalIgnoreCase)))
+                {
+                    sources.Add(source);
+                    changed = true;
+                }
+            }
+
+            if (!changed) return false;
+            Directory.CreateDirectory(Path.GetDirectoryName(_path)!);
+            var tmp = _path + ".tmp";
+            File.WriteAllText(tmp, root.ToJsonString(new JsonSerializerOptions { WriteIndented = true, TypeInfoResolver = new System.Text.Json.Serialization.Metadata.DefaultJsonTypeInfoResolver() }));
+            File.Move(tmp, _path, true);
+            return true;
+        }
+    }
 }
