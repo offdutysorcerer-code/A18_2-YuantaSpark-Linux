@@ -54,6 +54,10 @@ def main():
     print(json.dumps(state,ensure_ascii=False))
     if state.get('mode')!=expected:
         raise RuntimeError(f'expected mode {expected}, got {state}')
+    if args.mode=='legacy':
+        manager=A18_22/'scripts'/'manage_shioaji_collectors.py'
+        if manager.exists():
+            run('python3',str(manager),'start',cwd=A18_22)
 
 if __name__=='__main__':
     main()

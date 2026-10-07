@@ -36,6 +36,7 @@ else
 }
 
 builder.Services.AddSingleton<FullMarketStateStore>();
+builder.Services.AddSingleton<OperationModeControlService>();
 builder.Services.AddHostedService<FullMarketBootstrapHostedService>();
 builder.Services.AddHostedService<MarketDataProviderHostedService>();
 builder.Services.AddHostedService<FullMarketYuantaMirrorHostedService>();
@@ -183,6 +184,14 @@ app.MapGet("/api/operation-mode", (A18OperationModeState mode) => Results.Ok(new
     mode = mode.Mode,
     fullMarketExperimental = mode.IsFullMarketExperimental
 }));
+app.MapGet("/api/operation-mode-control/status", (OperationModeControlService control, A18OperationModeState mode) =>
+    Results.Ok(control.Read(mode)));
+app.MapPost("/api/operation-mode-control/switch/{target}", (string target, OperationModeControlService control, A18OperationModeState mode) =>
+{
+    try { return Results.Accepted(value: control.Enqueue(target, mode)); }
+    catch (ArgumentException ex) { return Results.BadRequest(new { error = ex.Message }); }
+    catch (InvalidOperationException ex) { return Results.Conflict(new { error = ex.Message }); }
+});
 app.MapGet("/api/fullmarket/status", (FullMarketStateStore store, A18OperationModeState mode) => Results.Ok(store.Status(mode)));
 app.MapGet("/api/fullmarket/state", (int? take, FullMarketStateStore store) => Results.Ok(store.Snapshot(take ?? 2000)));
 app.MapPost("/api/fullmarket/ticks", (FullMarketIngressTick[] ticks, FullMarketStateStore store, A18OperationModeState mode) =>
