@@ -74,6 +74,8 @@ runtime21.MapGet("/entries/{id:guid}", (Guid id, Runtime21Bridge bridge, Cancell
     bridge.GetCollectionItemAsync("api/entries", id, ct));
 runtime21.MapPost("/entries", (JsonElement request, Runtime21Bridge bridge, CancellationToken ct) =>
     bridge.PostAsync("api/entries", request, ct));
+runtime21.MapGet("/paper", (Runtime21Bridge bridge, CancellationToken ct) => bridge.GetAsync("api/paper", ct));
+runtime21.MapPost("/paper/entries", (JsonElement request, Runtime21Bridge bridge, CancellationToken ct) => bridge.PostAsync("api/paper/entries", request, ct));
 runtime21.MapPost("/entries/{id:guid}/cancel", (Guid id, Runtime21Bridge bridge, CancellationToken ct) =>
     bridge.PostAsync($"api/entries/{id}/cancel", null, ct));
 runtime21.MapDelete("/entries/{id:guid}", (Guid id, Runtime21Bridge bridge, CancellationToken ct) =>
@@ -96,6 +98,10 @@ runtime21.MapPut("/takeovers/{id:guid}", (Guid id, JsonElement request, Runtime2
     bridge.PutAsync($"api/takeovers/{id}", request, ct));
 runtime21.MapPost("/takeovers/{id:guid}/holding-mode", (Guid id, JsonElement request, Runtime21Bridge bridge, CancellationToken ct) =>
     bridge.PostAsync($"api/takeovers/{id}/holding-mode", request, ct));
+runtime21.MapPost("/takeovers/{id:guid}/dynamic-trailing-shadow", (Guid id, JsonElement request, Runtime21Bridge bridge, CancellationToken ct) =>
+    bridge.PostAsync($"api/takeovers/{id}/dynamic-trailing-shadow", request, ct));
+runtime21.MapPost("/takeovers/{id:guid}/release", (Guid id, Runtime21Bridge bridge, CancellationToken ct) =>
+    bridge.PostAsync($"api/takeovers/{id}/release", null, ct));
 runtime21.MapPost("/takeovers/{id:guid}/exit", (Guid id, Runtime21Bridge bridge, CancellationToken ct) =>
     bridge.PostAsync($"api/takeovers/{id}/exit", null, ct));
 runtime21.MapPost("/takeovers/{id:guid}/partial-exit", (Guid id, JsonElement request, Runtime21Bridge bridge, CancellationToken ct) =>
@@ -110,6 +116,16 @@ runtime21.MapGet("/decisions", (Guid? takeoverId, int? limit, Runtime21Bridge br
 });
 runtime21.MapGet("/orders", (Runtime21Bridge bridge, CancellationToken ct) =>
     bridge.GetAsync("api/orders", ct));
+runtime21.MapGet("/entry-regime-shadows", (Runtime21Bridge bridge, CancellationToken ct) =>
+    bridge.GetAsync("api/entry-regime-shadows", ct));
+runtime21.MapGet("/campaign-shadows", (Runtime21Bridge bridge, CancellationToken ct) =>
+    bridge.GetAsync("api/campaign-shadows", ct));
+runtime21.MapPost("/campaign-shadows", (JsonElement request, Runtime21Bridge bridge, CancellationToken ct) =>
+    bridge.PostAsync("api/campaign-shadows", request, ct));
+runtime21.MapPut("/campaign-shadows/{id:guid}/mode", (Guid id, JsonElement request, Runtime21Bridge bridge, CancellationToken ct) =>
+    bridge.PutAsync($"api/campaign-shadows/{id}/mode", request, ct));
+runtime21.MapPost("/campaign-shadows/{id:guid}/stop", (Guid id, Runtime21Bridge bridge, CancellationToken ct) =>
+    bridge.PostAsync($"api/campaign-shadows/{id}/stop", null, ct));
 
 app.MapGet("/health/live", () => Results.Ok(new
 {
