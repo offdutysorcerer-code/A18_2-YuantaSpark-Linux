@@ -16,6 +16,10 @@ builder.Services.PostConfigure<YuantaSparkOptions>(options =>
     {
         options.RequiredSymbolsPath = builder.Configuration["A18:FullMarketYuantaRequiredSymbolsPath"] ?? "/data/fullmarket-required-symbols.json";
         options.MaxSubscriptions = 200;
+        // The fixed 200-symbol full-market slice can legitimately be quiet for longer
+        // than the mature Legacy watchlist. Avoid rebuilding the entire SPARK session
+        // every 90 seconds solely because no assigned symbol traded in that window.
+        options.ChannelStaleSeconds = Math.Max(options.ChannelStaleSeconds, 600);
     }
 });
 string symbolsPath = builder.Configuration["A18:SymbolsPath"]?.Trim() ?? "/data/reference/symbols.csv";

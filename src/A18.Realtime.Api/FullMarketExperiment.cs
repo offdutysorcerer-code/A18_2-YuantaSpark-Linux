@@ -183,7 +183,7 @@ public sealed class FullMarketYuantaMirrorHostedService(
         if (!mode.IsFullMarketExperimental) return;
         var planPath = config["A18:FullMarketPlanPath"] ?? "/warehouse/market/Taiwan/realtime_subscription_plan.json";
         var symbols = LoadYuantaMain(planPath);
-        var seen = new Dictionary<string, long>(StringComparer.OrdinalIgnoreCase);
+        var seen = new Dictionary<string, (long Sequence, long ReceivedUnixMs)>(StringComparer.OrdinalIgnoreCase);
         logger.LogInformation("Yuanta full-market mirror watching {Count} symbols", symbols.Length);
 
         while (!stoppingToken.IsCancellationRequested)
@@ -192,8 +192,9 @@ public sealed class FullMarketYuantaMirrorHostedService(
             {
                 var tick = provider.GetLatest(symbol);
                 if (tick is null) continue;
-                if (seen.TryGetValue(symbol, out var sequence) && sequence == tick.Sequence) continue;
-                seen[symbol] = tick.Sequence;
+                var signature = (tick.Sequence, tick.ReceivedAt.ToUnixTimeMilliseconds());
+                if (seen.TryGetValue(symbol, out var previous) && previous == signature) continue;
+                seen[symbol] = signature;
                 store.PublishYuanta(tick);
             }
             await Task.Delay(100, stoppingToken);
