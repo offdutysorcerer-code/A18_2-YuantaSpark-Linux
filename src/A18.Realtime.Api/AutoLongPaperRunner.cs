@@ -11,6 +11,9 @@ internal sealed class AutoLongPaperRunner(IMarketDataProvider provider,AutoLongS
     {
         if(!config.GetValue<bool>("A18:StagingSafeMode")||!config.GetValue<bool>("AutoLong:EnableIsolatedPaperRunner"))return;
         if(provider.Name.Equals("Stub",StringComparison.OrdinalIgnoreCase)||!provider.IsReady)return;
+        // Never alter a confirmed fill. Stale, unfilled shadow reservations free
+        // buy budget on the next scan (also after process restart).
+        ledger.ExpireUnfilled(now,TimeSpan.FromSeconds(30));
         var local=TimeZoneInfo.ConvertTime(now,Taipei);
         var date=DateOnly.FromDateTime(local.Date);
         var open=positions.List().Where(p=>p.Status=="OPEN").ToArray();

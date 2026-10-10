@@ -60,6 +60,24 @@ internal sealed class AutoLongPaperLedger(IConfiguration config,AutoLongWatch wa
             return count;
         }
     }
+    // Only unfilled SHADOW reservations may expire. A confirmed fill is never expired
+    // or refunded, even when its corresponding PAPER position has already closed.
+    public int ExpireUnfilled(DateTimeOffset now, TimeSpan maxAge)
+    {
+        if(maxAge<=TimeSpan.Zero)throw new ArgumentOutOfRangeException(nameof(maxAge));
+        lock(_gate)
+        {
+            var rows=Read();int count=0;
+            foreach(var key in rows.Keys.ToArray())
+            {
+                var row=rows[key];
+                if(row.Status!="RESERVED"||row.CreatedAt>now||now-row.CreatedAt<maxAge)continue;
+                rows[key]=row with{Status="EXPIRED",ReservedBuyTwd=0m};count++;
+            }
+            if(count>0)Write(rows);
+            return count;
+        }
+    }
     // Called only after confirmed PAPER fill reconciliation, not on signal observation.
     public bool ReconcileFill(string id,decimal actualFilledBuyTwd)
     {
