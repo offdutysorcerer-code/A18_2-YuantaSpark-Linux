@@ -52,6 +52,7 @@ builder.Services.AddSingleton<AutoLongWatch>();
 builder.Services.AddHostedService<AutoLongScheduleHostedService>();
 builder.Services.AddSingleton<AutoLongPaperLedger>();
 builder.Services.AddSingleton<AutoLongPaperPositions>();
+builder.Services.AddSingleton<AutoLongPaperRunner>();
 builder.Services.AddSingleton<AutoLongSignalMonitor>();
 builder.Services.AddHostedService<AutoLongSignalHostedService>();
 builder.Services.AddSingleton<RequiredSymbolsRegistry>();

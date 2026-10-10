@@ -54,13 +54,13 @@ internal sealed class AutoLongSignalMonitor(IMarketDataProvider provider,AutoLon
         }
     }
 }
-internal sealed class AutoLongSignalHostedService(AutoLongSignalMonitor signals,IConfiguration configuration,ILogger<AutoLongSignalHostedService> logger):BackgroundService
+internal sealed class AutoLongSignalHostedService(AutoLongSignalMonitor signals,AutoLongPaperRunner paper,IConfiguration configuration,ILogger<AutoLongSignalHostedService> logger):BackgroundService
 {
     protected override async Task ExecuteAsync(CancellationToken ct)
     {
         if(!configuration.GetValue<bool>("A18:StagingSafeMode"))return;
         using var timer=new PeriodicTimer(TimeSpan.FromSeconds(2));
-        do{try{signals.Scan(DateTimeOffset.UtcNow);}catch(Exception e){logger.LogError(e,"AutoLong shadow signal scan failed");}}
+        do{try{signals.Scan(DateTimeOffset.UtcNow);paper.Step(DateTimeOffset.UtcNow);}catch(Exception e){logger.LogError(e,"AutoLong shadow signal scan failed");}}
         while(await timer.WaitForNextTickAsync(ct));
     }
 }
