@@ -38,6 +38,12 @@ public sealed class HistoricalSecondBars(ILogger<HistoricalSecondBars> logger, I
                 ? new("A18_2_INTRADAY_TICKS",localTicks)
                 : new("KNOWN_NON_TRADING_DAY", Array.Empty<SecondBar>());
 
+        // Staging never fetches missing history from a broker; return an explicit absence instead.
+        if (config.GetValue<bool>("History:DisableFetch"))
+            return localTicks.Count>0
+                ? new("A18_2_INTRADAY_TICKS",localTicks)
+                : new("HISTORY_NOT_CACHED",Array.Empty<SecondBar>());
+
         await _fetchLock.WaitAsync(ct);
         try
         {

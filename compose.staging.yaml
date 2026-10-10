@@ -17,6 +17,7 @@ services:
       A18__FullMarketStartShioajiCollectors: "false"
       A18__SymbolsPath: /data/reference/symbols.csv
       History__SecondRoot: /warehouse/market/Taiwan/KLines/Second
+      History__DisableFetch: "true"
       History__Fetcher: /disabled/history_fetch.py
       History__Python: /usr/bin/false
       Runtime21__BaseUrl: http://127.0.0.1:9/
@@ -24,4 +25,5 @@ services:
       - ./staging-data:/data
       - /mnt/d/AIProjects/A18_10_量化交易資料倉庫:/warehouse:ro
       - ../A18_10_量化交易資料倉庫/market/Taiwan/symbols.csv:/data/reference/symbols.csv:ro
+      - ./data/reference/non-trading-days.txt:/data/reference/non-trading-days.txt:ro
     restart: unless-stopped
