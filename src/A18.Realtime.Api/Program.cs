@@ -88,6 +88,21 @@ app.MapGet("/swing", () => Results.Content(SwingUi.Html, "text/html; charset=utf
 app.MapGet("/simple", () => Results.Redirect("/swing#simple"));
 // Experimental registry is deliberately staging-only until the broker execution
 // integration passes paper, deduplication and takeover reconciliation tests.
+// Simulated reservation lifecycle is exposed only on loopback for isolated tests.
+// No broker bridge, PAPER order endpoint or real-money access is reachable here.
+static bool IsLocalShadowTest(HttpContext context, IConfiguration cfg) =>
+    cfg.GetValue<bool>("A18:StagingSafeMode") &&
+    System.Net.IPAddress.IsLoopback(context.Connection.RemoteIpAddress ?? System.Net.IPAddress.None);
+app.MapPost("/api/auto-long/shadow-test/reserve", (AutoLongShadowReserve body, HttpContext ctx, IConfiguration cfg, AutoLongPaperLedger ledger) =>
+{
+    if(!IsLocalShadowTest(ctx,cfg))return Results.StatusCode(404);
+    var x=ledger.Reserve(body.Symbol,body.SignalTime,body.Quantity,body.ReferencePrice);
+    return Results.Ok(new{x.Accepted,x.Reason,x.Intent});
+});
+app.MapPost("/api/auto-long/shadow-test/fill", (AutoLongShadowFill body, HttpContext ctx, IConfiguration cfg, AutoLongPaperLedger ledger) =>
+    !IsLocalShadowTest(ctx,cfg)?Results.StatusCode(404):Results.Ok(new{accepted=ledger.ReconcileFill(body.Id,body.FilledBuyTwd)}));
+app.MapPost("/api/auto-long/shadow-test/cancel", (AutoLongShadowCancel body, HttpContext ctx, IConfiguration cfg, AutoLongPaperLedger ledger) =>
+    !IsLocalShadowTest(ctx,cfg)?Results.StatusCode(404):Results.Ok(new{accepted=ledger.CancelReservation(body.Id)}));
 app.MapGet("/api/auto-long/paper-intents", (AutoLongPaperLedger ledger, IConfiguration cfg) => cfg.GetValue<bool>("A18:StagingSafeMode")?Results.Ok(ledger.List()):Results.StatusCode(404));
 app.MapGet("/api/auto-long/paper-summary", (AutoLongPaperLedger ledger, IConfiguration cfg) => cfg.GetValue<bool>("A18:StagingSafeMode")?Results.Ok(ledger.Summary()):Results.StatusCode(404));
 app.MapGet("/api/auto-long/signals", (AutoLongSignalMonitor monitor, IConfiguration cfg) => cfg.GetValue<bool>("A18:StagingSafeMode")?Results.Ok(monitor.List()):Results.StatusCode(404));
@@ -101,7 +116,13 @@ app.MapGet("/api/auto-long", (AutoLongWatch watch, IConfiguration cfg) =>
 app.MapPut("/api/auto-long", (AutoLongWatchRequest body, AutoLongWatch watch, IConfiguration cfg) =>
 {
     if(!cfg.GetValue<bool>("A18:StagingSafeMode"))return Results.StatusCode(404);
-    try{return Results.Ok(watch.Set(body));}
+    try
+    {
+        var row=watch.Set(body);
+        // Stop new entries without touching confirmed PAPER/REAL positions or exits.
+        if(!row.EntryEnabled)app.Services.GetRequiredService<AutoLongPaperLedger>().CancelPendingForSymbol(row.Symbol);
+        return Results.Ok(row);
+    }
     catch(ArgumentException e){return Results.BadRequest(new{error=e.Message});}
 });
 
@@ -788,3 +809,7 @@ internal sealed class RequiredSymbolsRegistry(IConfiguration config)
         }
     }
 }
+
+internal sealed record AutoLongShadowReserve(string Symbol,DateTimeOffset SignalTime,long Quantity,decimal ReferencePrice);
+internal sealed record AutoLongShadowFill(string Id,decimal FilledBuyTwd);
+internal sealed record AutoLongShadowCancel(string Id);

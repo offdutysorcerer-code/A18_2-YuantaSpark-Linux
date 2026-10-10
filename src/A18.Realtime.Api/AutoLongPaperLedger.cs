@@ -33,6 +33,33 @@ internal sealed class AutoLongPaperLedger(IConfiguration config,AutoLongWatch wa
             rows[id]=intent;Write(rows);return(true,"SHADOW_RESERVED",intent);
         }
     }
+    // Cancel a still-unsubmitted shadow reservation. This never touches an actual
+    // PAPER takeover or an exit strategy; confirmed fills are immutable.
+    public bool CancelReservation(string id)
+    {
+        lock(_gate)
+        {
+            var rows=Read();
+            if(!rows.TryGetValue(id,out var row)||row.Status!="RESERVED")return false;
+            rows[id]=row with{Status="CANCELLED",ReservedBuyTwd=0m};
+            Write(rows);return true;
+        }
+    }
+    public int CancelPendingForSymbol(string symbol)
+    {
+        lock(_gate)
+        {
+            var rows=Read();int count=0;
+            foreach(var key in rows.Keys.ToArray())
+            {
+                var row=rows[key];
+                if(row.Symbol!=symbol||row.Status!="RESERVED")continue;
+                rows[key]=row with{Status="CANCELLED",ReservedBuyTwd=0m};count++;
+            }
+            if(count>0)Write(rows);
+            return count;
+        }
+    }
     // Called only after confirmed PAPER fill reconciliation, not on signal observation.
     public bool ReconcileFill(string id,decimal actualFilledBuyTwd)
     {
