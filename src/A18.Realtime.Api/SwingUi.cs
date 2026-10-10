@@ -916,7 +916,7 @@ if(location.hostname.startsWith('staging-') || location.hostname==='127.0.0.1' |
 if(location.hostname.startsWith('staging-')||location.hostname==='127.0.0.1'||location.hostname==='localhost'){
   for(const id of ['autoLongFull','autoLongSimple','autoLongMonitorSection'])$(id).style.display='';
   $('foldStrategyLong').open=false;
-  let autoLongRows=[];let autoLongPreview=null;
+  let autoLongRows=[];let autoLongSignals=[];let autoLongPreview=null;
   fetch('/api/auto-long/preview').then(r=>r.ok?r.json():null).then(x=>{autoLongPreview=x;syncAutoLongControls()}).catch(()=>{});
   const symbolNow=()=>($('symbol').value||'').trim().toUpperCase();
   const rowFor=()=>autoLongRows.find(r=>r.symbol===symbolNow());
@@ -933,12 +933,12 @@ if(location.hostname.startsWith('staging-')||location.hostname==='127.0.0.1'||lo
     for(const r of autoLongRows){
       const card=document.createElement('article');card.className='monitor-card';
       const name=document.createElement('strong');name.textContent=r.symbol+'｜'+(r.entryEnabled?'追蹤設定啟用':'新進場已停止');card.append(name);
-      const info=document.createElement('div');info.className='monitor-meta';info.textContent='次數 '+r.filledEntries+'/'+r.maxEntries+'｜累計買進 '+r.cumulativeBuyTwd+'/'+r.buyBudgetTwd+' 元｜尚未接入策略執行';card.append(info);
+      const info=document.createElement('div');info.className='monitor-meta';const sig=autoLongSignals.find(v=>v.symbol===r.symbol);info.textContent=(sig?'行情 '+sig.state+'（'+sig.reason+'）｜':'')+'次數 '+r.filledEntries+'/'+r.maxEntries+'｜累計買進 '+r.cumulativeBuyTwd+'/'+r.buyBudgetTwd+' 元｜尚未接入策略執行';card.append(info);
       const off=document.createElement('button');off.type='button';off.textContent='停止新進場';off.disabled=!r.entryEnabled;off.addEventListener('click',()=>saveAutoLong({symbol:r.symbol,entryEnabled:false,maxEntries:r.maxEntries,buyBudgetTwd:r.buyBudgetTwd,activationMode:r.activationMode}));card.append(off);el.append(card);
     }
     if(!autoLongRows.length)el.textContent='目前沒有登錄的自動Long標的。';
   }
-  async function refreshAutoLong(){try{const response=await fetch('/api/auto-long',{cache:'no-store'});if(!response.ok)throw Error('HTTP '+response.status);autoLongRows=await response.json();syncAutoLongControls()}catch(e){$('autoLongFullStatus').textContent='讀取失敗：'+e.message}}
+  async function refreshAutoLong(){try{const response=await fetch('/api/auto-long',{cache:'no-store'});if(!response.ok)throw Error('HTTP '+response.status);autoLongRows=await response.json();try{const sr=await fetch('/api/auto-long/signals',{cache:'no-store'});autoLongSignals=sr.ok?await sr.json():[]}catch{}syncAutoLongControls()}catch(e){$('autoLongFullStatus').textContent='讀取失敗：'+e.message}}
   async function saveAutoLong(payload){
     try{const response=await fetch('/api/auto-long',{method:'PUT',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload)});const result=await response.json();if(!response.ok)throw Error(result.error||'HTTP '+response.status);await refreshAutoLong()}catch(e){alert('自動Long設定未儲存：'+e.message);await refreshAutoLong()}
   }
