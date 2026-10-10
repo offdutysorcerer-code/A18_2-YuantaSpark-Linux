@@ -163,7 +163,7 @@ header{display:flex;align-items:center;justify-content:space-between;gap:16px;pa
       <div class="detector-box detector-explain-box sim-grid-full"><div class="detector-head"><label class="ui-toggle"><input id="probeDetectorEnabled" type="checkbox"><span class="ui-toggle-track"></span><span>手動試算探測器</span></label><label class="ui-toggle"><input id="liveDetectorEnabled" type="checkbox"><span class="ui-toggle-track"></span><span>盤中即時探測</span></label><label>版本 <select id="probeDetectorVersion"><option value="D1">D1 原始 Regime</option><option value="D2">D2 Regime＋5秒 Timing</option></select></label><button type="button" id="probeDetectorRun">解讀選定進場點</button><button type="button" id="regimeGuideOpen" aria-haspopup="dialog" aria-controls="regimeGuideModal">狀態與計算說明</button><span class="sim-hint">D1/D2 都只使用選定時間前已完整形成的 K 棒，不偷看未來。</span></div><div id="probeDetectorResult" class="detector-result">探測器關閉。</div></div>
     </div>
     <div id="threeGreenPanel" class="detector-box sim-grid-full" style="display:none;margin:10px 0">
-      <div class="detector-head"><strong>Staging 實驗：累積三根 5 秒陽線</strong><label class="ui-toggle"><input id="threeGreenOverlay" type="checkbox"><span class="ui-toggle-track"></span><span>在 K 線標記</span></label><button type="button" id="threeGreenScan">掃描目前股票／日期</button><span class="sim-hint">已完成 5 秒 K：陽 K 的 Open 必須高於前根累積陽 K 的 Close；陰 K 歸零，十字線略過；不符合的陽 K 從該根重新累積。</span></div>
+      <div class="detector-head"><strong>Staging 實驗：累積三根 5 秒陽線</strong><label class="ui-toggle"><input id="threeGreenOverlay" type="checkbox"><span class="ui-toggle-track"></span><span>在 K 線標記</span></label><button type="button" id="threeGreenScan">掃描目前股票／日期</button><span class="sim-hint">已完成 5 秒 K：陽 K 的 Open 必須大於或等於前根累積陽 K 的 Close；陰 K 歸零，十字線略過；不符合的陽 K 從該根重新累積。</span></div>
       <div id="threeGreenResult" role="status" class="detector-result">按「掃描」尋找型態。</div>
       <div id="threeGreenList" style="max-height:320px;overflow:auto"></div>
     </div>
@@ -840,7 +840,7 @@ function scanThreeGreenBars(bars){
     if(c<o){count=0;first='';previousBullClose=null;continue}
     if(c===o)continue;
     // A bullish candle without higher opening restarts the candidate at itself.
-    if(count===0||o<=previousBullClose){count=1;first=b.startTime}
+    if(count===0||o<previousBullClose){count=1;first=b.startTime}
     else count++;
     previousBullClose=c;
     if(count===3){signals.push({time:new Date(Date.parse(b.startTime)+5000).toISOString(),price:c,start:first});count=0;first='';previousBullClose=null}
@@ -879,7 +879,7 @@ if(location.hostname.startsWith('staging-') || location.hostname==='127.0.0.1' |
         time:new Date(x.time).toLocaleTimeString('zh-TW',{hour12:false,timeZone:'Asia/Taipei'}),
         close:x.price,start:x.start
       }));
-      out.textContent=sym+'／'+day+'：5 秒 K 共 '+bars.length+' 根，符合陽 K 開盤價逐次高於前根陽 K 收盤價的累積三陽訊號 '+matches.length+' 次。來源：'+(response.source||'—');
+      out.textContent=sym+'／'+day+'：5 秒 K 共 '+bars.length+' 根，符合陽 K 開盤價大於或等於前根陽 K 收盤價的累積三陽訊號 '+matches.length+' 次。來源：'+(response.source||'—');
       if(!matches.length)return;
       const table=document.createElement('table');table.style.width='100%';
       const head=document.createElement('thead');head.innerHTML='<tr><th>觸發時間</th><th>第 3 根收盤價</th><th>首根時間</th></tr>';table.append(head);
