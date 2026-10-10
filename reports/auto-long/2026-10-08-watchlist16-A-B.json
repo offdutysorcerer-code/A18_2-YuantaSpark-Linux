@@ -1,0 +1,1635 @@
+[
+  {
+    "name": "台虹",
+    "symbol": "8039",
+    "A": {
+      "symbol": "8039",
+      "date": "2026-10-08",
+      "mode": "A",
+      "bars5": 2521,
+      "bars1": 7036,
+      "signals": 40,
+      "pre930Signals": 13,
+      "trades": [
+        {
+          "signal": "2026-10-08T09:01:05+08:00",
+          "entry": "2026-10-08T09:01:05+08:00",
+          "entryPrice": 309.5,
+          "exit": "2026-10-08T09:04:04+08:00",
+          "exitPrice": 325.05,
+          "reason": "PRIOR_WATERMARK_STOP",
+          "grossPct": 5.0242,
+          "netPct": 4.6874,
+          "buyAmount": 309500.0,
+          "maxObservedHigh": 330.0
+        },
+        {
+          "signal": "2026-10-08T09:06:30+08:00",
+          "entry": "2026-10-08T09:06:30+08:00",
+          "entryPrice": 320.0,
+          "exit": "2026-10-08T09:07:07+08:00",
+          "exitPrice": 316.8,
+          "reason": "PRIOR_WATERMARK_STOP",
+          "grossPct": -1.0,
+          "netPct": -1.3175,
+          "buyAmount": 320000.0,
+          "maxObservedHigh": 320.0
+        },
+        {
+          "signal": "2026-10-08T09:10:45+08:00",
+          "entry": "2026-10-08T09:10:45+08:00",
+          "entryPrice": 311.5,
+          "exit": "2026-10-08T09:19:32+08:00",
+          "exitPrice": 315.6925,
+          "reason": "PRIOR_WATERMARK_STOP",
+          "grossPct": 1.3459,
+          "netPct": 1.0209,
+          "buyAmount": 311500.0,
+          "maxObservedHigh": 320.5
+        },
+        {
+          "signal": "2026-10-08T09:21:30+08:00",
+          "entry": "2026-10-08T09:21:30+08:00",
+          "entryPrice": 314.0,
+          "exit": "2026-10-08T09:26:58+08:00",
+          "exitPrice": 310.5,
+          "reason": "OPEN_BELOW_STOP",
+          "grossPct": -1.1146,
+          "netPct": -1.4318,
+          "buyAmount": 314000.0,
+          "maxObservedHigh": 315.0
+        },
+        {
+          "signal": "2026-10-08T09:28:20+08:00",
+          "entry": "2026-10-08T09:28:20+08:00",
+          "entryPrice": 311.0,
+          "exit": "2026-10-08T09:46:56+08:00",
+          "exitPrice": 320.0,
+          "reason": "OPEN_BELOW_STOP",
+          "grossPct": 2.8939,
+          "netPct": 2.5639,
+          "buyAmount": 311000.0,
+          "maxObservedHigh": 325.0
+        }
+      ],
+      "tradesCount": 5,
+      "buyAmountTotal": 1566000.0,
+      "grossCompoundedPct": 7.2143,
+      "netCompoundedPct": 5.506,
+      "skips": {
+        "POSITION_OPEN": 8,
+        "AFTER_CUTOFF": 27
+      }
+    },
+    "B": {
+      "symbol": "8039",
+      "date": "2026-10-08",
+      "mode": "B",
+      "bars5": 2521,
+      "bars1": 7036,
+      "signals": 67,
+      "pre930Signals": 25,
+      "trades": [
+        {
+          "signal": "2026-10-08T09:01:05+08:00",
+          "entry": "2026-10-08T09:01:05+08:00",
+          "entryPrice": 309.5,
+          "exit": "2026-10-08T09:04:04+08:00",
+          "exitPrice": 325.05,
+          "reason": "PRIOR_WATERMARK_STOP",
+          "grossPct": 5.0242,
+          "netPct": 4.6874,
+          "buyAmount": 309500.0,
+          "maxObservedHigh": 330.0
+        },
+        {
+          "signal": "2026-10-08T09:04:10+08:00",
+          "entry": "2026-10-08T09:04:10+08:00",
+          "entryPrice": 324.5,
+          "exit": "2026-10-08T09:04:12+08:00",
+          "exitPrice": 325.5,
+          "reason": "OPEN_BELOW_STOP",
+          "grossPct": 0.3082,
+          "netPct": -0.0135,
+          "buyAmount": 324500.0,
+          "maxObservedHigh": 331.5
+        },
+        {
+          "signal": "2026-10-08T09:04:15+08:00",
+          "entry": "2026-10-08T09:04:15+08:00",
+          "entryPrice": 327.5,
+          "exit": "2026-10-08T09:04:43+08:00",
+          "exitPrice": 324.225,
+          "reason": "PRIOR_WATERMARK_STOP",
+          "grossPct": -1.0,
+          "netPct": -1.3175,
+          "buyAmount": 327500.0,
+          "maxObservedHigh": 328.0
+        },
+        {
+          "signal": "2026-10-08T09:06:30+08:00",
+          "entry": "2026-10-08T09:06:30+08:00",
+          "entryPrice": 320.0,
+          "exit": "2026-10-08T09:07:07+08:00",
+          "exitPrice": 316.8,
+          "reason": "PRIOR_WATERMARK_STOP",
+          "grossPct": -1.0,
+          "netPct": -1.3175,
+          "buyAmount": 320000.0,
+          "maxObservedHigh": 320.0
+        },
+        {
+          "signal": "2026-10-08T09:10:45+08:00",
+          "entry": "2026-10-08T09:10:45+08:00",
+          "entryPrice": 311.5,
+          "exit": "2026-10-08T09:19:32+08:00",
+          "exitPrice": 315.6925,
+          "reason": "PRIOR_WATERMARK_STOP",
+          "grossPct": 1.3459,
+          "netPct": 1.0209,
+          "buyAmount": 311500.0,
+          "maxObservedHigh": 320.5
+        },
+        {
+          "signal": "2026-10-08T09:21:30+08:00",
+          "entry": "2026-10-08T09:21:30+08:00",
+          "entryPrice": 314.0,
+          "exit": "2026-10-08T09:26:58+08:00",
+          "exitPrice": 310.5,
+          "reason": "OPEN_BELOW_STOP",
+          "grossPct": -1.1146,
+          "netPct": -1.4318,
+          "buyAmount": 314000.0,
+          "maxObservedHigh": 315.0
+        },
+        {
+          "signal": "2026-10-08T09:28:20+08:00",
+          "entry": "2026-10-08T09:28:20+08:00",
+          "entryPrice": 311.0,
+          "exit": "2026-10-08T09:46:56+08:00",
+          "exitPrice": 320.0,
+          "reason": "OPEN_BELOW_STOP",
+          "grossPct": 2.8939,
+          "netPct": 2.5639,
+          "buyAmount": 311000.0,
+          "maxObservedHigh": 325.0
+        }
+      ],
+      "tradesCount": 7,
+      "buyAmountTotal": 2218000.0,
+      "grossCompoundedPct": 6.4693,
+      "netCompoundedPct": 4.1019,
+      "skips": {
+        "POSITION_OPEN": 18,
+        "AFTER_CUTOFF": 42
+      }
+    }
+  },
+  {
+    "name": "玉晶光",
+    "symbol": "3406",
+    "A": {
+      "symbol": "3406",
+      "date": "2026-10-08",
+      "mode": "A",
+      "bars5": 737,
+      "bars1": 997,
+      "signals": 4,
+      "pre930Signals": 4,
+      "trades": [
+        {
+          "signal": "2026-10-08T09:00:45+08:00",
+          "entry": "2026-10-08T09:00:46+08:00",
+          "entryPrice": 1080.0,
+          "exit": "2026-10-08T09:04:49+08:00",
+          "exitPrice": 1088.425,
+          "reason": "PRIOR_WATERMARK_STOP",
+          "grossPct": 0.7801,
+          "netPct": 0.4569,
+          "buyAmount": 1080000.0,
+          "maxObservedHigh": 1105.0
+        },
+        {
+          "signal": "2026-10-08T09:16:00+08:00",
+          "entry": "2026-10-08T09:16:04+08:00",
+          "entryPrice": 1100.0,
+          "exit": "2026-10-08T09:18:07+08:00",
+          "exitPrice": 1085.0,
+          "reason": "OPEN_BELOW_STOP",
+          "grossPct": -1.3636,
+          "netPct": -1.68,
+          "buyAmount": 1100000.0,
+          "maxObservedHigh": 1100.0
+        },
+        {
+          "signal": "2026-10-08T09:28:40+08:00",
+          "entry": "2026-10-08T09:28:40+08:00",
+          "entryPrice": 1075.0,
+          "exit": "2026-10-08T10:54:40+08:00",
+          "exitPrice": 1075.0,
+          "reason": "OPEN_BELOW_STOP",
+          "grossPct": 0.0,
+          "netPct": -0.3207,
+          "buyAmount": 1075000.0,
+          "maxObservedHigh": 1095.0
+        }
+      ],
+      "tradesCount": 3,
+      "buyAmountTotal": 3255000.0,
+      "grossCompoundedPct": -0.5941,
+      "netCompoundedPct": -1.5475,
+      "skips": {
+        "POSITION_OPEN": 1
+      }
+    },
+    "B": {
+      "symbol": "3406",
+      "date": "2026-10-08",
+      "mode": "B",
+      "bars5": 737,
+      "bars1": 997,
+      "signals": 5,
+      "pre930Signals": 5,
+      "trades": [
+        {
+          "signal": "2026-10-08T09:00:45+08:00",
+          "entry": "2026-10-08T09:00:46+08:00",
+          "entryPrice": 1080.0,
+          "exit": "2026-10-08T09:04:49+08:00",
+          "exitPrice": 1088.425,
+          "reason": "PRIOR_WATERMARK_STOP",
+          "grossPct": 0.7801,
+          "netPct": 0.4569,
+          "buyAmount": 1080000.0,
+          "maxObservedHigh": 1105.0
+        },
+        {
+          "signal": "2026-10-08T09:16:00+08:00",
+          "entry": "2026-10-08T09:16:04+08:00",
+          "entryPrice": 1100.0,
+          "exit": "2026-10-08T09:18:07+08:00",
+          "exitPrice": 1085.0,
+          "reason": "OPEN_BELOW_STOP",
+          "grossPct": -1.3636,
+          "netPct": -1.68,
+          "buyAmount": 1100000.0,
+          "maxObservedHigh": 1100.0
+        },
+        {
+          "signal": "2026-10-08T09:28:40+08:00",
+          "entry": "2026-10-08T09:28:40+08:00",
+          "entryPrice": 1075.0,
+          "exit": "2026-10-08T10:54:40+08:00",
+          "exitPrice": 1075.0,
+          "reason": "OPEN_BELOW_STOP",
+          "grossPct": 0.0,
+          "netPct": -0.3207,
+          "buyAmount": 1075000.0,
+          "maxObservedHigh": 1095.0
+        }
+      ],
+      "tradesCount": 3,
+      "buyAmountTotal": 3255000.0,
+      "grossCompoundedPct": -0.5941,
+      "netCompoundedPct": -1.5475,
+      "skips": {
+        "POSITION_OPEN": 2
+      }
+    }
+  },
+  {
+    "name": "聯電",
+    "symbol": "2303",
+    "A": {
+      "symbol": "2303",
+      "date": "2026-10-08",
+      "mode": "A",
+      "bars5": 3096,
+      "bars1": 8550,
+      "signals": 0,
+      "pre930Signals": 0,
+      "trades": [],
+      "tradesCount": 0,
+      "buyAmountTotal": 0.0,
+      "grossCompoundedPct": 0.0,
+      "netCompoundedPct": 0.0,
+      "skips": {}
+    },
+    "B": {
+      "symbol": "2303",
+      "date": "2026-10-08",
+      "mode": "B",
+      "bars5": 3096,
+      "bars1": 8550,
+      "signals": 0,
+      "pre930Signals": 0,
+      "trades": [],
+      "tradesCount": 0,
+      "buyAmountTotal": 0.0,
+      "grossCompoundedPct": 0.0,
+      "netCompoundedPct": 0.0,
+      "skips": {}
+    }
+  },
+  {
+    "name": "南亞",
+    "symbol": "1303",
+    "A": {
+      "symbol": "1303",
+      "date": "2026-10-08",
+      "mode": "A",
+      "bars5": 2959,
+      "bars1": 8489,
+      "signals": 21,
+      "pre930Signals": 7,
+      "trades": [
+        {
+          "signal": "2026-10-08T09:04:30+08:00",
+          "entry": "2026-10-08T09:04:30+08:00",
+          "entryPrice": 311.5,
+          "exit": "2026-10-08T09:17:49+08:00",
+          "exitPrice": 310.0,
+          "reason": "OPEN_BELOW_STOP",
+          "grossPct": -0.4815,
+          "netPct": -0.8007,
+          "buyAmount": 311500.0,
+          "maxObservedHigh": 315.0
+        },
+        {
+          "signal": "2026-10-08T09:19:50+08:00",
+          "entry": "2026-10-08T09:19:50+08:00",
+          "entryPrice": 310.5,
+          "exit": "2026-10-08T09:22:08+08:00",
+          "exitPrice": 307.0,
+          "reason": "OPEN_BELOW_STOP",
+          "grossPct": -1.1272,
+          "netPct": -1.4443,
+          "buyAmount": 310500.0,
+          "maxObservedHigh": 310.5
+        },
+        {
+          "signal": "2026-10-08T09:28:40+08:00",
+          "entry": "2026-10-08T09:28:40+08:00",
+          "entryPrice": 305.5,
+          "exit": "2026-10-08T12:01:58+08:00",
+          "exitPrice": 311.26,
+          "reason": "PRIOR_WATERMARK_STOP",
+          "grossPct": 1.8854,
+          "netPct": 1.5587,
+          "buyAmount": 305500.0,
+          "maxObservedHigh": 316.0
+        }
+      ],
+      "tradesCount": 3,
+      "buyAmountTotal": 927500.0,
+      "grossCompoundedPct": 0.2519,
+      "netCompoundedPct": -0.7095,
+      "skips": {
+        "POSITION_OPEN": 4,
+        "AFTER_CUTOFF": 14
+      }
+    },
+    "B": {
+      "symbol": "1303",
+      "date": "2026-10-08",
+      "mode": "B",
+      "bars5": 2959,
+      "bars1": 8489,
+      "signals": 33,
+      "pre930Signals": 15,
+      "trades": [
+        {
+          "signal": "2026-10-08T09:04:30+08:00",
+          "entry": "2026-10-08T09:04:30+08:00",
+          "entryPrice": 311.5,
+          "exit": "2026-10-08T09:17:49+08:00",
+          "exitPrice": 310.0,
+          "reason": "OPEN_BELOW_STOP",
+          "grossPct": -0.4815,
+          "netPct": -0.8007,
+          "buyAmount": 311500.0,
+          "maxObservedHigh": 315.0
+        },
+        {
+          "signal": "2026-10-08T09:19:50+08:00",
+          "entry": "2026-10-08T09:19:50+08:00",
+          "entryPrice": 310.5,
+          "exit": "2026-10-08T09:22:08+08:00",
+          "exitPrice": 307.0,
+          "reason": "OPEN_BELOW_STOP",
+          "grossPct": -1.1272,
+          "netPct": -1.4443,
+          "buyAmount": 310500.0,
+          "maxObservedHigh": 310.5
+        },
+        {
+          "signal": "2026-10-08T09:28:40+08:00",
+          "entry": "2026-10-08T09:28:40+08:00",
+          "entryPrice": 305.5,
+          "exit": "2026-10-08T12:01:58+08:00",
+          "exitPrice": 311.26,
+          "reason": "PRIOR_WATERMARK_STOP",
+          "grossPct": 1.8854,
+          "netPct": 1.5587,
+          "buyAmount": 305500.0,
+          "maxObservedHigh": 316.0
+        }
+      ],
+      "tradesCount": 3,
+      "buyAmountTotal": 927500.0,
+      "grossCompoundedPct": 0.2519,
+      "netCompoundedPct": -0.7095,
+      "skips": {
+        "POSITION_OPEN": 12,
+        "AFTER_CUTOFF": 18
+      }
+    }
+  },
+  {
+    "name": "中華化",
+    "symbol": "1727",
+    "A": {
+      "symbol": "1727",
+      "date": "2026-10-08",
+      "mode": "A",
+      "bars5": 1369,
+      "bars1": 2241,
+      "signals": 3,
+      "pre930Signals": 2,
+      "trades": [
+        {
+          "signal": "2026-10-08T09:07:00+08:00",
+          "entry": "2026-10-08T09:07:00+08:00",
+          "entryPrice": 109.0,
+          "exit": "2026-10-08T09:11:55+08:00",
+          "exitPrice": 111.305,
+          "reason": "PRIOR_WATERMARK_STOP",
+          "grossPct": 2.1147,
+          "netPct": 1.7872,
+          "buyAmount": 109000.0,
+          "maxObservedHigh": 113.0
+        }
+      ],
+      "tradesCount": 1,
+      "buyAmountTotal": 109000.0,
+      "grossCompoundedPct": 2.1147,
+      "netCompoundedPct": 1.7872,
+      "skips": {
+        "POSITION_OPEN": 1,
+        "AFTER_CUTOFF": 1
+      }
+    },
+    "B": {
+      "symbol": "1727",
+      "date": "2026-10-08",
+      "mode": "B",
+      "bars5": 1369,
+      "bars1": 2241,
+      "signals": 5,
+      "pre930Signals": 4,
+      "trades": [
+        {
+          "signal": "2026-10-08T09:07:00+08:00",
+          "entry": "2026-10-08T09:07:00+08:00",
+          "entryPrice": 109.0,
+          "exit": "2026-10-08T09:11:55+08:00",
+          "exitPrice": 111.305,
+          "reason": "PRIOR_WATERMARK_STOP",
+          "grossPct": 2.1147,
+          "netPct": 1.7872,
+          "buyAmount": 109000.0,
+          "maxObservedHigh": 113.0
+        }
+      ],
+      "tradesCount": 1,
+      "buyAmountTotal": 109000.0,
+      "grossCompoundedPct": 2.1147,
+      "netCompoundedPct": 1.7872,
+      "skips": {
+        "POSITION_OPEN": 3,
+        "AFTER_CUTOFF": 1
+      }
+    }
+  },
+  {
+    "name": "友達",
+    "symbol": "2409",
+    "A": {
+      "symbol": "2409",
+      "date": "2026-10-08",
+      "mode": "A",
+      "bars5": 3136,
+      "bars1": 11567,
+      "signals": 4,
+      "pre930Signals": 3,
+      "trades": [
+        {
+          "signal": "2026-10-08T09:02:05+08:00",
+          "entry": "2026-10-08T09:02:05+08:00",
+          "entryPrice": 37.7,
+          "exit": "2026-10-08T09:05:29+08:00",
+          "exitPrice": 37.323,
+          "reason": "PRIOR_WATERMARK_STOP",
+          "grossPct": -1.0,
+          "netPct": -1.3175,
+          "buyAmount": 37700.0,
+          "maxObservedHigh": 37.7
+        },
+        {
+          "signal": "2026-10-08T09:13:25+08:00",
+          "entry": "2026-10-08T09:13:25+08:00",
+          "entryPrice": 37.5,
+          "exit": "2026-10-08T09:21:20+08:00",
+          "exitPrice": 37.1345,
+          "reason": "PRIOR_WATERMARK_STOP",
+          "grossPct": -0.9747,
+          "netPct": -1.2923,
+          "buyAmount": 37500.0,
+          "maxObservedHigh": 37.7
+        },
+        {
+          "signal": "2026-10-08T09:28:25+08:00",
+          "entry": "2026-10-08T09:28:25+08:00",
+          "entryPrice": 36.95,
+          "exit": "2026-10-08T12:55:45+08:00",
+          "exitPrice": 36.65,
+          "reason": "OPEN_BELOW_STOP",
+          "grossPct": -0.8119,
+          "netPct": -1.13,
+          "buyAmount": 36950.0,
+          "maxObservedHigh": 37.25
+        }
+      ],
+      "tradesCount": 3,
+      "buyAmountTotal": 112150.0,
+      "grossCompoundedPct": -2.7609,
+      "netCompoundedPct": -3.6935,
+      "skips": {
+        "AFTER_CUTOFF": 1
+      }
+    },
+    "B": {
+      "symbol": "2409",
+      "date": "2026-10-08",
+      "mode": "B",
+      "bars5": 3136,
+      "bars1": 11567,
+      "signals": 6,
+      "pre930Signals": 5,
+      "trades": [
+        {
+          "signal": "2026-10-08T09:02:05+08:00",
+          "entry": "2026-10-08T09:02:05+08:00",
+          "entryPrice": 37.7,
+          "exit": "2026-10-08T09:05:29+08:00",
+          "exitPrice": 37.323,
+          "reason": "PRIOR_WATERMARK_STOP",
+          "grossPct": -1.0,
+          "netPct": -1.3175,
+          "buyAmount": 37700.0,
+          "maxObservedHigh": 37.7
+        },
+        {
+          "signal": "2026-10-08T09:13:25+08:00",
+          "entry": "2026-10-08T09:13:25+08:00",
+          "entryPrice": 37.5,
+          "exit": "2026-10-08T09:21:20+08:00",
+          "exitPrice": 37.1345,
+          "reason": "PRIOR_WATERMARK_STOP",
+          "grossPct": -0.9747,
+          "netPct": -1.2923,
+          "buyAmount": 37500.0,
+          "maxObservedHigh": 37.7
+        },
+        {
+          "signal": "2026-10-08T09:28:25+08:00",
+          "entry": "2026-10-08T09:28:25+08:00",
+          "entryPrice": 36.95,
+          "exit": "2026-10-08T12:55:45+08:00",
+          "exitPrice": 36.65,
+          "reason": "OPEN_BELOW_STOP",
+          "grossPct": -0.8119,
+          "netPct": -1.13,
+          "buyAmount": 36950.0,
+          "maxObservedHigh": 37.25
+        }
+      ],
+      "tradesCount": 3,
+      "buyAmountTotal": 112150.0,
+      "grossCompoundedPct": -2.7609,
+      "netCompoundedPct": -3.6935,
+      "skips": {
+        "POSITION_OPEN": 2,
+        "AFTER_CUTOFF": 1
+      }
+    }
+  },
+  {
+    "name": "群創",
+    "symbol": "3481",
+    "A": {
+      "symbol": "3481",
+      "date": "2026-10-08",
+      "mode": "A",
+      "bars5": 2804,
+      "bars1": 7014,
+      "signals": 5,
+      "pre930Signals": 5,
+      "trades": [
+        {
+          "signal": "2026-10-08T09:00:35+08:00",
+          "entry": "2026-10-08T09:00:35+08:00",
+          "entryPrice": 52.1,
+          "exit": "2026-10-08T09:02:33+08:00",
+          "exitPrice": 51.614,
+          "reason": "PRIOR_WATERMARK_STOP",
+          "grossPct": -0.9328,
+          "netPct": -1.2506,
+          "buyAmount": 52100.0,
+          "maxObservedHigh": 52.4
+        },
+        {
+          "signal": "2026-10-08T09:08:40+08:00",
+          "entry": "2026-10-08T09:08:40+08:00",
+          "entryPrice": 51.9,
+          "exit": "2026-10-08T09:19:05+08:00",
+          "exitPrice": 51.7,
+          "reason": "OPEN_BELOW_STOP",
+          "grossPct": -0.3854,
+          "netPct": -0.7048,
+          "buyAmount": 51900.0,
+          "maxObservedHigh": 52.5
+        },
+        {
+          "signal": "2026-10-08T09:28:30+08:00",
+          "entry": "2026-10-08T09:28:30+08:00",
+          "entryPrice": 51.3,
+          "exit": "2026-10-08T13:30:00+08:00",
+          "exitPrice": 51.0,
+          "reason": "DATA_END_MARK",
+          "grossPct": -0.5848,
+          "netPct": -0.9036,
+          "buyAmount": 51300.0,
+          "maxObservedHigh": 51.7
+        }
+      ],
+      "tradesCount": 3,
+      "buyAmountTotal": 155300.0,
+      "grossCompoundedPct": -1.8917,
+      "netCompoundedPct": -2.8326,
+      "skips": {
+        "POSITION_OPEN": 2
+      }
+    },
+    "B": {
+      "symbol": "3481",
+      "date": "2026-10-08",
+      "mode": "B",
+      "bars5": 2804,
+      "bars1": 7014,
+      "signals": 8,
+      "pre930Signals": 8,
+      "trades": [
+        {
+          "signal": "2026-10-08T09:00:35+08:00",
+          "entry": "2026-10-08T09:00:35+08:00",
+          "entryPrice": 52.1,
+          "exit": "2026-10-08T09:02:33+08:00",
+          "exitPrice": 51.614,
+          "reason": "PRIOR_WATERMARK_STOP",
+          "grossPct": -0.9328,
+          "netPct": -1.2506,
+          "buyAmount": 52100.0,
+          "maxObservedHigh": 52.4
+        },
+        {
+          "signal": "2026-10-08T09:08:40+08:00",
+          "entry": "2026-10-08T09:08:40+08:00",
+          "entryPrice": 51.9,
+          "exit": "2026-10-08T09:19:05+08:00",
+          "exitPrice": 51.7,
+          "reason": "OPEN_BELOW_STOP",
+          "grossPct": -0.3854,
+          "netPct": -0.7048,
+          "buyAmount": 51900.0,
+          "maxObservedHigh": 52.5
+        },
+        {
+          "signal": "2026-10-08T09:28:30+08:00",
+          "entry": "2026-10-08T09:28:30+08:00",
+          "entryPrice": 51.3,
+          "exit": "2026-10-08T13:30:00+08:00",
+          "exitPrice": 51.0,
+          "reason": "DATA_END_MARK",
+          "grossPct": -0.5848,
+          "netPct": -0.9036,
+          "buyAmount": 51300.0,
+          "maxObservedHigh": 51.7
+        }
+      ],
+      "tradesCount": 3,
+      "buyAmountTotal": 155300.0,
+      "grossCompoundedPct": -1.8917,
+      "netCompoundedPct": -2.8326,
+      "skips": {
+        "POSITION_OPEN": 5
+      }
+    }
+  },
+  {
+    "name": "晶技",
+    "symbol": "3042",
+    "A": {
+      "symbol": "3042",
+      "date": "2026-10-08",
+      "mode": "A",
+      "bars5": 1255,
+      "bars1": 1962,
+      "signals": 3,
+      "pre930Signals": 1,
+      "trades": [
+        {
+          "signal": "2026-10-08T09:01:55+08:00",
+          "entry": "2026-10-08T09:01:55+08:00",
+          "entryPrice": 208.5,
+          "exit": "2026-10-08T09:14:27+08:00",
+          "exitPrice": 206.415,
+          "reason": "PRIOR_WATERMARK_STOP",
+          "grossPct": -1.0,
+          "netPct": -1.3175,
+          "buyAmount": 208500.0,
+          "maxObservedHigh": 209.5
+        }
+      ],
+      "tradesCount": 1,
+      "buyAmountTotal": 208500.0,
+      "grossCompoundedPct": -1.0,
+      "netCompoundedPct": -1.3175,
+      "skips": {
+        "AFTER_CUTOFF": 2
+      }
+    },
+    "B": {
+      "symbol": "3042",
+      "date": "2026-10-08",
+      "mode": "B",
+      "bars5": 1255,
+      "bars1": 1962,
+      "signals": 3,
+      "pre930Signals": 1,
+      "trades": [
+        {
+          "signal": "2026-10-08T09:01:55+08:00",
+          "entry": "2026-10-08T09:01:55+08:00",
+          "entryPrice": 208.5,
+          "exit": "2026-10-08T09:14:27+08:00",
+          "exitPrice": 206.415,
+          "reason": "PRIOR_WATERMARK_STOP",
+          "grossPct": -1.0,
+          "netPct": -1.3175,
+          "buyAmount": 208500.0,
+          "maxObservedHigh": 209.5
+        }
+      ],
+      "tradesCount": 1,
+      "buyAmountTotal": 208500.0,
+      "grossCompoundedPct": -1.0,
+      "netCompoundedPct": -1.3175,
+      "skips": {
+        "AFTER_CUTOFF": 2
+      }
+    }
+  },
+  {
+    "name": "矽格",
+    "symbol": "6257",
+    "A": {
+      "symbol": "6257",
+      "date": "2026-10-08",
+      "mode": "A",
+      "bars5": 2154,
+      "bars1": 4669,
+      "signals": 17,
+      "pre930Signals": 8,
+      "trades": [
+        {
+          "signal": "2026-10-08T09:00:20+08:00",
+          "entry": "2026-10-08T09:00:21+08:00",
+          "entryPrice": 277.0,
+          "exit": "2026-10-08T09:13:40+08:00",
+          "exitPrice": 287.1275,
+          "reason": "PRIOR_WATERMARK_STOP",
+          "grossPct": 3.6561,
+          "netPct": 3.3237,
+          "buyAmount": 277000.0,
+          "maxObservedHigh": 291.5
+        },
+        {
+          "signal": "2026-10-08T09:16:35+08:00",
+          "entry": "2026-10-08T09:16:35+08:00",
+          "entryPrice": 284.5,
+          "exit": "2026-10-08T09:20:58+08:00",
+          "exitPrice": 282.0,
+          "reason": "OPEN_BELOW_STOP",
+          "grossPct": -0.8787,
+          "netPct": -1.1966,
+          "buyAmount": 284500.0,
+          "maxObservedHigh": 286.5
+        },
+        {
+          "signal": "2026-10-08T09:28:50+08:00",
+          "entry": "2026-10-08T09:28:50+08:00",
+          "entryPrice": 278.5,
+          "exit": "2026-10-08T11:23:30+08:00",
+          "exitPrice": 276.785,
+          "reason": "PRIOR_WATERMARK_STOP",
+          "grossPct": -0.6158,
+          "netPct": -0.9345,
+          "buyAmount": 278500.0,
+          "maxObservedHigh": 281.0
+        }
+      ],
+      "tradesCount": 3,
+      "buyAmountTotal": 840000.0,
+      "grossCompoundedPct": 2.1126,
+      "netCompoundedPct": 1.1333,
+      "skips": {
+        "POSITION_OPEN": 5,
+        "AFTER_CUTOFF": 9
+      }
+    },
+    "B": {
+      "symbol": "6257",
+      "date": "2026-10-08",
+      "mode": "B",
+      "bars5": 2154,
+      "bars1": 4669,
+      "signals": 31,
+      "pre930Signals": 18,
+      "trades": [
+        {
+          "signal": "2026-10-08T09:00:20+08:00",
+          "entry": "2026-10-08T09:00:21+08:00",
+          "entryPrice": 277.0,
+          "exit": "2026-10-08T09:13:40+08:00",
+          "exitPrice": 287.1275,
+          "reason": "PRIOR_WATERMARK_STOP",
+          "grossPct": 3.6561,
+          "netPct": 3.3237,
+          "buyAmount": 277000.0,
+          "maxObservedHigh": 291.5
+        },
+        {
+          "signal": "2026-10-08T09:16:35+08:00",
+          "entry": "2026-10-08T09:16:35+08:00",
+          "entryPrice": 284.5,
+          "exit": "2026-10-08T09:20:58+08:00",
+          "exitPrice": 282.0,
+          "reason": "OPEN_BELOW_STOP",
+          "grossPct": -0.8787,
+          "netPct": -1.1966,
+          "buyAmount": 284500.0,
+          "maxObservedHigh": 286.5
+        },
+        {
+          "signal": "2026-10-08T09:28:50+08:00",
+          "entry": "2026-10-08T09:28:50+08:00",
+          "entryPrice": 278.5,
+          "exit": "2026-10-08T11:23:30+08:00",
+          "exitPrice": 276.785,
+          "reason": "PRIOR_WATERMARK_STOP",
+          "grossPct": -0.6158,
+          "netPct": -0.9345,
+          "buyAmount": 278500.0,
+          "maxObservedHigh": 281.0
+        }
+      ],
+      "tradesCount": 3,
+      "buyAmountTotal": 840000.0,
+      "grossCompoundedPct": 2.1126,
+      "netCompoundedPct": 1.1333,
+      "skips": {
+        "POSITION_OPEN": 15,
+        "AFTER_CUTOFF": 13
+      }
+    }
+  },
+  {
+    "name": "南茂",
+    "symbol": "8150",
+    "A": {
+      "symbol": "8150",
+      "date": "2026-10-08",
+      "mode": "A",
+      "bars5": 2344,
+      "bars1": 4670,
+      "signals": 1,
+      "pre930Signals": 1,
+      "trades": [
+        {
+          "signal": "2026-10-08T09:08:00+08:00",
+          "entry": "2026-10-08T09:08:00+08:00",
+          "entryPrice": 129.0,
+          "exit": "2026-10-08T09:11:26+08:00",
+          "exitPrice": 127.5,
+          "reason": "OPEN_BELOW_STOP",
+          "grossPct": -1.1628,
+          "netPct": -1.4798,
+          "buyAmount": 129000.0,
+          "maxObservedHigh": 129.5
+        }
+      ],
+      "tradesCount": 1,
+      "buyAmountTotal": 129000.0,
+      "grossCompoundedPct": -1.1628,
+      "netCompoundedPct": -1.4798,
+      "skips": {}
+    },
+    "B": {
+      "symbol": "8150",
+      "date": "2026-10-08",
+      "mode": "B",
+      "bars5": 2344,
+      "bars1": 4670,
+      "signals": 1,
+      "pre930Signals": 1,
+      "trades": [
+        {
+          "signal": "2026-10-08T09:08:00+08:00",
+          "entry": "2026-10-08T09:08:00+08:00",
+          "entryPrice": 129.0,
+          "exit": "2026-10-08T09:11:26+08:00",
+          "exitPrice": 127.5,
+          "reason": "OPEN_BELOW_STOP",
+          "grossPct": -1.1628,
+          "netPct": -1.4798,
+          "buyAmount": 129000.0,
+          "maxObservedHigh": 129.5
+        }
+      ],
+      "tradesCount": 1,
+      "buyAmountTotal": 129000.0,
+      "grossCompoundedPct": -1.1628,
+      "netCompoundedPct": -1.4798,
+      "skips": {}
+    }
+  },
+  {
+    "name": "金山電",
+    "symbol": "8042",
+    "A": {
+      "symbol": "8042",
+      "date": "2026-10-08",
+      "mode": "A",
+      "bars5": 1484,
+      "bars1": 3236,
+      "signals": 10,
+      "pre930Signals": 1,
+      "trades": [
+        {
+          "signal": "2026-10-08T09:09:00+08:00",
+          "entry": "2026-10-08T09:09:00+08:00",
+          "entryPrice": 124.5,
+          "exit": "2026-10-08T09:15:46+08:00",
+          "exitPrice": 124.0,
+          "reason": "OPEN_BELOW_STOP",
+          "grossPct": -0.4016,
+          "netPct": -0.721,
+          "buyAmount": 124500.0,
+          "maxObservedHigh": 126.0
+        }
+      ],
+      "tradesCount": 1,
+      "buyAmountTotal": 124500.0,
+      "grossCompoundedPct": -0.4016,
+      "netCompoundedPct": -0.721,
+      "skips": {
+        "AFTER_CUTOFF": 9
+      }
+    },
+    "B": {
+      "symbol": "8042",
+      "date": "2026-10-08",
+      "mode": "B",
+      "bars5": 1484,
+      "bars1": 3236,
+      "signals": 12,
+      "pre930Signals": 1,
+      "trades": [
+        {
+          "signal": "2026-10-08T09:09:00+08:00",
+          "entry": "2026-10-08T09:09:00+08:00",
+          "entryPrice": 124.5,
+          "exit": "2026-10-08T09:15:46+08:00",
+          "exitPrice": 124.0,
+          "reason": "OPEN_BELOW_STOP",
+          "grossPct": -0.4016,
+          "netPct": -0.721,
+          "buyAmount": 124500.0,
+          "maxObservedHigh": 126.0
+        }
+      ],
+      "tradesCount": 1,
+      "buyAmountTotal": 124500.0,
+      "grossCompoundedPct": -0.4016,
+      "netCompoundedPct": -0.721,
+      "skips": {
+        "AFTER_CUTOFF": 11
+      }
+    }
+  },
+  {
+    "name": "華新科",
+    "symbol": "2492",
+    "A": {
+      "symbol": "2492",
+      "date": "2026-10-08",
+      "mode": "A",
+      "bars5": 2833,
+      "bars1": 8210,
+      "signals": 48,
+      "pre930Signals": 11,
+      "trades": [
+        {
+          "signal": "2026-10-08T09:01:45+08:00",
+          "entry": "2026-10-08T09:01:45+08:00",
+          "entryPrice": 430.0,
+          "exit": "2026-10-08T09:02:35+08:00",
+          "exitPrice": 425.7,
+          "reason": "PRIOR_WATERMARK_STOP",
+          "grossPct": -1.0,
+          "netPct": -1.3175,
+          "buyAmount": 430000.0,
+          "maxObservedHigh": 430.5
+        },
+        {
+          "signal": "2026-10-08T09:03:20+08:00",
+          "entry": "2026-10-08T09:03:20+08:00",
+          "entryPrice": 427.0,
+          "exit": "2026-10-08T09:04:31+08:00",
+          "exitPrice": 422.73,
+          "reason": "PRIOR_WATERMARK_STOP",
+          "grossPct": -1.0,
+          "netPct": -1.3175,
+          "buyAmount": 427000.0,
+          "maxObservedHigh": 427.0
+        },
+        {
+          "signal": "2026-10-08T09:05:10+08:00",
+          "entry": "2026-10-08T09:05:10+08:00",
+          "entryPrice": 426.5,
+          "exit": "2026-10-08T09:05:47+08:00",
+          "exitPrice": 422.235,
+          "reason": "PRIOR_WATERMARK_STOP",
+          "grossPct": -1.0,
+          "netPct": -1.3175,
+          "buyAmount": 426500.0,
+          "maxObservedHigh": 427.0
+        },
+        {
+          "signal": "2026-10-08T09:09:00+08:00",
+          "entry": "2026-10-08T09:09:00+08:00",
+          "entryPrice": 417.5,
+          "exit": "2026-10-08T09:14:47+08:00",
+          "exitPrice": 413.325,
+          "reason": "PRIOR_WATERMARK_STOP",
+          "grossPct": -1.0,
+          "netPct": -1.3175,
+          "buyAmount": 417500.0,
+          "maxObservedHigh": 419.5
+        },
+        {
+          "signal": "2026-10-08T09:16:55+08:00",
+          "entry": "2026-10-08T09:16:55+08:00",
+          "entryPrice": 409.0,
+          "exit": "2026-10-08T09:20:20+08:00",
+          "exitPrice": 404.5,
+          "reason": "OPEN_BELOW_STOP",
+          "grossPct": -1.1002,
+          "netPct": -1.4174,
+          "buyAmount": 409000.0,
+          "maxObservedHigh": 411.0
+        },
+        {
+          "signal": "2026-10-08T09:20:45+08:00",
+          "entry": "2026-10-08T09:20:45+08:00",
+          "entryPrice": 406.5,
+          "exit": "2026-10-08T09:23:04+08:00",
+          "exitPrice": 402.435,
+          "reason": "PRIOR_WATERMARK_STOP",
+          "grossPct": -1.0,
+          "netPct": -1.3175,
+          "buyAmount": 406500.0,
+          "maxObservedHigh": 407.0
+        },
+        {
+          "signal": "2026-10-08T09:23:45+08:00",
+          "entry": "2026-10-08T09:23:45+08:00",
+          "entryPrice": 403.5,
+          "exit": "2026-10-08T10:12:02+08:00",
+          "exitPrice": 409.2675,
+          "reason": "PRIOR_WATERMARK_STOP",
+          "grossPct": 1.4294,
+          "netPct": 1.1041,
+          "buyAmount": 403500.0,
+          "maxObservedHigh": 415.5
+        }
+      ],
+      "tradesCount": 7,
+      "buyAmountTotal": 2920000.0,
+      "grossCompoundedPct": -4.6029,
+      "netCompoundedPct": -6.724,
+      "skips": {
+        "POSITION_OPEN": 4,
+        "AFTER_CUTOFF": 37
+      }
+    },
+    "B": {
+      "symbol": "2492",
+      "date": "2026-10-08",
+      "mode": "B",
+      "bars5": 2833,
+      "bars1": 8210,
+      "signals": 89,
+      "pre930Signals": 19,
+      "trades": [
+        {
+          "signal": "2026-10-08T09:01:45+08:00",
+          "entry": "2026-10-08T09:01:45+08:00",
+          "entryPrice": 430.0,
+          "exit": "2026-10-08T09:02:35+08:00",
+          "exitPrice": 425.7,
+          "reason": "PRIOR_WATERMARK_STOP",
+          "grossPct": -1.0,
+          "netPct": -1.3175,
+          "buyAmount": 430000.0,
+          "maxObservedHigh": 430.5
+        },
+        {
+          "signal": "2026-10-08T09:03:20+08:00",
+          "entry": "2026-10-08T09:03:20+08:00",
+          "entryPrice": 427.0,
+          "exit": "2026-10-08T09:04:31+08:00",
+          "exitPrice": 422.73,
+          "reason": "PRIOR_WATERMARK_STOP",
+          "grossPct": -1.0,
+          "netPct": -1.3175,
+          "buyAmount": 427000.0,
+          "maxObservedHigh": 427.0
+        },
+        {
+          "signal": "2026-10-08T09:05:10+08:00",
+          "entry": "2026-10-08T09:05:10+08:00",
+          "entryPrice": 426.5,
+          "exit": "2026-10-08T09:05:47+08:00",
+          "exitPrice": 422.235,
+          "reason": "PRIOR_WATERMARK_STOP",
+          "grossPct": -1.0,
+          "netPct": -1.3175,
+          "buyAmount": 426500.0,
+          "maxObservedHigh": 427.0
+        },
+        {
+          "signal": "2026-10-08T09:09:00+08:00",
+          "entry": "2026-10-08T09:09:00+08:00",
+          "entryPrice": 417.5,
+          "exit": "2026-10-08T09:14:47+08:00",
+          "exitPrice": 413.325,
+          "reason": "PRIOR_WATERMARK_STOP",
+          "grossPct": -1.0,
+          "netPct": -1.3175,
+          "buyAmount": 417500.0,
+          "maxObservedHigh": 419.5
+        },
+        {
+          "signal": "2026-10-08T09:16:55+08:00",
+          "entry": "2026-10-08T09:16:55+08:00",
+          "entryPrice": 409.0,
+          "exit": "2026-10-08T09:20:20+08:00",
+          "exitPrice": 404.5,
+          "reason": "OPEN_BELOW_STOP",
+          "grossPct": -1.1002,
+          "netPct": -1.4174,
+          "buyAmount": 409000.0,
+          "maxObservedHigh": 411.0
+        },
+        {
+          "signal": "2026-10-08T09:20:45+08:00",
+          "entry": "2026-10-08T09:20:45+08:00",
+          "entryPrice": 406.5,
+          "exit": "2026-10-08T09:23:04+08:00",
+          "exitPrice": 402.435,
+          "reason": "PRIOR_WATERMARK_STOP",
+          "grossPct": -1.0,
+          "netPct": -1.3175,
+          "buyAmount": 406500.0,
+          "maxObservedHigh": 407.0
+        },
+        {
+          "signal": "2026-10-08T09:23:45+08:00",
+          "entry": "2026-10-08T09:23:45+08:00",
+          "entryPrice": 403.5,
+          "exit": "2026-10-08T10:12:02+08:00",
+          "exitPrice": 409.2675,
+          "reason": "PRIOR_WATERMARK_STOP",
+          "grossPct": 1.4294,
+          "netPct": 1.1041,
+          "buyAmount": 403500.0,
+          "maxObservedHigh": 415.5
+        }
+      ],
+      "tradesCount": 7,
+      "buyAmountTotal": 2920000.0,
+      "grossCompoundedPct": -4.6029,
+      "netCompoundedPct": -6.724,
+      "skips": {
+        "POSITION_OPEN": 12,
+        "AFTER_CUTOFF": 70
+      }
+    }
+  },
+  {
+    "name": "國巨*",
+    "symbol": "2327",
+    "A": {
+      "symbol": "2327",
+      "date": "2026-10-08",
+      "mode": "A",
+      "bars5": 2677,
+      "bars1": 6575,
+      "signals": 15,
+      "pre930Signals": 6,
+      "trades": [
+        {
+          "signal": "2026-10-08T09:00:20+08:00",
+          "entry": "2026-10-08T09:00:20+08:00",
+          "entryPrice": 645.0,
+          "exit": "2026-10-08T09:01:05+08:00",
+          "exitPrice": 638.55,
+          "reason": "PRIOR_WATERMARK_STOP",
+          "grossPct": -1.0,
+          "netPct": -1.3175,
+          "buyAmount": 645000.0,
+          "maxObservedHigh": 646.0
+        },
+        {
+          "signal": "2026-10-08T09:02:00+08:00",
+          "entry": "2026-10-08T09:02:00+08:00",
+          "entryPrice": 643.0,
+          "exit": "2026-10-08T09:04:19+08:00",
+          "exitPrice": 636.0,
+          "reason": "OPEN_BELOW_STOP",
+          "grossPct": -1.0886,
+          "netPct": -1.4059,
+          "buyAmount": 643000.0,
+          "maxObservedHigh": 645.0
+        },
+        {
+          "signal": "2026-10-08T09:08:50+08:00",
+          "entry": "2026-10-08T09:08:50+08:00",
+          "entryPrice": 635.0,
+          "exit": "2026-10-08T09:16:05+08:00",
+          "exitPrice": 629.415,
+          "reason": "PRIOR_WATERMARK_STOP",
+          "grossPct": -0.8795,
+          "netPct": -1.1974,
+          "buyAmount": 635000.0,
+          "maxObservedHigh": 639.0
+        },
+        {
+          "signal": "2026-10-08T09:24:35+08:00",
+          "entry": "2026-10-08T09:24:35+08:00",
+          "entryPrice": 625.0,
+          "exit": "2026-10-08T10:15:34+08:00",
+          "exitPrice": 628.43,
+          "reason": "PRIOR_WATERMARK_STOP",
+          "grossPct": 0.5488,
+          "netPct": 0.2263,
+          "buyAmount": 625000.0,
+          "maxObservedHigh": 638.0
+        }
+      ],
+      "tradesCount": 4,
+      "buyAmountTotal": 2548000.0,
+      "grossCompoundedPct": -2.4063,
+      "netCompoundedPct": -3.6523,
+      "skips": {
+        "POSITION_OPEN": 2,
+        "AFTER_CUTOFF": 9
+      }
+    },
+    "B": {
+      "symbol": "2327",
+      "date": "2026-10-08",
+      "mode": "B",
+      "bars5": 2677,
+      "bars1": 6575,
+      "signals": 28,
+      "pre930Signals": 13,
+      "trades": [
+        {
+          "signal": "2026-10-08T09:00:20+08:00",
+          "entry": "2026-10-08T09:00:20+08:00",
+          "entryPrice": 645.0,
+          "exit": "2026-10-08T09:01:05+08:00",
+          "exitPrice": 638.55,
+          "reason": "PRIOR_WATERMARK_STOP",
+          "grossPct": -1.0,
+          "netPct": -1.3175,
+          "buyAmount": 645000.0,
+          "maxObservedHigh": 646.0
+        },
+        {
+          "signal": "2026-10-08T09:02:00+08:00",
+          "entry": "2026-10-08T09:02:00+08:00",
+          "entryPrice": 643.0,
+          "exit": "2026-10-08T09:04:19+08:00",
+          "exitPrice": 636.0,
+          "reason": "OPEN_BELOW_STOP",
+          "grossPct": -1.0886,
+          "netPct": -1.4059,
+          "buyAmount": 643000.0,
+          "maxObservedHigh": 645.0
+        },
+        {
+          "signal": "2026-10-08T09:08:50+08:00",
+          "entry": "2026-10-08T09:08:50+08:00",
+          "entryPrice": 635.0,
+          "exit": "2026-10-08T09:16:05+08:00",
+          "exitPrice": 629.415,
+          "reason": "PRIOR_WATERMARK_STOP",
+          "grossPct": -0.8795,
+          "netPct": -1.1974,
+          "buyAmount": 635000.0,
+          "maxObservedHigh": 639.0
+        },
+        {
+          "signal": "2026-10-08T09:24:35+08:00",
+          "entry": "2026-10-08T09:24:35+08:00",
+          "entryPrice": 625.0,
+          "exit": "2026-10-08T10:15:34+08:00",
+          "exitPrice": 628.43,
+          "reason": "PRIOR_WATERMARK_STOP",
+          "grossPct": 0.5488,
+          "netPct": 0.2263,
+          "buyAmount": 625000.0,
+          "maxObservedHigh": 638.0
+        }
+      ],
+      "tradesCount": 4,
+      "buyAmountTotal": 2548000.0,
+      "grossCompoundedPct": -2.4063,
+      "netCompoundedPct": -3.6523,
+      "skips": {
+        "POSITION_OPEN": 9,
+        "AFTER_CUTOFF": 15
+      }
+    }
+  },
+  {
+    "name": "貿聯-KY",
+    "symbol": "3665",
+    "A": {
+      "symbol": "3665",
+      "date": "2026-10-08",
+      "mode": "A",
+      "bars5": 1368,
+      "bars1": 1737,
+      "signals": 4,
+      "pre930Signals": 2,
+      "trades": [
+        {
+          "signal": "2026-10-08T09:01:20+08:00",
+          "entry": "2026-10-08T09:01:23+08:00",
+          "entryPrice": 2345.0,
+          "exit": "2026-10-08T09:21:43+08:00",
+          "exitPrice": 2354.15,
+          "reason": "PRIOR_WATERMARK_STOP",
+          "grossPct": 0.3902,
+          "netPct": 0.0682,
+          "buyAmount": 2345000.0,
+          "maxObservedHigh": 2390.0
+        }
+      ],
+      "tradesCount": 1,
+      "buyAmountTotal": 2345000.0,
+      "grossCompoundedPct": 0.3902,
+      "netCompoundedPct": 0.0682,
+      "skips": {
+        "POSITION_OPEN": 1,
+        "AFTER_CUTOFF": 2
+      }
+    },
+    "B": {
+      "symbol": "3665",
+      "date": "2026-10-08",
+      "mode": "B",
+      "bars5": 1368,
+      "bars1": 1737,
+      "signals": 8,
+      "pre930Signals": 5,
+      "trades": [
+        {
+          "signal": "2026-10-08T09:01:20+08:00",
+          "entry": "2026-10-08T09:01:23+08:00",
+          "entryPrice": 2345.0,
+          "exit": "2026-10-08T09:21:43+08:00",
+          "exitPrice": 2354.15,
+          "reason": "PRIOR_WATERMARK_STOP",
+          "grossPct": 0.3902,
+          "netPct": 0.0682,
+          "buyAmount": 2345000.0,
+          "maxObservedHigh": 2390.0
+        }
+      ],
+      "tradesCount": 1,
+      "buyAmountTotal": 2345000.0,
+      "grossCompoundedPct": 0.3902,
+      "netCompoundedPct": 0.0682,
+      "skips": {
+        "POSITION_OPEN": 4,
+        "AFTER_CUTOFF": 3
+      }
+    }
+  },
+  {
+    "name": "GIS-KY",
+    "symbol": "6456",
+    "A": {
+      "symbol": "6456",
+      "date": "2026-10-08",
+      "mode": "A",
+      "bars5": 1623,
+      "bars1": 2907,
+      "signals": 8,
+      "pre930Signals": 3,
+      "trades": [
+        {
+          "signal": "2026-10-08T09:01:45+08:00",
+          "entry": "2026-10-08T09:01:45+08:00",
+          "entryPrice": 103.0,
+          "exit": "2026-10-08T09:01:53+08:00",
+          "exitPrice": 101.97,
+          "reason": "PRIOR_WATERMARK_STOP",
+          "grossPct": -1.0,
+          "netPct": -1.3175,
+          "buyAmount": 103000.0,
+          "maxObservedHigh": 103.0
+        },
+        {
+          "signal": "2026-10-08T09:02:50+08:00",
+          "entry": "2026-10-08T09:02:52+08:00",
+          "entryPrice": 103.0,
+          "exit": "2026-10-08T09:04:40+08:00",
+          "exitPrice": 102.0,
+          "reason": "OPEN_BELOW_STOP",
+          "grossPct": -0.9709,
+          "netPct": -1.2885,
+          "buyAmount": 103000.0,
+          "maxObservedHigh": 104.0
+        }
+      ],
+      "tradesCount": 2,
+      "buyAmountTotal": 206000.0,
+      "grossCompoundedPct": -1.9612,
+      "netCompoundedPct": -2.589,
+      "skips": {
+        "POSITION_OPEN": 1,
+        "AFTER_CUTOFF": 5
+      }
+    },
+    "B": {
+      "symbol": "6456",
+      "date": "2026-10-08",
+      "mode": "B",
+      "bars5": 1623,
+      "bars1": 2907,
+      "signals": 10,
+      "pre930Signals": 3,
+      "trades": [
+        {
+          "signal": "2026-10-08T09:01:45+08:00",
+          "entry": "2026-10-08T09:01:45+08:00",
+          "entryPrice": 103.0,
+          "exit": "2026-10-08T09:01:53+08:00",
+          "exitPrice": 101.97,
+          "reason": "PRIOR_WATERMARK_STOP",
+          "grossPct": -1.0,
+          "netPct": -1.3175,
+          "buyAmount": 103000.0,
+          "maxObservedHigh": 103.0
+        },
+        {
+          "signal": "2026-10-08T09:02:50+08:00",
+          "entry": "2026-10-08T09:02:52+08:00",
+          "entryPrice": 103.0,
+          "exit": "2026-10-08T09:04:40+08:00",
+          "exitPrice": 102.0,
+          "reason": "OPEN_BELOW_STOP",
+          "grossPct": -0.9709,
+          "netPct": -1.2885,
+          "buyAmount": 103000.0,
+          "maxObservedHigh": 104.0
+        }
+      ],
+      "tradesCount": 2,
+      "buyAmountTotal": 206000.0,
+      "grossCompoundedPct": -1.9612,
+      "netCompoundedPct": -2.589,
+      "skips": {
+        "POSITION_OPEN": 1,
+        "AFTER_CUTOFF": 7
+      }
+    }
+  },
+  {
+    "name": "TPK-KY",
+    "symbol": "3673",
+    "A": {
+      "symbol": "3673",
+      "date": "2026-10-08",
+      "mode": "A",
+      "bars5": 1105,
+      "bars1": 1463,
+      "signals": 5,
+      "pre930Signals": 3,
+      "trades": [
+        {
+          "signal": "2026-10-08T09:04:15+08:00",
+          "entry": "2026-10-08T09:04:17+08:00",
+          "entryPrice": 75.9,
+          "exit": "2026-10-08T09:20:26+08:00",
+          "exitPrice": 75.1,
+          "reason": "OPEN_BELOW_STOP",
+          "grossPct": -1.054,
+          "netPct": -1.3714,
+          "buyAmount": 75900.0,
+          "maxObservedHigh": 76.2
+        },
+        {
+          "signal": "2026-10-08T09:23:55+08:00",
+          "entry": "2026-10-08T09:23:57+08:00",
+          "entryPrice": 75.0,
+          "exit": "2026-10-08T13:30:00+08:00",
+          "exitPrice": 74.4,
+          "reason": "DATA_END_MARK",
+          "grossPct": -0.8,
+          "netPct": -1.1182,
+          "buyAmount": 75000.0,
+          "maxObservedHigh": 75.3
+        }
+      ],
+      "tradesCount": 2,
+      "buyAmountTotal": 150900.0,
+      "grossCompoundedPct": -1.8456,
+      "netCompoundedPct": -2.4743,
+      "skips": {
+        "POSITION_OPEN": 1,
+        "AFTER_CUTOFF": 2
+      }
+    },
+    "B": {
+      "symbol": "3673",
+      "date": "2026-10-08",
+      "mode": "B",
+      "bars5": 1105,
+      "bars1": 1463,
+      "signals": 7,
+      "pre930Signals": 4,
+      "trades": [
+        {
+          "signal": "2026-10-08T09:04:15+08:00",
+          "entry": "2026-10-08T09:04:17+08:00",
+          "entryPrice": 75.9,
+          "exit": "2026-10-08T09:20:26+08:00",
+          "exitPrice": 75.1,
+          "reason": "OPEN_BELOW_STOP",
+          "grossPct": -1.054,
+          "netPct": -1.3714,
+          "buyAmount": 75900.0,
+          "maxObservedHigh": 76.2
+        },
+        {
+          "signal": "2026-10-08T09:23:55+08:00",
+          "entry": "2026-10-08T09:23:57+08:00",
+          "entryPrice": 75.0,
+          "exit": "2026-10-08T13:30:00+08:00",
+          "exitPrice": 74.4,
+          "reason": "DATA_END_MARK",
+          "grossPct": -0.8,
+          "netPct": -1.1182,
+          "buyAmount": 75000.0,
+          "maxObservedHigh": 75.3
+        }
+      ],
+      "tradesCount": 2,
+      "buyAmountTotal": 150900.0,
+      "grossCompoundedPct": -1.8456,
+      "netCompoundedPct": -2.4743,
+      "skips": {
+        "POSITION_OPEN": 2,
+        "AFTER_CUTOFF": 3
+      }
+    }
+  }
+]
