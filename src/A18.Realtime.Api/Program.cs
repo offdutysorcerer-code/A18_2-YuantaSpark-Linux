@@ -51,6 +51,7 @@ builder.Services.AddSingleton<SwingState>();
 builder.Services.AddSingleton<AutoLongWatch>();
 builder.Services.AddHostedService<AutoLongScheduleHostedService>();
 builder.Services.AddSingleton<AutoLongPaperLedger>();
+builder.Services.AddSingleton<AutoLongPaperPositions>();
 builder.Services.AddSingleton<AutoLongSignalMonitor>();
 builder.Services.AddHostedService<AutoLongSignalHostedService>();
 builder.Services.AddSingleton<RequiredSymbolsRegistry>();
@@ -103,6 +104,20 @@ app.MapPost("/api/auto-long/shadow-test/fill", (AutoLongShadowFill body, HttpCon
     !IsLocalShadowTest(ctx,cfg)?Results.StatusCode(404):Results.Ok(new{accepted=ledger.ReconcileFill(body.Id,body.FilledBuyTwd)}));
 app.MapPost("/api/auto-long/shadow-test/cancel", (AutoLongShadowCancel body, HttpContext ctx, IConfiguration cfg, AutoLongPaperLedger ledger) =>
     !IsLocalShadowTest(ctx,cfg)?Results.StatusCode(404):Results.Ok(new{accepted=ledger.CancelReservation(body.Id)}));
+app.MapGet("/api/auto-long/paper-positions", (AutoLongPaperPositions positions,IConfiguration cfg) => cfg.GetValue<bool>("A18:StagingSafeMode")?Results.Ok(positions.List()):Results.StatusCode(404));
+// Loopback-only deterministic PAPER execution harness. Never routed to A18_21.
+app.MapPost("/api/auto-long/shadow-test/open", (AutoLongPaperOpen body,HttpContext ctx,IConfiguration cfg,AutoLongPaperPositions positions) =>
+{
+    if(!IsLocalShadowTest(ctx,cfg))return Results.StatusCode(404);
+    var result=positions.Open(body.IntentId,body.Price,body.FilledAt);
+    return Results.Ok(new{result.Accepted,result.Reason,result.Position});
+});
+app.MapPost("/api/auto-long/shadow-test/bar", (AutoLongPaperBar body,HttpContext ctx,IConfiguration cfg,AutoLongPaperPositions positions) =>
+{
+    if(!IsLocalShadowTest(ctx,cfg))return Results.StatusCode(404);
+    var result=positions.Observe(body.IntentId,body.Open,body.High,body.Low,body.Close,body.At);
+    return Results.Ok(new{result.Accepted,result.Reason,result.Position});
+});
 app.MapGet("/api/auto-long/paper-intents", (AutoLongPaperLedger ledger, IConfiguration cfg) => cfg.GetValue<bool>("A18:StagingSafeMode")?Results.Ok(ledger.List()):Results.StatusCode(404));
 app.MapGet("/api/auto-long/paper-summary", (AutoLongPaperLedger ledger, IConfiguration cfg) => cfg.GetValue<bool>("A18:StagingSafeMode")?Results.Ok(ledger.Summary()):Results.StatusCode(404));
 app.MapGet("/api/auto-long/signals", (AutoLongSignalMonitor monitor, IConfiguration cfg) => cfg.GetValue<bool>("A18:StagingSafeMode")?Results.Ok(monitor.List()):Results.StatusCode(404));
@@ -813,3 +828,6 @@ internal sealed class RequiredSymbolsRegistry(IConfiguration config)
 internal sealed record AutoLongShadowReserve(string Symbol,DateTimeOffset SignalTime,long Quantity,decimal ReferencePrice);
 internal sealed record AutoLongShadowFill(string Id,decimal FilledBuyTwd);
 internal sealed record AutoLongShadowCancel(string Id);
+
+internal sealed record AutoLongPaperOpen(string IntentId,decimal Price,DateTimeOffset FilledAt);
+internal sealed record AutoLongPaperBar(string IntentId,decimal Open,decimal High,decimal Low,decimal Close,DateTimeOffset At);

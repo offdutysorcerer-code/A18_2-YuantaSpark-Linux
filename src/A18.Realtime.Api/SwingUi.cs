@@ -930,6 +930,13 @@ if(location.hostname.startsWith('staging-')||location.hostname==='127.0.0.1'||lo
       $('autoLong'+name+'Status').textContent=(r?'已登錄：'+r.status+'｜已使用進場 '+r.filledEntries+'/'+r.maxEntries+'｜累計買進 '+r.cumulativeBuyTwd+'/'+r.buyBudgetTwd+' 元':'尚未登錄')++(r?.activationMode==='NEXT_SESSION'?'｜預約 '+(r.activateAt||''):'')+'。Staging 僅保存追蹤設定，尚未自動下單。';
     }
     const el=$('autoLongMonitorRows');el.replaceChildren();
+    // Staging-only, independent PAPER ledger: never mistaken for A18_21 REAL holdings.
+    fetch('/api/auto-long/paper-positions',{cache:'no-store'}).then(r=>r.ok?r.json():[]).then(rows=>{
+      const previous=$('autoLongPaperList');if(previous)previous.remove();
+      const box=document.createElement('div');box.id='autoLongPaperList';box.className='monitor-meta';
+      box.textContent=rows.length?'隔離 PAPER 模擬持倉：'+rows.slice(0,8).map(p=>p.symbol+' '+p.status+' '+p.quantity+' 股／進 '+p.entryPrice+(p.exitPrice==null?'':'／出 '+p.exitPrice)).join('；'):'隔離 PAPER 模擬：尚無成交部位';
+      $('autoLongMonitorSection').append(box);
+    }).catch(()=>{});
     for(const r of autoLongRows){
       const card=document.createElement('article');card.className='monitor-card';
       const name=document.createElement('strong');name.textContent=r.symbol+'｜'+(r.entryEnabled?'追蹤設定啟用':'新進場已停止');card.append(name);
