@@ -802,6 +802,19 @@ if(!qd&&$('date').value===today){
     }
   }catch(e){console.warn('Could not resolve latest trading date',e)}
 }
+// STAGING_CLOSED_DATE_FALLBACK: persisted closed-market dates should not produce an empty testing page.
+if(location.hostname.startsWith('staging-')&&!qd){
+  try{
+    let current=$('date').value;
+    for(let attempt=0;attempt<20;attempt++){
+      const res=await fetch(`/api/calendar/non-trading/${current}`,{cache:'no-store'});
+      if(!res.ok||!(await res.json()).nonTrading)break;
+      const d=new Date(current+'T12:00:00');d.setDate(d.getDate()-1);
+      current=`${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
+      $('date').value=current;
+    }
+  }catch(e){console.warn('Staging trading-date fallback failed',e)}
+}
 updateWeekday();syncBlock4TargetControls();await loadGroups();if(prefs.group&&groupNames().includes(prefs.group)){$('groupSelect').value=prefs.group;renderMembers()}wireWorkspace();syncSimpleFromCanonical();setWorkspaceView(location.hash==='#simple'?'simple':location.hash==='#monitor'?'monitor':'full',{hash:false});state.timer=setInterval(load,5000);setInterval(pollRuntime21,2000);setInterval(pollOperationModeControl,1500);setInterval(()=>{if($('liveDetectorEnabled')?.checked)renderLiveDetector()},5000);setInterval(loadPaperAccount,2000);setInterval(()=>loadPositionMonitor({render:false,forcePrompt:true}),2000);pollRuntime21();pollOperationModeControl();loadPaperAccount();loadPositionMonitor({render:workspaceView==='monitor',forcePrompt:true});if(typeof prefs.simEntryTime==='string'&&prefs.simEntrySymbol===$('symbol').value.trim().toUpperCase()&&prefs.simEntryTime.slice(0,10)===$('date').value)state.simEntryTime=prefs.simEntryTime;load()}init();})();
 </script>
 </body>
