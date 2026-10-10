@@ -163,7 +163,7 @@ header{display:flex;align-items:center;justify-content:space-between;gap:16px;pa
       <div class="detector-box detector-explain-box sim-grid-full"><div class="detector-head"><label class="ui-toggle"><input id="probeDetectorEnabled" type="checkbox"><span class="ui-toggle-track"></span><span>手動試算探測器</span></label><label class="ui-toggle"><input id="liveDetectorEnabled" type="checkbox"><span class="ui-toggle-track"></span><span>盤中即時探測</span></label><label>版本 <select id="probeDetectorVersion"><option value="D1">D1 原始 Regime</option><option value="D2">D2 Regime＋5秒 Timing</option></select></label><button type="button" id="probeDetectorRun">解讀選定進場點</button><button type="button" id="regimeGuideOpen" aria-haspopup="dialog" aria-controls="regimeGuideModal">狀態與計算說明</button><span class="sim-hint">D1/D2 都只使用選定時間前已完整形成的 K 棒，不偷看未來。</span></div><div id="probeDetectorResult" class="detector-result">探測器關閉。</div></div>
     </div>
     <div id="threeGreenPanel" class="detector-box sim-grid-full" style="display:none;margin:10px 0">
-      <div class="detector-head"><strong>Staging 實驗：累積三根 5 秒陽線</strong><label class="ui-toggle"><input id="threeGreenOverlay" type="checkbox"><span class="ui-toggle-track"></span><span>在 K 線標記</span></label><label>版本 <select id="threeGreenMode"><option value="NON_OVERLAP">A 三根後重新累積</option><option value="SLIDING">B 滑動偵測（允許重疊）</option></select></label><button type="button" id="threeGreenScan">掃描目前股票／日期</button><span class="sim-hint">已完成 5 秒 K：陽 K 的 Open 必須大於或等於前根累積陽 K 的 Close；陰 K 歸零；單價平盤 K 相較前根 Close：高則 +1、等則略過、低則歸零；不符合的陽 K 從該根重新累積。</span></div>
+      <div class="detector-head"><strong>Staging 實驗：累積三根 5 秒陽線</strong><label class="ui-toggle"><input id="threeGreenOverlay" type="checkbox"><span class="ui-toggle-track"></span><span>在 K 線標記</span></label><label>版本 <select id="threeGreenMode"><option value="NON_OVERLAP">A 三根後重新累積</option><option value="SLIDING">B 滑動偵測（允許重疊）</option></select></label><button type="button" id="threeGreenScan">掃描目前股票／日期</button><span class="sim-hint">已完成 5 秒 K：陽 K 的 Open 必須大於或等於前根累積陽 K 的 Close；陰 K 歸零；單價平盤 K 相較前根 Close：高則 +1、等則略過、低則歸零；陽 K 未接上前合格陽 K 時，改比較 O 與前根實際 Close：高則累積、等則略過、低則歸零。</span></div>
       <div id="threeGreenResult" role="status" class="detector-result">按「掃描」尋找型態。</div>
       <div id="threeGreenList" style="max-height:320px;overflow:auto"></div>
     </div>
@@ -848,10 +848,17 @@ function scanThreeGreenBars(bars,mode=$('threeGreenMode').value){
     }
     if(isFlat&&(priorClose===null||c===priorClose))continue;
     if(c===o&&!isFlat)continue; // non-single-price doji retains previous neutral behaviour
+    // A bullish candle that fails the accumulated bullish close test is
+    // classified using its Open against the preceding actual bar's Close.
+    const bullFallback=c>o&&count>0&&o<previousBullClose;
+    if(bullFallback){
+      if(priorClose===null||o===priorClose)continue;
+      if(o<priorClose){count=0;previousBullClose=null;windowBull=[];continue}
+      // o > priorClose: count this bullish bar
+    }
     const flatUp=isFlat&&priorClose!==null&&c>priorClose;
-    if(count===0||(!flatUp&&o<previousBullClose)){
-      count=1;windowBull=[b.startTime];
-    }else{count++;windowBull.push(b.startTime)}
+    if(count===0){count=1;windowBull=[b.startTime]}
+    else{count++;windowBull.push(b.startTime)}
     previousBullClose=c;
     if(count>=3){
       signals.push({time:new Date(Date.parse(b.startTime)+5000).toISOString(),price:c,start:windowBull[windowBull.length-3]});
