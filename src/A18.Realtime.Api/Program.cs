@@ -50,6 +50,7 @@ builder.Services.AddSingleton<SwingGroups>();
 builder.Services.AddSingleton<SwingState>();
 builder.Services.AddSingleton<AutoLongWatch>();
 builder.Services.AddHostedService<AutoLongScheduleHostedService>();
+builder.Services.AddSingleton<AutoLongPaperLedger>();
 builder.Services.AddSingleton<AutoLongSignalMonitor>();
 builder.Services.AddHostedService<AutoLongSignalHostedService>();
 builder.Services.AddSingleton<RequiredSymbolsRegistry>();
@@ -87,6 +88,8 @@ app.MapGet("/swing", () => Results.Content(SwingUi.Html, "text/html; charset=utf
 app.MapGet("/simple", () => Results.Redirect("/swing#simple"));
 // Experimental registry is deliberately staging-only until the broker execution
 // integration passes paper, deduplication and takeover reconciliation tests.
+app.MapGet("/api/auto-long/paper-intents", (AutoLongPaperLedger ledger, IConfiguration cfg) => cfg.GetValue<bool>("A18:StagingSafeMode")?Results.Ok(ledger.List()):Results.StatusCode(404));
+app.MapGet("/api/auto-long/paper-summary", (AutoLongPaperLedger ledger, IConfiguration cfg) => cfg.GetValue<bool>("A18:StagingSafeMode")?Results.Ok(ledger.Summary()):Results.StatusCode(404));
 app.MapGet("/api/auto-long/signals", (AutoLongSignalMonitor monitor, IConfiguration cfg) => cfg.GetValue<bool>("A18:StagingSafeMode")?Results.Ok(monitor.List()):Results.StatusCode(404));
 app.MapGet("/api/auto-long/preview", (AutoLongWatch watch, IConfiguration cfg) =>
 {
