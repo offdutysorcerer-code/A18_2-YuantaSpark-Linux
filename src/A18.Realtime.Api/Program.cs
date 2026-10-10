@@ -62,6 +62,21 @@ builder.Services.AddHttpClient<Runtime21Bridge>((services, client) =>
 });
 
 var app = builder.Build();
+// Staging must never forward orders, account requests or trading controls to the live runtime.
+if (builder.Configuration.GetValue<bool>("A18:StagingSafeMode"))
+{
+    app.Use(async (context, next) =>
+    {
+        if (context.Request.Path.StartsWithSegments("/api/runtime21", StringComparison.OrdinalIgnoreCase))
+        {
+            context.Response.StatusCode = StatusCodes.Status503ServiceUnavailable;
+            await context.Response.WriteAsJsonAsync(new { error = "STAGING_RUNTIME21_DISABLED", message = "Staging cannot access live trading runtime." });
+            return;
+        }
+        await next(context);
+    });
+}
+
 
 app.MapGet("/", () => Results.Content(DiagnosticUi.Html, "text/html; charset=utf-8"));
 app.MapGet("/swing", () => Results.Content(SwingUi.Html, "text/html; charset=utf-8"));
