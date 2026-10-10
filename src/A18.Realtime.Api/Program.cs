@@ -49,6 +49,7 @@ builder.Services.AddSingleton<DailyKlineEnsureService>();
 builder.Services.AddSingleton<SwingGroups>();
 builder.Services.AddSingleton<SwingState>();
 builder.Services.AddSingleton<AutoLongWatch>();
+builder.Services.AddHostedService<AutoLongScheduleHostedService>();
 builder.Services.AddSingleton<RequiredSymbolsRegistry>();
 builder.Services.AddSingleton<SwingAnnotations>();
 builder.Services.AddHttpClient<Runtime21Bridge>((services, client) =>

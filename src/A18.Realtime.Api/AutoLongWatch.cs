@@ -8,6 +8,18 @@ internal sealed record AutoLongWatchRequest(string Symbol, bool EntryEnabled, in
 internal sealed class AutoLongWatch(IConfiguration config)
 {
     private readonly object _gate=new();
+    public static string ResolveStatus(AutoLongWatchRow row,DateTime now)
+    {
+        if(!row.EntryEnabled)return "ENTRY_PAUSED";
+        if(row.ActivationMode!="NEXT_SESSION")return "STAGING_WATCH_ONLY";
+        if(!DateOnly.TryParseExact(row.SessionDate,"yyyy-MM-dd",out var date))return "INVALID_SCHEDULE";
+        var today=DateOnly.FromDateTime(now);
+        if(today<date)return "SCHEDULED";
+        if(today>date||now.TimeOfDay>=new TimeSpan(9,30,0))return "EXPIRED";
+        if(now.TimeOfDay<new TimeSpan(9,0,0))return "SCHEDULED";
+        return "WATCH_ONLY";
+    }
+
     private static readonly TimeZoneInfo Taipei=TimeZoneInfo.FindSystemTimeZoneById("Asia/Taipei");
     private static DateTime NowTaipei()=>TimeZoneInfo.ConvertTime(DateTimeOffset.UtcNow,Taipei).DateTime;
     private readonly string _holidays=config["AutoLong:NonTradingDaysPath"]??"/data/reference/non-trading-days.txt";
@@ -24,8 +36,7 @@ internal sealed class AutoLongWatch(IConfiguration config)
     {
         lock(_gate){var rows=Read();bool dirty=false;var now=NowTaipei();foreach(var key in rows.Keys.ToArray())
         {var row=rows[key];if(row.ActivationMode!="NEXT_SESSION"||!row.EntryEnabled||string.IsNullOrWhiteSpace(row.SessionDate))continue;
-         if(!DateTime.TryParse(row.SessionDate,out var date))continue;
-         var status=now.Date<date.Date?"SCHEDULED":now.Date==date.Date&&now.TimeOfDay<new TimeSpan(9,30,0)?"WATCH_ONLY":"EXPIRED";
+         var status=ResolveStatus(row,now);
          if(status!=row.Status){rows[key]=row with{Status=status,EntryEnabled=status!="EXPIRED"};dirty=true;}
         }if(dirty)Write(rows);return rows.Values.OrderBy(x=>x.Symbol).ToArray();}
     }
@@ -58,6 +69,7 @@ internal sealed class AutoLongWatch(IConfiguration config)
             var scheduled=request.ActivationMode=="NEXT_SESSION";
             if(request.ActivationMode is not ("NEXT_SESSION" or "IMMEDIATE"))throw new ArgumentException("不支援的啟動模式");
             // Staging only: booking persists without executing orders.
+            // Date is resolved only by the server; clients cannot supply a backdated day.
             var preview=scheduled&&enabled?Preview():null;
             var row=new AutoLongWatchRow(symbol,enabled,request.MaxEntries,request.BuyBudgetTwd,old?.FilledEntries??0,old?.CumulativeBuyTwd??0m,enabled?(scheduled?"SCHEDULED":"STAGING_WATCH_ONLY"):"ENTRY_PAUSED",DateTimeOffset.UtcNow,scheduled?"NEXT_SESSION":"IMMEDIATE",scheduled&&enabled?(string?)preview?.GetType().GetProperty("sessionDate")?.GetValue(preview):old?.SessionDate,scheduled&&enabled?(string?)preview?.GetType().GetProperty("activateAt")?.GetValue(preview):old?.ActivateAt);
             rows[symbol]=row;Write(rows);return row;
