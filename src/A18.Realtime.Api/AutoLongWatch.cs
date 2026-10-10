@@ -1,13 +1,35 @@
 using System.Text.Json;
 using System.Text.RegularExpressions;
 namespace A18.Realtime.Api;
-internal sealed record AutoLongWatchRow(string Symbol, bool EntryEnabled, int MaxEntries, decimal BuyBudgetTwd, int FilledEntries, decimal CumulativeBuyTwd, string Status, DateTimeOffset UpdatedAt);
-internal sealed record AutoLongWatchRequest(string Symbol, bool EntryEnabled, int MaxEntries, decimal BuyBudgetTwd);
+internal sealed record AutoLongWatchRow(string Symbol, bool EntryEnabled, int MaxEntries, decimal BuyBudgetTwd, int FilledEntries, decimal CumulativeBuyTwd, string Status, DateTimeOffset UpdatedAt, string ActivationMode="IMMEDIATE", string? SessionDate=null, string? ActivateAt=null);
+internal sealed record AutoLongWatchRequest(string Symbol, bool EntryEnabled, int MaxEntries, decimal BuyBudgetTwd, string ActivationMode="IMMEDIATE");
 // Entry authorization registry. NO order submission in this class; running a live order
 // requires the A18_21 entry dispatcher, reconciliation and broker acknowledgements.
 internal sealed class AutoLongWatch(IConfiguration config)
 {
     private readonly object _gate=new();
+    private static readonly TimeZoneInfo Taipei=TimeZoneInfo.FindSystemTimeZoneById("Asia/Taipei");
+    private static DateTime NowTaipei()=>TimeZoneInfo.ConvertTime(DateTimeOffset.UtcNow,Taipei).DateTime;
+    private readonly string _holidays=config["AutoLong:NonTradingDaysPath"]??"/data/reference/non-trading-days.txt";
+    private bool IsOpen(DateTime date,HashSet<string> excluded)=>date.DayOfWeek is not (DayOfWeek.Saturday or DayOfWeek.Sunday)&&!excluded.Contains(date.ToString("yyyy-MM-dd"));
+    private HashSet<string> Excluded()=>File.Exists(_holidays)?File.ReadAllLines(_holidays).Select(x=>x.Trim()).Where(x=>x.Length==10).ToHashSet():throw new InvalidOperationException("交易日曆不存在，拒絕建立預約");
+    public object Preview(DateTime? reference=null)
+    {
+        var now=reference??NowTaipei();var excluded=Excluded();var day=now.Date;
+        if(now.TimeOfDay>=new TimeSpan(9,0,0)||!IsOpen(day,excluded))day=day.AddDays(1);
+        for(var i=0;i<35;i++,day=day.AddDays(1))if(IsOpen(day,excluded))return new{sessionDate=day.ToString("yyyy-MM-dd"),activateAt=$"{day:yyyy-MM-dd}T09:00:00+08:00",timeZone="Asia/Taipei",calendar="configured-exclusions",executionEnabled=false};
+        throw new InvalidOperationException("未找到下一個交易日");
+    }
+    public AutoLongWatchRow[] RefreshStatuses()
+    {
+        lock(_gate){var rows=Read();bool dirty=false;var now=NowTaipei();foreach(var key in rows.Keys.ToArray())
+        {var row=rows[key];if(row.ActivationMode!="NEXT_SESSION"||!row.EntryEnabled||string.IsNullOrWhiteSpace(row.SessionDate))continue;
+         if(!DateTime.TryParse(row.SessionDate,out var date))continue;
+         var status=now.Date<date.Date?"SCHEDULED":now.Date==date.Date&&now.TimeOfDay<new TimeSpan(9,30,0)?"WATCH_ONLY":"EXPIRED";
+         if(status!=row.Status){rows[key]=row with{Status=status,EntryEnabled=status!="EXPIRED"};dirty=true;}
+        }if(dirty)Write(rows);return rows.Values.OrderBy(x=>x.Symbol).ToArray();}
+    }
+
     private readonly string _path=config["AutoLong:StatePath"]??"/data/auto-long-v1.json";
     private Dictionary<string,AutoLongWatchRow> Read()
     {
@@ -21,7 +43,7 @@ internal sealed class AutoLongWatch(IConfiguration config)
         File.WriteAllText(tmp,JsonSerializer.Serialize(rows,new JsonSerializerOptions{WriteIndented=true}));
         File.Move(tmp,_path,true);
     }
-    public AutoLongWatchRow[] List(){lock(_gate)return Read().Values.OrderBy(x=>x.Symbol).ToArray();}
+    public AutoLongWatchRow[] List()=>RefreshStatuses();
     public AutoLongWatchRow Set(AutoLongWatchRequest request)
     {
         var symbol=(request.Symbol??"").Trim().ToUpperInvariant();
@@ -33,7 +55,11 @@ internal sealed class AutoLongWatch(IConfiguration config)
             var rows=Read();rows.TryGetValue(symbol,out var old);
             // Never erase already consumed entry-count or buy-only budget on toggle.
             var enabled=request.EntryEnabled&&!(old?.FilledEntries>=request.MaxEntries||old?.CumulativeBuyTwd>=request.BuyBudgetTwd);
-            var row=new AutoLongWatchRow(symbol,enabled,request.MaxEntries,request.BuyBudgetTwd,old?.FilledEntries??0,old?.CumulativeBuyTwd??0m,enabled?"STAGING_WATCH_ONLY":"ENTRY_PAUSED",DateTimeOffset.UtcNow);
+            var scheduled=request.ActivationMode=="NEXT_SESSION";
+            if(request.ActivationMode is not ("NEXT_SESSION" or "IMMEDIATE"))throw new ArgumentException("不支援的啟動模式");
+            // Staging only: booking persists without executing orders.
+            var preview=scheduled&&enabled?Preview():null;
+            var row=new AutoLongWatchRow(symbol,enabled,request.MaxEntries,request.BuyBudgetTwd,old?.FilledEntries??0,old?.CumulativeBuyTwd??0m,enabled?(scheduled?"SCHEDULED":"STAGING_WATCH_ONLY"):"ENTRY_PAUSED",DateTimeOffset.UtcNow,scheduled?"NEXT_SESSION":"IMMEDIATE",scheduled&&enabled?(string?)preview?.GetType().GetProperty("sessionDate")?.GetValue(preview):old?.SessionDate,scheduled&&enabled?(string?)preview?.GetType().GetProperty("activateAt")?.GetValue(preview):old?.ActivateAt);
             rows[symbol]=row;Write(rows);return row;
         }
     }

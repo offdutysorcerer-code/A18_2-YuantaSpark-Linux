@@ -91,7 +91,7 @@ header{display:flex;align-items:center;justify-content:space-between;gap:16px;pa
   <div class="trade-workspace"><details id="foldStrategySimulation" class="panel sim-panel sim-panel-fold" open>
     <summary class="sim-panel-head"><span class="section-no">4</span><h2 id="strategySimulationTitle">策略與手動試算</h2></summary>
     <div class="sim-groups">
-      <div id="autoLongFull" class="detector-box" style="display:none;margin:8px 0;padding:10px"><strong>自動Long V1｜V2 60 秒累積三次 Close 上升</strong><div class="detector-head"><label class="ui-toggle"><input id="autoLongFullToggle" type="checkbox"><span class="ui-toggle-track"></span><span>追蹤此標的（停止只阻擋新進場）</span></label><label>進場次數上限 <input id="autoLongFullCount" type="number" min="1" max="1000" value="1" style="width:75px"></label><label>累計買進金額上限（元） <input id="autoLongFullBudget" type="number" min="100" step="100" value="100000" style="width:128px"></label><button type="button" id="autoLongFullSave">儲存追蹤設定</button></div><div id="autoLongFullStatus" class="sim-hint">僅 Staging 配置，尚未連接自動委託與出場接管。</div></div><details id="foldStrategyLong" class="sim-subpanel" open>
+      <div id="autoLongFull" class="detector-box" style="display:none;margin:8px 0;padding:10px"><strong>自動Long V1｜V2 60 秒累積三次 Close 上升</strong><div class="detector-head"><label class="ui-toggle"><input id="autoLongFullToggle" type="checkbox"><span class="ui-toggle-track"></span><span>追蹤此標的（停止只阻擋新進場）</span></label><label>進場次數上限 <input id="autoLongFullCount" type="number" min="1" max="1000" value="1" style="width:75px"></label><label>累計買進金額上限（元） <input id="autoLongFullBudget" type="number" min="100" step="100" value="100000" style="width:128px"></label><label>啟動 <select id="autoLongFullMode"><option value="IMMEDIATE">立即追蹤</option><option value="NEXT_SESSION">預約下一交易時段</option></select></label><button type="button" id="autoLongFullSave">儲存追蹤設定</button></div><div id="autoLongFullStatus" class="sim-hint">僅 Staging 配置，尚未連接自動委託與出場接管。</div></div><details id="foldStrategyLong" class="sim-subpanel" open>
         <summary>策略 LONG</summary>
         <div class="subpanel-controls">
           <label class="switch" title="進場規則不變；僅分析"><input id="autoStrategyA" type="checkbox"><span class="slider"></span><span>策略A LONG</span></label><label>A停損% <input id="autoAStopPct" type="number" min="0" step="0.1" value="1"></label><label>A移動停利% <input id="autoATrailPct" type="number" min="0" step="0.1" value="0.5"></label><label>A移動停利模式 <select id="autoATrailMode"><option value="FIXED">固定%</option><option value="ATR">ATR動態</option><option value="MAX_FIXED_ATR">固定/ATR取大</option><option value="SIGMA">標準差σ</option><option value="REBOUND_QUANTILE">反彈分位</option></select></label><label>動態來源週期 <select id="autoASourceIntervalSeconds"><option value="1">1秒</option><option value="5">5秒</option><option value="15">15秒</option><option value="30">30秒</option><option value="60">60秒</option></select></label><label>A回看 <input id="autoALookback" type="number" min="2" max="500" value="20"></label><label>A倍數 <input id="autoAMultiplier" type="number" min="0" step="0.1" value="1.5"></label><label>A分位% <input id="autoAQuantile" type="number" min="0" max="100" step="1" value="80"></label><label>A移動停利確認 <select id="autoAConfirmation"><option value="NONE">不確認</option><option value="VOLUME">放量</option><option value="STRUCTURE">結構突破</option><option value="VOLUME_OR_STRUCTURE">放量或結構</option></select></label><label>A量倍 <input id="autoAVolumeMultiplier" type="number" min="0" step="0.1" value="1.5"></label>
@@ -209,7 +209,7 @@ header{display:flex;align-items:center;justify-content:space-between;gap:16px;pa
         <div class="simple-field"><label for="simpleQuantile">分位 %</label><input id="simpleQuantile" type="number" min="0" max="100" step="1"></div>
         <div class="simple-field"><label for="simpleVolumeMultiplier">量倍</label><input id="simpleVolumeMultiplier" type="number" min="0" step="0.1"></div>
       </div></details>
-      <div id="autoLongSimple" class="detector-box" style="display:none;margin:8px 0;padding:10px"><strong>自動Long V1｜60 秒三次收盤上升</strong><div class="detector-head"><label class="ui-toggle"><input id="autoLongSimpleToggle" type="checkbox"><span class="ui-toggle-track"></span><span>追蹤此標的</span></label><label>進場次數上限 <input id="autoLongSimpleCount" type="number" min="1" max="1000" value="1" style="width:75px"></label><label>累計買進金額上限（元） <input id="autoLongSimpleBudget" type="number" min="100" step="100" value="100000" style="width:128px"></label><button type="button" id="autoLongSimpleSave">儲存追蹤設定</button></div><div id="autoLongSimpleStatus" class="sim-hint">僅追蹤設定，尚未連接自動委託。</div></div><div id="simpleEligibility" class="simple-status blocked">正在確認是否可送出真單。</div>
+      <div id="autoLongSimple" class="detector-box" style="display:none;margin:8px 0;padding:10px"><strong>自動Long V1｜60 秒三次收盤上升</strong><div class="detector-head"><label class="ui-toggle"><input id="autoLongSimpleToggle" type="checkbox"><span class="ui-toggle-track"></span><span>追蹤此標的</span></label><label>進場次數上限 <input id="autoLongSimpleCount" type="number" min="1" max="1000" value="1" style="width:75px"></label><label>累計買進金額上限（元） <input id="autoLongSimpleBudget" type="number" min="100" step="100" value="100000" style="width:128px"></label><label>啟動 <select id="autoLongSimpleMode"><option value="IMMEDIATE">立即追蹤</option><option value="NEXT_SESSION">預約下一交易時段</option></select></label><button type="button" id="autoLongSimpleSave">儲存追蹤設定</button></div><div id="autoLongSimpleStatus" class="sim-hint">僅追蹤設定，尚未連接自動委託。</div></div><div id="simpleEligibility" class="simple-status blocked">正在確認是否可送出真單。</div>
       <div id="simplePaperSummary" class="simple-status ready">PAPER 帳戶：讀取中；詳細持倉請切到「部位監控」。</div><div class="simple-actions"><label>交易模式 <select id="simpleExecutionMode"><option value="REAL">REAL 真單</option><option value="PAPER">PAPER 虛擬單</option></select></label><label class="ui-toggle"><input id="simplePreOrderDetectorEnabled" type="checkbox"><span class="ui-toggle-track"></span><span>下單前探測</span></label><span style="color:#ffc857;font-size:12px">使用與完整操作相同的 A18_21 REAL 真單邏輯；切換頁籤不會重載 K 線。</span><button id="simpleSend" class="simple-send" type="button" disabled>送出真單</button></div>
     </div>
   </section></div>
@@ -916,7 +916,8 @@ if(location.hostname.startsWith('staging-') || location.hostname==='127.0.0.1' |
 if(location.hostname.startsWith('staging-')||location.hostname==='127.0.0.1'||location.hostname==='localhost'){
   for(const id of ['autoLongFull','autoLongSimple','autoLongMonitorSection'])$(id).style.display='';
   $('foldStrategyLong').open=false;
-  let autoLongRows=[];
+  let autoLongRows=[];let autoLongPreview=null;
+  fetch('/api/auto-long/preview').then(r=>r.ok?r.json():null).then(x=>{autoLongPreview=x;syncAutoLongControls()}).catch(()=>{});
   const symbolNow=()=>($('symbol').value||'').trim().toUpperCase();
   const rowFor=()=>autoLongRows.find(r=>r.symbol===symbolNow());
   function syncAutoLongControls(){
@@ -925,14 +926,15 @@ if(location.hostname.startsWith('staging-')||location.hostname==='127.0.0.1'||lo
       $('autoLong'+name+'Toggle').checked=Boolean(r?.entryEnabled);
       $('autoLong'+name+'Count').value=r?.maxEntries||1;
       $('autoLong'+name+'Budget').value=r?.buyBudgetTwd||100000;
-      $('autoLong'+name+'Status').textContent=(r?'已登錄：'+r.status+'｜已使用進場 '+r.filledEntries+'/'+r.maxEntries+'｜累計買進 '+r.cumulativeBuyTwd+'/'+r.buyBudgetTwd+' 元':'尚未登錄')+'。Staging 僅保存追蹤設定，尚未自動下單。';
+      $('autoLong'+name+'Mode').value=r?.activationMode||'IMMEDIATE';
+      $('autoLong'+name+'Status').textContent=(r?'已登錄：'+r.status+'｜已使用進場 '+r.filledEntries+'/'+r.maxEntries+'｜累計買進 '+r.cumulativeBuyTwd+'/'+r.buyBudgetTwd+' 元':'尚未登錄')++(r?.activationMode==='NEXT_SESSION'?'｜預約 '+(r.activateAt||''):'')+'。Staging 僅保存追蹤設定，尚未自動下單。';
     }
     const el=$('autoLongMonitorRows');el.replaceChildren();
     for(const r of autoLongRows){
       const card=document.createElement('article');card.className='monitor-card';
       const name=document.createElement('strong');name.textContent=r.symbol+'｜'+(r.entryEnabled?'追蹤設定啟用':'新進場已停止');card.append(name);
       const info=document.createElement('div');info.className='monitor-meta';info.textContent='次數 '+r.filledEntries+'/'+r.maxEntries+'｜累計買進 '+r.cumulativeBuyTwd+'/'+r.buyBudgetTwd+' 元｜尚未接入策略執行';card.append(info);
-      const off=document.createElement('button');off.type='button';off.textContent='停止新進場';off.disabled=!r.entryEnabled;off.addEventListener('click',()=>saveAutoLong({symbol:r.symbol,entryEnabled:false,maxEntries:r.maxEntries,buyBudgetTwd:r.buyBudgetTwd}));card.append(off);el.append(card);
+      const off=document.createElement('button');off.type='button';off.textContent='停止新進場';off.disabled=!r.entryEnabled;off.addEventListener('click',()=>saveAutoLong({symbol:r.symbol,entryEnabled:false,maxEntries:r.maxEntries,buyBudgetTwd:r.buyBudgetTwd,activationMode:r.activationMode}));card.append(off);el.append(card);
     }
     if(!autoLongRows.length)el.textContent='目前沒有登錄的自動Long標的。';
   }
@@ -941,8 +943,9 @@ if(location.hostname.startsWith('staging-')||location.hostname==='127.0.0.1'||lo
     try{const response=await fetch('/api/auto-long',{method:'PUT',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload)});const result=await response.json();if(!response.ok)throw Error(result.error||'HTTP '+response.status);await refreshAutoLong()}catch(e){alert('自動Long設定未儲存：'+e.message);await refreshAutoLong()}
   }
   for(const name of ['Full','Simple']){
-    $('autoLong'+name+'Save').addEventListener('click',()=>saveAutoLong({symbol:symbolNow(),entryEnabled:$('autoLong'+name+'Toggle').checked,maxEntries:Number($('autoLong'+name+'Count').value),buyBudgetTwd:Number($('autoLong'+name+'Budget').value)}));
-    $('autoLong'+name+'Toggle').addEventListener('change',()=>saveAutoLong({symbol:symbolNow(),entryEnabled:$('autoLong'+name+'Toggle').checked,maxEntries:Number($('autoLong'+name+'Count').value),buyBudgetTwd:Number($('autoLong'+name+'Budget').value)}));
+    $('autoLong'+name+'Mode').addEventListener('change',()=>{if($('autoLong'+name+'Mode').value==='NEXT_SESSION')alert(autoLongPreview?'預計啟動：'+autoLongPreview.activateAt+'（台灣時間），僅保存預約、不送單':'無法確認交易日曆，請稍後再試')});
+    $('autoLong'+name+'Save').addEventListener('click',()=>saveAutoLong({symbol:symbolNow(),entryEnabled:$('autoLong'+name+'Toggle').checked,maxEntries:Number($('autoLong'+name+'Count').value),buyBudgetTwd:Number($('autoLong'+name+'Budget').value),activationMode:$('autoLong'+name+'Mode').value}));
+    $('autoLong'+name+'Toggle').addEventListener('change',()=>saveAutoLong({symbol:symbolNow(),entryEnabled:$('autoLong'+name+'Toggle').checked,maxEntries:Number($('autoLong'+name+'Count').value),buyBudgetTwd:Number($('autoLong'+name+'Budget').value),activationMode:$('autoLong'+name+'Mode').value}));
   }
   $('symbol').addEventListener('change',()=>syncAutoLongControls());
   refreshAutoLong();setInterval(refreshAutoLong,10000);

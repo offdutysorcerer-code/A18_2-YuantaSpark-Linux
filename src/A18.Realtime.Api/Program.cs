@@ -84,6 +84,11 @@ app.MapGet("/swing", () => Results.Content(SwingUi.Html, "text/html; charset=utf
 app.MapGet("/simple", () => Results.Redirect("/swing#simple"));
 // Experimental registry is deliberately staging-only until the broker execution
 // integration passes paper, deduplication and takeover reconciliation tests.
+app.MapGet("/api/auto-long/preview", (AutoLongWatch watch, IConfiguration cfg) =>
+{
+    if(!cfg.GetValue<bool>("A18:StagingSafeMode"))return Results.StatusCode(404);
+    try{return Results.Ok(watch.Preview());}catch(Exception e){return Results.Problem(e.Message,statusCode:503);}
+});
 app.MapGet("/api/auto-long", (AutoLongWatch watch, IConfiguration cfg) =>
     cfg.GetValue<bool>("A18:StagingSafeMode")?Results.Ok(watch.List()):Results.StatusCode(404));
 app.MapPut("/api/auto-long", (AutoLongWatchRequest body, AutoLongWatch watch, IConfiguration cfg) =>
