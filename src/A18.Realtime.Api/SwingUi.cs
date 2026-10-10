@@ -162,6 +162,11 @@ header{display:flex;align-items:center;justify-content:space-between;gap:16px;pa
       </details>
       <div class="detector-box detector-explain-box sim-grid-full"><div class="detector-head"><label class="ui-toggle"><input id="probeDetectorEnabled" type="checkbox"><span class="ui-toggle-track"></span><span>手動試算探測器</span></label><label class="ui-toggle"><input id="liveDetectorEnabled" type="checkbox"><span class="ui-toggle-track"></span><span>盤中即時探測</span></label><label>版本 <select id="probeDetectorVersion"><option value="D1">D1 原始 Regime</option><option value="D2">D2 Regime＋5秒 Timing</option></select></label><button type="button" id="probeDetectorRun">解讀選定進場點</button><button type="button" id="regimeGuideOpen" aria-haspopup="dialog" aria-controls="regimeGuideModal">狀態與計算說明</button><span class="sim-hint">D1/D2 都只使用選定時間前已完整形成的 K 棒，不偷看未來。</span></div><div id="probeDetectorResult" class="detector-result">探測器關閉。</div></div>
     </div>
+    <div id="threeGreenPanel" class="detector-box sim-grid-full" style="display:none;margin:10px 0">
+      <div class="detector-head"><strong>Staging 實驗：連續三根 5 秒陽線</strong><button type="button" id="threeGreenScan">掃描目前股票／日期</button><span class="sim-hint">3 根已完成的 5 秒 K，各自 Close &gt; Open，起始時間每根相隔 5 秒。不把缺棒時段當連續。</span></div>
+      <div id="threeGreenResult" role="status" class="detector-result">按「掃描」尋找型態。</div>
+      <div id="threeGreenList" style="max-height:320px;overflow:auto"></div>
+    </div>
   </details>
   </div>
   <div class="chart-export-toolbar" style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-top:10px"><button type="button" id="copyChartPng">📋 複製 K 線 PNG</button><span id="copyChartPngStatus" role="status" aria-live="polite" style="color:var(--muted)"></span></div>
@@ -815,7 +820,45 @@ if(location.hostname.startsWith('staging-')&&!qd){
     }
   }catch(e){console.warn('Staging trading-date fallback failed',e)}
 }
-updateWeekday();syncBlock4TargetControls();await loadGroups();if(prefs.group&&groupNames().includes(prefs.group)){$('groupSelect').value=prefs.group;renderMembers()}wireWorkspace();syncSimpleFromCanonical();setWorkspaceView(location.hash==='#simple'?'simple':location.hash==='#monitor'?'monitor':'full',{hash:false});state.timer=setInterval(load,5000);setInterval(pollRuntime21,2000);setInterval(pollOperationModeControl,1500);setInterval(()=>{if($('liveDetectorEnabled')?.checked)renderLiveDetector()},5000);setInterval(loadPaperAccount,2000);setInterval(()=>loadPositionMonitor({render:false,forcePrompt:true}),2000);pollRuntime21();pollOperationModeControl();loadPaperAccount();loadPositionMonitor({render:workspaceView==='monitor',forcePrompt:true});if(typeof prefs.simEntryTime==='string'&&prefs.simEntrySymbol===$('symbol').value.trim().toUpperCase()&&prefs.simEntryTime.slice(0,10)===$('date').value)state.simEntryTime=prefs.simEntryTime;load()}init();})();
+updateWeekday();syncBlock4TargetControls();await loadGroups();if(prefs.group&&groupNames().includes(prefs.group)){$('groupSelect').value=prefs.group;renderMembers()}wireWorkspace();syncSimpleFromCanonical();setWorkspaceView(location.hash==='#simple'?'simple':location.hash==='#monitor'?'monitor':'full',{hash:false});state.timer=setInterval(load,5000);setInterval(pollRuntime21,2000);setInterval(pollOperationModeControl,1500);setInterval(()=>{if($('liveDetectorEnabled')?.checked)renderLiveDetector()},5000);setInterval(loadPaperAccount,2000);setInterval(()=>loadPositionMonitor({render:false,forcePrompt:true}),2000);pollRuntime21();pollOperationModeControl();loadPaperAccount();loadPositionMonitor({render:workspaceView==='monitor',forcePrompt:true});if(typeof prefs.simEntryTime==='string'&&prefs.simEntrySymbol===$('symbol').value.trim().toUpperCase()&&prefs.simEntryTime.slice(0,10)===$('date').value)state.simEntryTime=prefs.simEntryTime;load()}// Staging-only research signal: three truly adjacent completed 5-second bullish bars.
+if(location.hostname.startsWith('staging-') || location.hostname==='127.0.0.1' || location.hostname==='localhost'){
+  const panel=$('threeGreenPanel');panel.style.display='block';
+  const scan=$('threeGreenScan');
+  scan.addEventListener('click',async()=>{
+    const sym=$('symbol').value.trim().toUpperCase(),day=$('date').value;
+    const out=$('threeGreenResult'),list=$('threeGreenList');
+    out.textContent='正在掃描完整 5 秒 K…';list.replaceChildren();scan.disabled=true;
+    try{
+      const response=await fetchBars(sym,day,5);
+      const bars=(response.bars||[]).filter(b=>b&&Number.isFinite(Date.parse(b.startTime))).sort((a,b)=>Date.parse(a.startTime)-Date.parse(b.startTime));
+      const matches=[];
+      for(let i=2;i<bars.length;i++){
+        const a=bars[i-2],b=bars[i-1],c=bars[i];
+        const t0=Date.parse(a.startTime),t1=Date.parse(b.startTime),t2=Date.parse(c.startTime);
+        if(t1-t0!==5000||t2-t1!==5000)continue;
+        if([a,b,c].every(x=>Number(x.close)>Number(x.open))){
+          matches.push({time:new Date(t2+5000).toLocaleTimeString('zh-TW',{hour12:false,timeZone:'Asia/Taipei'}),close:c.close,start:a.startTime});
+        }
+      }
+      out.textContent=sym+'／'+day+'：5 秒 K 共 '+bars.length+' 根，偵測到 '+matches.length+' 次三連陽型態（觸發時間為第 3 根完成時）。來源：'+(response.source||'—');
+      if(!matches.length)return;
+      const table=document.createElement('table');table.style.width='100%';
+      const head=document.createElement('thead');head.innerHTML='<tr><th>觸發時間</th><th>第 3 根收盤價</th><th>首根時間</th></tr>';table.append(head);
+      const body=document.createElement('tbody');
+      for(const m of matches.slice(0,250)){
+        const tr=document.createElement('tr');
+        for(const value of [m.time,String(m.close),String(m.start).slice(11,19)]){
+          const td=document.createElement('td');td.textContent=value;tr.append(td);
+        }
+        body.append(tr);
+      }
+      table.append(body);list.append(table);
+      if(matches.length>250){const note=document.createElement('p');note.textContent='僅顯示前 250 次；總數如上。';list.append(note)}
+    }catch(err){out.textContent='掃描失敗：'+err.message}
+    finally{scan.disabled=false}
+  });
+}
+init();})();
 </script>
 </body>
 </html>
