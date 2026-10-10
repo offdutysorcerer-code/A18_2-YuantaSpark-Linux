@@ -163,7 +163,7 @@ header{display:flex;align-items:center;justify-content:space-between;gap:16px;pa
       <div class="detector-box detector-explain-box sim-grid-full"><div class="detector-head"><label class="ui-toggle"><input id="probeDetectorEnabled" type="checkbox"><span class="ui-toggle-track"></span><span>手動試算探測器</span></label><label class="ui-toggle"><input id="liveDetectorEnabled" type="checkbox"><span class="ui-toggle-track"></span><span>盤中即時探測</span></label><label>版本 <select id="probeDetectorVersion"><option value="D1">D1 原始 Regime</option><option value="D2">D2 Regime＋5秒 Timing</option></select></label><button type="button" id="probeDetectorRun">解讀選定進場點</button><button type="button" id="regimeGuideOpen" aria-haspopup="dialog" aria-controls="regimeGuideModal">狀態與計算說明</button><span class="sim-hint">D1/D2 都只使用選定時間前已完整形成的 K 棒，不偷看未來。</span></div><div id="probeDetectorResult" class="detector-result">探測器關閉。</div></div>
     </div>
     <div id="threeGreenPanel" class="detector-box sim-grid-full" style="display:none;margin:10px 0">
-      <div class="detector-head"><strong>Staging 實驗：累積三根 5 秒陽線</strong><label class="ui-toggle"><input id="threeGreenOverlay" type="checkbox"><span class="ui-toggle-track"></span><span>在 K 線標記</span></label><label>版本 <select id="threeGreenMode"><option value="NON_OVERLAP">A 三根後重新累積</option><option value="SLIDING">B 滑動偵測（允許重疊）</option></select></label><button type="button" id="threeGreenScan">掃描目前股票／日期</button><span class="sim-hint">已完成 5 秒 K：陽 K 的 Open 必須大於或等於前根累積陽 K 的 Close；陰 K 歸零，十字線略過；不符合的陽 K 從該根重新累積。</span></div>
+      <div class="detector-head"><strong>Staging 實驗：累積三根 5 秒陽線</strong><label class="ui-toggle"><input id="threeGreenOverlay" type="checkbox"><span class="ui-toggle-track"></span><span>在 K 線標記</span></label><label>版本 <select id="threeGreenMode"><option value="NON_OVERLAP">A 三根後重新累積</option><option value="SLIDING">B 滑動偵測（允許重疊）</option></select></label><button type="button" id="threeGreenScan">掃描目前股票／日期</button><span class="sim-hint">已完成 5 秒 K：陽 K 的 Open 必須大於或等於前根累積陽 K 的 Close；陰 K 歸零；單價平盤 K 相較前根 Close：高則 +1、等則略過、低則歸零；不符合的陽 K 從該根重新累積。</span></div>
       <div id="threeGreenResult" role="status" class="detector-result">按「掃描」尋找型態。</div>
       <div id="threeGreenList" style="max-height:320px;overflow:auto"></div>
     </div>
@@ -834,16 +834,30 @@ if(location.hostname.startsWith('staging-')&&!qd){
 }
 updateWeekday();syncBlock4TargetControls();await loadGroups();if(prefs.group&&groupNames().includes(prefs.group)){$('groupSelect').value=prefs.group;renderMembers()}wireWorkspace();syncSimpleFromCanonical();setWorkspaceView(location.hash==='#simple'?'simple':location.hash==='#monitor'?'monitor':'full',{hash:false});state.timer=setInterval(load,5000);setInterval(pollRuntime21,2000);setInterval(pollOperationModeControl,1500);setInterval(()=>{if($('liveDetectorEnabled')?.checked)renderLiveDetector()},5000);setInterval(loadPaperAccount,2000);setInterval(()=>loadPositionMonitor({render:false,forcePrompt:true}),2000);pollRuntime21();pollOperationModeControl();loadPaperAccount();loadPositionMonitor({render:workspaceView==='monitor',forcePrompt:true});if(typeof prefs.simEntryTime==='string'&&prefs.simEntrySymbol===$('symbol').value.trim().toUpperCase()&&prefs.simEntryTime.slice(0,10)===$('date').value)state.simEntryTime=prefs.simEntryTime;load()}const threeGreenOverlayState={key:'',signals:[],busy:false};
 function scanThreeGreenBars(bars,mode=$('threeGreenMode').value){
-  const signals=[];let count=0,first='',previousBullClose=null,windowBull=[];
+  const signals=[];let count=0,previousBullClose=null,windowBull=[],previousBarClose=null,previousDay='';
   for(const b of [...bars].sort((a,b)=>Date.parse(a.startTime)-Date.parse(b.startTime))){
-    const o=Number(b.open),c=Number(b.close);
-    if(c<o){count=0;first='';previousBullClose=null;windowBull=[];continue}
-    if(c===o)continue;
-    // A bullish candle without higher opening restarts the candidate at itself.
-    if(count===0||o<previousBullClose){count=1;first=b.startTime;windowBull=[b.startTime]}
-    else{count++;windowBull.push(b.startTime)}
+    const o=Number(b.open),c=Number(b.close),h=Number(b.high),l=Number(b.low),day=String(b.startTime).slice(0,10);
+    if(!Number.isFinite(o)||!Number.isFinite(c))continue;
+    if(previousDay&&day!==previousDay){count=0;previousBullClose=null;windowBull=[];previousBarClose=null}
+    previousDay=day;
+    const priorClose=previousBarClose;
+    previousBarClose=c; // always compare flat bars with the immediately preceding real 5-second bar
+    const isFlat=o===c&&o===h&&o===l;
+    if(c<o||(isFlat&&priorClose!==null&&c<priorClose)){
+      count=0;previousBullClose=null;windowBull=[];continue;
+    }
+    if(isFlat&&(priorClose===null||c===priorClose))continue;
+    if(c===o&&!isFlat)continue; // non-single-price doji retains previous neutral behaviour
+    const flatUp=isFlat&&priorClose!==null&&c>priorClose;
+    if(count===0||(!flatUp&&o<previousBullClose)){
+      count=1;windowBull=[b.startTime];
+    }else{count++;windowBull.push(b.startTime)}
     previousBullClose=c;
-    if(count>=3){signals.push({time:new Date(Date.parse(b.startTime)+5000).toISOString(),price:c,start:windowBull[windowBull.length-3]});if(mode==='SLIDING'){count=2;windowBull=windowBull.slice(-2);first=windowBull[0]}else{count=0;first='';previousBullClose=null;windowBull=[]}}
+    if(count>=3){
+      signals.push({time:new Date(Date.parse(b.startTime)+5000).toISOString(),price:c,start:windowBull[windowBull.length-3]});
+      if(mode==='SLIDING'){count=2;windowBull=windowBull.slice(-2)}
+      else{count=0;previousBullClose=null;windowBull=[]}
+    }
   }
   return signals;
 }
@@ -880,7 +894,7 @@ if(location.hostname.startsWith('staging-') || location.hostname==='127.0.0.1' |
         time:new Date(x.time).toLocaleTimeString('zh-TW',{hour12:false,timeZone:'Asia/Taipei'}),
         close:x.price,start:x.start
       }));
-      out.textContent=sym+'／'+day+'：5 秒 K 共 '+bars.length+' 根，符合陽 K 開盤價大於或等於前根陽 K 收盤價的累積三陽訊號 '+matches.length+' 次（'+($('threeGreenMode').value==='SLIDING'?'B 滑動':'A 不重疊')+'）。來源：'+(response.source||'—');
+      out.textContent=sym+'／'+day+'：5 秒 K 共 '+bars.length+' 根，符合累積三陽（含單價平盤 K 與前根收盤比較）的訊號 '+matches.length+' 次（'+($('threeGreenMode').value==='SLIDING'?'B 滑動':'A 不重疊')+'）。來源：'+(response.source||'—');
       if(!matches.length)return;
       const table=document.createElement('table');table.style.width='100%';
       const head=document.createElement('thead');head.innerHTML='<tr><th>觸發時間</th><th>第 3 根收盤價</th><th>首根時間</th></tr>';table.append(head);
