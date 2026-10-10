@@ -706,7 +706,7 @@ function draw(){
     c.save();c.strokeStyle='#24d9ff';c.fillStyle='#24d9ff';c.lineWidth=1.5;c.font='bold 10px system-ui';
     let labels=0;
     for(const mark of threeGreenOverlayState.signals){
-      const x=g.xAtTime(mark.time),yy=y(mark.price);
+      const x=g.xAtTime(mark.barTime||mark.time),yy=y(mark.price);
       if(!Number.isFinite(x)||!Number.isFinite(yy)||x<p.l||x>w-p.r||yy<p.t||yy>h-p.b)continue;
       c.beginPath();c.moveTo(x,yy+5);c.lineTo(x-5,yy+15);c.lineTo(x+5,yy+15);c.closePath();c.stroke();
       if(++labels<=120)c.fillText('3陽',Math.max(p.l,Math.min(w-p.r-22,x+6)),Math.min(h-p.b-4,yy+20));
@@ -844,7 +844,7 @@ function scanThreeGreenBars(bars,mode=$('threeGreenMode').value){
       if(close>previousClose){
         upTimes.push(b.startTime);
         if(upTimes.length===3){
-          signals.push({time:new Date(Date.parse(b.startTime)+5000).toISOString(),price:close,start:upTimes[0]});
+          signals.push({time:new Date(Date.parse(b.startTime)+5000).toISOString(),barTime:b.startTime,price:close,start:upTimes[0]});
           upTimes=mode==='SLIDING'?upTimes.slice(-2):[];
         }
       }else if(close<previousClose){upTimes=[]}
