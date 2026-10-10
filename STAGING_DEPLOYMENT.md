@@ -1,11 +1,27 @@
-# A18_2 隔離測試環境（第一階段）
+# A18_2 Staging 與公開測試網址
 
-正式版：Docker Compose `compose.yaml`，5220，Cloudflare `realtime.offdutylab.xyz`。
+## 環境
 
-測試版：`docker compose -f compose.staging.yaml up -d --build`，僅綁定本機 `127.0.0.1:5221`，不公開到 Internet。Docker Compose 獨立專案 `a18-2-staging`、映像 `a18-realtime:staging`。
+- 正式版：`https://realtime.offdutylab.xyz/swing` → 原 Cloudflare Tunnel → `127.0.0.1:5220`。
+- Staging：`https://staging-realtime.offdutylab.xyz/swing` → **獨立 Cloudflare Tunnel** `a18-realtime-staging`（ID `156721ab-f228-4996-9115-fe9a766ad154`）→ `127.0.0.1:5221`。
+- 測試容器：`docker compose -f compose.staging.yaml up -d --build`；獨立 Compose project、映像與可寫狀態目錄 `staging-data/`。
+- Tunnel 設定：`~/.cloudflared/config-a18-realtime-staging.yml`；systemd user unit `~/.config/systemd/user/cloudflared-a18-realtime-staging.service`，已啟用。
 
-安全限制：Staging 使用 `A18__Provider=Stub`；`A18__FullMarketStartShioajiCollectors=false`；市場倉庫唯讀；可寫設定獨立在 `staging-data/`；不掛載元大憑證；設定 `A18__StagingSafeMode=true` 時伺服器對所有 `/api/runtime21` 請求返回 503，不會轉送真單、查帳戶或變更交易控制。請勿直接將 Staging 接入真單憑證或正式寫入的 volume。
+## 測試隔離
 
-測試方式：在 Ubuntu 執行 `curl -f http://127.0.0.1:5221/swing`；測試歷史 K 棒 `curl -f 'http://127.0.0.1:5221/api/bars/1615?date=2026-10-08&interval=60'`；確認 `/api/runtime21/health` 為 503 並返回 `STAGING_RUNTIME21_DISABLED`。Stub 模式的 `/health/ready` 目前可能回傳 503，不適用作 Staging 啟動檢查。
+- Stub provider，不登入元大 SPARK；不啟動 Shioaji Collector。
+- A18_10 歷史倉庫唯讀、設定狀態與正式分離，不掛券商憑證。
+- `A18__StagingSafeMode=true` 時全部 `/api/runtime21` 被阻擋並返回 `503 STAGING_RUNTIME21_DISABLED`（禁止真單、查帳戶和交易控制）。
+- `/health/ready` 在 Stub 下可能回傳 503，不應用此端點決定是否能測試 Swing UI。
 
-重要：這只是部署流程的第一階段，目前尚未實作 reverse proxy 藍綠切換、回滾或公開測試網址。禁止用 `docker compose up` 重建正式容器作為測試。後續需要先引入穩定 proxy、獨立候選映像版本、健康檢查和資料寫入切換保護，才可導流。
+## 驗證紀錄（2026-10-10）
+
+- Staging 本機 `/swing`：HTTP 200；`/api/bars/1615?date=2026-10-08&interval=60`：HTTP 200。
+- `/api/runtime21/health`：HTTP 503 且出現 `STAGING_RUNTIME21_DISABLED`。
+- 公開 DNS CNAME 新增成功，Cloudflare Tunnel 已建立連線，systemd user unit 啟動成功。
+- **公開網址尚未完成瀏覽器端成功驗證**：同一測試來源連正式與測試網址均得到 Cloudflare 403/1010，可能是來源 IP 的 Cloudflare 防護設定；請用手機或外部瀏覽器確認。
+- 正式 Tunnel 設定未更動，正式容器沒有因建立 Staging 而重啟。
+
+## 下一階段
+
+Blue-Green 流量切換、零中斷發布、回滾及 DEP-OP UI 尚未實作。禁止直接將目前的隔離 Staging 映像當成正式候選版本切換（它的 Stub、只讀資料與真單攔截是刻意設計）。進行切換前應另規劃行情連線交接、狀態遷移及交易安全檢查。
