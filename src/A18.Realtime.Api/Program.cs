@@ -105,6 +105,8 @@ app.MapPost("/api/auto-long/shadow-test/fill", (AutoLongShadowFill body, HttpCon
     !IsLocalShadowTest(ctx,cfg)?Results.StatusCode(404):Results.Ok(new{accepted=ledger.ReconcileFill(body.Id,body.FilledBuyTwd)}));
 app.MapPost("/api/auto-long/shadow-test/cancel", (AutoLongShadowCancel body, HttpContext ctx, IConfiguration cfg, AutoLongPaperLedger ledger) =>
     !IsLocalShadowTest(ctx,cfg)?Results.StatusCode(404):Results.Ok(new{accepted=ledger.CancelReservation(body.Id)}));
+app.MapGet("/api/auto-long/paper-integrity", (AutoLongPaperPositions positions,IConfiguration cfg) =>
+    cfg.GetValue<bool>("A18:StagingSafeMode")?Results.Ok(new{unreconciledSymbols=positions.UnreconciledSymbols(),ready=positions.UnreconciledSymbols().Length==0}):Results.StatusCode(404));
 app.MapGet("/api/auto-long/paper-positions", (AutoLongPaperPositions positions,IConfiguration cfg) => cfg.GetValue<bool>("A18:StagingSafeMode")?Results.Ok(positions.List()):Results.StatusCode(404));
 // Loopback-only deterministic PAPER execution harness. Never routed to A18_21.
 app.MapPost("/api/auto-long/shadow-test/open", (AutoLongPaperOpen body,HttpContext ctx,IConfiguration cfg,AutoLongPaperPositions positions) =>

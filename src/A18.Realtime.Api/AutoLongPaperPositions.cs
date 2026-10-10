@@ -9,6 +9,18 @@ internal sealed class AutoLongPaperPositions(IConfiguration config,AutoLongPaper
     private Dictionary<string,AutoLongPaperPosition> Read(){try{return File.Exists(_path)?JsonSerializer.Deserialize<Dictionary<string,AutoLongPaperPosition>>(File.ReadAllText(_path))??new():new();}catch{return new();}}
     private void Write(Dictionary<string,AutoLongPaperPosition> rows){Directory.CreateDirectory(Path.GetDirectoryName(_path)!);var tmp=_path+".tmp";File.WriteAllText(tmp,JsonSerializer.Serialize(rows,new JsonSerializerOptions{WriteIndented=true}));File.Move(tmp,_path,true);}
     public AutoLongPaperPosition[] List(){lock(_gate)return Read().Values.OrderByDescending(x=>x.EnteredAt).ToArray();}
+    // A FILLED intent without a persisted position means a write was interrupted.
+    // Fail closed: never place another entry for that symbol until reconciled.
+    public string[] UnreconciledSymbols()
+    {
+        lock(_gate)
+        {
+            var rows=Read();
+            return ledger.List().Where(x=>x.Status=="FILLED"&&!rows.ContainsKey(x.Id))
+                .Select(x=>x.Symbol).Distinct().OrderBy(x=>x).ToArray();
+        }
+    }
+
     public (bool Accepted,string Reason,AutoLongPaperPosition? Position) Open(string intentId,decimal price,DateTimeOffset filledAt)
     {
         lock(_gate)

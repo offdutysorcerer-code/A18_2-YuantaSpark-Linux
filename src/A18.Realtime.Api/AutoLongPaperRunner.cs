@@ -29,8 +29,14 @@ internal sealed class AutoLongPaperRunner(IMarketDataProvider provider,AutoLongS
         }
         if(local.TimeOfDay<new TimeSpan(9,0,0)||local.TimeOfDay>=new TimeSpan(9,30,0))return;
         var observed=signals.List();
+        var blocked=positions.UnreconciledSymbols().ToHashSet(StringComparer.Ordinal);
         foreach(var watch in watches.List().Where(w=>w.EntryEnabled&&w.Status is "WATCH_ONLY" or "STAGING_WATCH_ONLY"))
         {
+            if(blocked.Contains(watch.Symbol))
+            {
+                log.LogError("AutoLong PAPER blocked: FILLED ledger without position for {Symbol}",watch.Symbol);
+                continue;
+            }
             if(positions.List().Any(p=>p.Symbol==watch.Symbol&&p.Status=="OPEN"))continue;
             var signal=observed.FirstOrDefault(o=>o.Symbol==watch.Symbol&&o.State=="SIGNAL_OBSERVED");
             if(signal?.LastSignalAt is not { } signalAt||signal.LastSignalPrice is not >0)continue;
