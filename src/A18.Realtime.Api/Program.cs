@@ -48,6 +48,7 @@ builder.Services.AddSingleton<HistoricalSecondBars>();
 builder.Services.AddSingleton<DailyKlineEnsureService>();
 builder.Services.AddSingleton<SwingGroups>();
 builder.Services.AddSingleton<SwingState>();
+builder.Services.AddSingleton<AutoLongWatch>();
 builder.Services.AddSingleton<RequiredSymbolsRegistry>();
 builder.Services.AddSingleton<SwingAnnotations>();
 builder.Services.AddHttpClient<Runtime21Bridge>((services, client) =>
@@ -81,6 +82,16 @@ if (builder.Configuration.GetValue<bool>("A18:StagingSafeMode"))
 app.MapGet("/", () => Results.Content(DiagnosticUi.Html, "text/html; charset=utf-8"));
 app.MapGet("/swing", () => Results.Content(SwingUi.Html, "text/html; charset=utf-8"));
 app.MapGet("/simple", () => Results.Redirect("/swing#simple"));
+// Experimental registry is deliberately staging-only until the broker execution
+// integration passes paper, deduplication and takeover reconciliation tests.
+app.MapGet("/api/auto-long", (AutoLongWatch watch, IConfiguration cfg) =>
+    cfg.GetValue<bool>("A18:StagingSafeMode")?Results.Ok(watch.List()):Results.StatusCode(404));
+app.MapPut("/api/auto-long", (AutoLongWatchRequest body, AutoLongWatch watch, IConfiguration cfg) =>
+{
+    if(!cfg.GetValue<bool>("A18:StagingSafeMode"))return Results.StatusCode(404);
+    try{return Results.Ok(watch.Set(body));}
+    catch(ArgumentException e){return Results.BadRequest(new{error=e.Message});}
+});
 
 var runtime21 = app.MapGroup("/api/runtime21");
 runtime21.MapGet("/health", (Runtime21Bridge bridge, CancellationToken ct) =>
