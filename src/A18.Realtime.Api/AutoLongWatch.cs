@@ -1,8 +1,8 @@
 using System.Text.Json;
 using System.Text.RegularExpressions;
 namespace A18.Realtime.Api;
-internal sealed record AutoLongWatchRow(string Symbol, bool EntryEnabled, int MaxEntries, decimal BuyBudgetTwd, int FilledEntries, decimal CumulativeBuyTwd, string Status, DateTimeOffset UpdatedAt, string ActivationMode="IMMEDIATE", string? SessionDate=null, string? ActivateAt=null);
-internal sealed record AutoLongWatchRequest(string Symbol, bool EntryEnabled, int MaxEntries, decimal BuyBudgetTwd, string ActivationMode="IMMEDIATE");
+internal sealed record AutoLongWatchRow(string Symbol, bool EntryEnabled, int MaxEntries, decimal BuyBudgetTwd, int FilledEntries, decimal CumulativeBuyTwd, string Status, DateTimeOffset UpdatedAt, string ActivationMode="IMMEDIATE", string? SessionDate=null, string? ActivateAt=null, string ExecutionMode="SHADOW");
+internal sealed record AutoLongWatchRequest(string Symbol, bool EntryEnabled, int MaxEntries, decimal BuyBudgetTwd, string ActivationMode="IMMEDIATE", string ExecutionMode="SHADOW");
 // Entry authorization registry. NO order submission in this class; running a live order
 // requires the A18_21 entry dispatcher, reconciliation and broker acknowledgements.
 internal sealed class AutoLongWatch(IConfiguration config)
@@ -61,6 +61,8 @@ internal sealed class AutoLongWatch(IConfiguration config)
         if(!Regex.IsMatch(symbol,@"^[0-9A-Z]{4,8}$"))throw new ArgumentException("股票代號格式不正確");
         if(request.MaxEntries<1||request.MaxEntries>1000)throw new ArgumentException("進場次數限制須在 1～1000 之間");
         if(request.BuyBudgetTwd<100m||request.BuyBudgetTwd>1_000_000_000m)throw new ArgumentException("累計買進金額上限須在 100～10 億元之間");
+        if(request.ExecutionMode is not ("SHADOW" or "PAPER" or "LIVE"))throw new ArgumentException("不支援的執行模式");
+        if(request.ExecutionMode=="LIVE")throw new ArgumentException("LIVE_NOT_AUTHORIZED: Staging 無法啟用真實下單；請使用獨立授權的 Live 執行環境");
         lock(_gate)
         {
             var rows=Read();rows.TryGetValue(symbol,out var old);
@@ -71,7 +73,7 @@ internal sealed class AutoLongWatch(IConfiguration config)
             // Staging only: booking persists without executing orders.
             // Date is resolved only by the server; clients cannot supply a backdated day.
             var preview=scheduled&&enabled?Preview():null;
-            var row=new AutoLongWatchRow(symbol,enabled,request.MaxEntries,request.BuyBudgetTwd,old?.FilledEntries??0,old?.CumulativeBuyTwd??0m,enabled?(scheduled?"SCHEDULED":"STAGING_WATCH_ONLY"):"ENTRY_PAUSED",DateTimeOffset.UtcNow,scheduled?"NEXT_SESSION":"IMMEDIATE",scheduled&&enabled?(string?)preview?.GetType().GetProperty("sessionDate")?.GetValue(preview):old?.SessionDate,scheduled&&enabled?(string?)preview?.GetType().GetProperty("activateAt")?.GetValue(preview):old?.ActivateAt);
+            var row=new AutoLongWatchRow(symbol,enabled,request.MaxEntries,request.BuyBudgetTwd,old?.FilledEntries??0,old?.CumulativeBuyTwd??0m,enabled?(scheduled?"SCHEDULED":"STAGING_WATCH_ONLY"):"ENTRY_PAUSED",DateTimeOffset.UtcNow,scheduled?"NEXT_SESSION":"IMMEDIATE",scheduled&&enabled?(string?)preview?.GetType().GetProperty("sessionDate")?.GetValue(preview):old?.SessionDate,scheduled&&enabled?(string?)preview?.GetType().GetProperty("activateAt")?.GetValue(preview):old?.ActivateAt,request.ExecutionMode);
             rows[symbol]=row;Write(rows);return row;
         }
     }

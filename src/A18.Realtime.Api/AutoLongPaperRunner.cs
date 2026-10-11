@@ -33,7 +33,7 @@ internal sealed class AutoLongPaperRunner(IMarketDataProvider provider,AutoLongS
         if(local.TimeOfDay<new TimeSpan(9,0,0)||local.TimeOfDay>=new TimeSpan(9,30,0))return;
         var observed=signals.List();
         var blocked=positions.UnreconciledSymbols().ToHashSet(StringComparer.Ordinal);
-        foreach(var watch in watches.List().Where(w=>w.EntryEnabled&&w.Status is "WATCH_ONLY" or "STAGING_WATCH_ONLY"))
+        foreach(var watch in watches.List().Where(w=>w.EntryEnabled&&w.ExecutionMode=="PAPER"&&(w.Status is "WATCH_ONLY" or "STAGING_WATCH_ONLY")))
         {
             if(blocked.Contains(watch.Symbol))
             {
