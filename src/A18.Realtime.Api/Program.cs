@@ -101,6 +101,12 @@ app.MapPost("/api/auto-long/shadow-test/reserve", (AutoLongShadowReserve body, H
     var x=ledger.Reserve(body.Symbol,body.SignalTime,body.Quantity,body.ReferencePrice);
     return Results.Ok(new{x.Accepted,x.Reason,x.Intent});
 });
+app.MapPost("/api/auto-long/shadow-test/fill-event", (AutoLongShadowFillEvent body,HttpContext ctx,IConfiguration cfg,AutoLongPaperLedger ledger) =>
+{
+    if(!IsLocalShadowTest(ctx,cfg))return Results.StatusCode(404);
+    var result=ledger.ApplyFillEvent(body.Id,body.EventId,body.Quantity,body.Price);
+    return Results.Ok(new{result.Accepted,result.Reason,result.Intent});
+});
 app.MapPost("/api/auto-long/shadow-test/fill", (AutoLongShadowFill body, HttpContext ctx, IConfiguration cfg, AutoLongPaperLedger ledger) =>
     !IsLocalShadowTest(ctx,cfg)?Results.StatusCode(404):Results.Ok(new{accepted=ledger.ReconcileFill(body.Id,body.FilledBuyTwd)}));
 app.MapPost("/api/auto-long/shadow-test/cancel", (AutoLongShadowCancel body, HttpContext ctx, IConfiguration cfg, AutoLongPaperLedger ledger) =>
@@ -836,3 +842,5 @@ internal sealed record AutoLongShadowCancel(string Id);
 
 internal sealed record AutoLongPaperOpen(string IntentId,decimal Price,DateTimeOffset FilledAt);
 internal sealed record AutoLongPaperBar(string IntentId,decimal Open,decimal High,decimal Low,decimal Close,DateTimeOffset At);
+
+internal sealed record AutoLongShadowFillEvent(string Id,string EventId,long Quantity,decimal Price);

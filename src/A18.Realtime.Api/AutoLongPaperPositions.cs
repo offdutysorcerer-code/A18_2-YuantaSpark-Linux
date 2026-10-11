@@ -16,7 +16,7 @@ internal sealed class AutoLongPaperPositions(IConfiguration config,AutoLongPaper
         lock(_gate)
         {
             var rows=Read();
-            return ledger.List().Where(x=>x.Status=="FILLED"&&!rows.ContainsKey(x.Id))
+            return ledger.List().Where(x=>(x.FilledQuantity>0||x.Status=="FILLED")&&!rows.ContainsKey(x.Id))
                 .Select(x=>x.Symbol).Distinct().OrderBy(x=>x).ToArray();
         }
     }
