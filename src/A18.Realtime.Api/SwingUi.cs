@@ -927,7 +927,7 @@ if(location.hostname.startsWith('staging-')||location.hostname==='127.0.0.1'||lo
       $('autoLong'+name+'Count').value=r?.maxEntries||1;
       $('autoLong'+name+'Budget').value=r?.buyBudgetTwd||100000;
       $('autoLong'+name+'Mode').value=r?.activationMode||'IMMEDIATE';
-      $('autoLong'+name+'Status').textContent=(r?'已登錄：'+r.status+'｜已使用進場 '+r.filledEntries+'/'+r.maxEntries+'｜累計買進 '+r.cumulativeBuyTwd+'/'+r.buyBudgetTwd+' 元':'尚未登錄')++(r?.activationMode==='NEXT_SESSION'?'｜預約 '+(r.activateAt||''):'')+'。Staging 僅保存追蹤設定，尚未自動下單。';
+      $('autoLong'+name+'Status').textContent=(r?'已登錄：'+r.status+'｜已使用進場 '+r.filledEntries+'/'+r.maxEntries+'｜累計買進 '+r.cumulativeBuyTwd+'/'+r.buyBudgetTwd+' 元':'尚未登錄')+(r?.activationMode==='NEXT_SESSION'?'｜預約 '+(r.activateAt||''):'')+'。Staging 僅保存追蹤設定，尚未自動下單。';
     }
     const el=$('autoLongMonitorRows');el.replaceChildren();
     // Staging-only, independent PAPER ledger: never mistaken for A18_21 REAL holdings.
