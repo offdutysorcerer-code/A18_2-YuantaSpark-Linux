@@ -39,13 +39,21 @@ header{display:flex;align-items:center;justify-content:space-between;gap:16px;pa
 #regimeGuideModal .regime-guide-scroll{max-width:100%;overflow-x:auto}
 @media(max-width:700px){#regimeGuideModal{padding:6px}#regimeGuideModal .regime-guide-card{max-height:calc(100dvh - 12px)}#regimeGuideModal .regime-guide-head{top:-12px}}
 
+#recentSymbolsModal{border:none;border-radius:14px;background:var(--panel,#1e2530);color:var(--text);padding:0;width:min(480px,calc(100vw - 24px));max-height:85dvh;box-shadow:0 18px 70px #0008}
+#recentSymbolsModal::backdrop{background:rgba(0,0,0,.60)}
+.recent-symbols-inner{padding:18px;display:flex;flex-direction:column;gap:12px;max-height:85dvh}
+.recent-symbols-head{display:flex;align-items:center;justify-content:space-between;gap:12px}
+#recentSymbolsList{display:grid;grid-template-columns:repeat(auto-fill,minmax(110px,1fr));gap:8px;overflow-y:auto;min-height:30px}
+#recentSymbolsList button{text-align:left;padding:11px;border-radius:8px;min-height:44px;white-space:normal;overflow-wrap:anywhere}
+#recentSymbolsList button[aria-current="true"]{outline:2px solid var(--accent,#60a5fa)}
 </style>
 </head>
 <body>
+<dialog id="recentSymbolsModal" aria-labelledby="recentSymbolsTitle"><div class="recent-symbols-inner"><div class="recent-symbols-head"><strong id="recentSymbolsTitle">最近查詢的標的（最多30個）</strong><button type="button" id="recentSymbolsClose" aria-label="關閉">✕</button></div><div id="recentSymbolsList" aria-live="polite">載入中…</div></div></dialog>
 <header>
   <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap"><h1>A18_2 · K線波段轉折觀察</h1><span class="tag">LIVE / HISTORY</span><nav class="workspace-tabs" aria-label="A18_2 操作模式"><button type="button" class="workspace-tab active" data-workspace-view="full">完整操作</button><button type="button" class="workspace-tab" data-workspace-view="simple">精簡下單</button><button type="button" class="workspace-tab" data-workspace-view="monitor">部位監控</button></nav><div id="dataModeControl" class="data-mode-control"><span id="dataModeBadge" class="data-mode-badge">資料模式：讀取中</span><button type="button" id="dataModeSwitch" disabled>讀取中…</button><span id="dataModeProgress" class="data-mode-progress"></span></div></div>
   <form id="controls" class="controls"><span class="section-no">1</span>
-    <label>股票 <input id="symbol" value="2330" maxlength="12"></label>
+    <label>股票 <input id="symbol" value="2330" maxlength="12"></label><button type="button" id="recentSymbolsOpen" title="最近查詢的30個標的" aria-haspopup="dialog" aria-controls="recentSymbolsModal">最近查詢</button>
     <button type="button" id="prevDay">← 上一日</button>
     <label>日期 <input id="date" type="date"> <strong id="weekday" style="color:var(--text)">—</strong></label>
     <button type="button" id="nextDay">下一日 →</button>
@@ -812,6 +820,10 @@ $('block4Load').addEventListener('click',()=>{syncHeaderTargetControls();savePre
 $('block4Auto').addEventListener('change',()=>{syncHeaderTargetControls();clearInterval(state.timer);state.timer=$('auto').checked?setInterval(load,5000):null});
 $('trendEnabled').addEventListener('change',()=>{updateTrends();drawSimulationMarkers();savePrefs()});
 $('trendVersion').addEventListener('change',()=>{updateTrends();drawSimulationMarkers();savePrefs()});$('impulseEnabled').addEventListener('change',()=>{updateImpulses();drawSimulationMarkers();savePrefs()});$('impulseVersion').addEventListener('change',()=>{updateImpulses();drawSimulationMarkers();savePrefs()});
+async function showRecentSymbols(){const modal=$('recentSymbolsModal'),list=$('recentSymbolsList');list.textContent='載入中…';modal.showModal();try{const response=await fetch('/api/swing/state',{cache:'no-store'});if(!response.ok)throw new Error('無法讀取紀錄');const data=await response.json();const recent=(Array.isArray(data.recentSymbols)?data.recentSymbols:[]).slice(0,30);list.replaceChildren();if(!recent.length){list.textContent='目前尚無查詢紀錄';return}for(const sym of recent){const button=document.createElement('button');button.type='button';button.textContent=sym+(symbolNames[sym]?' '+symbolNames[sym]:'');button.setAttribute('aria-current',String(sym===$('symbol').value.trim().toUpperCase()));button.addEventListener('click',()=>{modal.close();$('symbol').value=sym;syncBlock4TargetControls();syncSimpleSymbolFromCanonical();savePrefs();load()});list.appendChild(button)}}catch{list.textContent='載入失敗，請稍後再試'}}
+$('recentSymbolsOpen').addEventListener('click',showRecentSymbols);
+$('recentSymbolsClose').addEventListener('click',()=>$('recentSymbolsModal').close());
+$('recentSymbolsModal').addEventListener('click',e=>{if(e.target===$('recentSymbolsModal'))e.target.close()});
 $('prevDay').addEventListener('click',()=>shiftDay(-1));$('nextDay').addEventListener('click',()=>shiftDay(1));$('date').addEventListener('change',()=>{updateWeekday();syncBlock4TargetControls();savePrefs()});$('symbol').addEventListener('change',()=>{syncBlock4TargetControls();syncSimpleSymbolFromCanonical();savePrefs()});$('interval').addEventListener('change',savePrefs);$('overlay').addEventListener('change',()=>{savePrefs();load()});$('multiDay').addEventListener('change',()=>{savePrefs();load()});$('lookbackDays').addEventListener('change',()=>{savePrefs();if($('multiDay').checked)load()});$('showSectionNumbers').addEventListener('change',()=>{document.body.classList.toggle('hide-section-numbers',!$('showSectionNumbers').checked);savePrefs()});
 let operationMode='Legacy',operationSwitchState='Idle',operationModePollBusy=false;
 function renderOperationMode(modeStatus,controlStatus){operationMode=modeStatus?.mode||operationMode||'Legacy';operationSwitchState=controlStatus?.state||'Idle';const badge=$('dataModeBadge'),button=$('dataModeSwitch'),progress=$('dataModeProgress');if(!badge||!button)return;const full=operationMode==='FullMarketExperimental',busy=operationSwitchState==='Pending'||operationSwitchState==='Running';badge.className='data-mode-badge '+(busy?'pending':full?'full':'legacy');badge.textContent=busy?'資料模式：切換中…':full?'資料模式：FULL MARKET':'資料模式：LEGACY';button.disabled=busy;button.classList.toggle('emergency',full&&!busy);button.textContent=busy?'切換中…':full?'緊急切回 Legacy':'啟用全市場實驗';progress.textContent=controlStatus?.state==='Failed'?(controlStatus.message||'切換失敗'):busy?(controlStatus?.message||'Ubuntu host 正在切換…'):controlStatus?.state==='Completed'?'上次切換完成':''}
