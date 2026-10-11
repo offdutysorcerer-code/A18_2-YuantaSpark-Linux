@@ -1,0 +1,1468 @@
+{
+  "assumptions": {
+    "date": "2026-10-08",
+    "maxEntries": 2,
+    "secondPriceVsFirst": 0.8,
+    "firstLoss": "net negative",
+    "cutoff": "flat before 09:30:00",
+    "capitalPerTrade": "1000 shares"
+  },
+  "A": [
+    {
+      "symbol": "8039",
+      "name": "台虹",
+      "mode": "A",
+      "trades": [
+        {
+          "signal": "2026-10-08T09:01:05+08:00",
+          "entry": "2026-10-08T09:01:05+08:00",
+          "entryPrice": 309.5,
+          "exit": "2026-10-08T09:04:04+08:00",
+          "exitPrice": 325.05,
+          "reason": "PRIOR_WATERMARK_STOP",
+          "grossPct": 5.0242,
+          "netPct": 4.6874
+        },
+        {
+          "signal": "2026-10-08T09:06:30+08:00",
+          "entry": "2026-10-08T09:06:30+08:00",
+          "entryPrice": 320.0,
+          "exit": "2026-10-08T09:07:07+08:00",
+          "exitPrice": 316.8,
+          "reason": "PRIOR_WATERMARK_STOP",
+          "grossPct": -1.0,
+          "netPct": -1.3175
+        }
+      ],
+      "count": 2,
+      "grossPct": 3.974,
+      "netPct": 3.3081,
+      "cashTwd": 10300.22,
+      "skips": {
+        "POSITION_OPEN": 3,
+        "MAX_2": 8,
+        "AFTER_0930": 27
+      }
+    },
+    {
+      "symbol": "3406",
+      "name": "玉晶光",
+      "mode": "A",
+      "trades": [
+        {
+          "signal": "2026-10-08T09:00:45+08:00",
+          "entry": "2026-10-08T09:00:46+08:00",
+          "entryPrice": 1080.0,
+          "exit": "2026-10-08T09:04:49+08:00",
+          "exitPrice": 1088.425,
+          "reason": "PRIOR_WATERMARK_STOP",
+          "grossPct": 0.7801,
+          "netPct": 0.4569
+        },
+        {
+          "signal": "2026-10-08T09:16:00+08:00",
+          "entry": "2026-10-08T09:16:04+08:00",
+          "entryPrice": 1100.0,
+          "exit": "2026-10-08T09:18:07+08:00",
+          "exitPrice": 1085.0,
+          "reason": "OPEN_BELOW_STOP",
+          "grossPct": -1.3636,
+          "netPct": -1.68
+        }
+      ],
+      "count": 2,
+      "grossPct": -0.5941,
+      "netPct": -1.2308,
+      "cashTwd": -13557.32,
+      "skips": {
+        "POSITION_OPEN": 1,
+        "MAX_2": 1
+      }
+    },
+    {
+      "symbol": "2303",
+      "name": "聯電",
+      "mode": "A",
+      "trades": [],
+      "count": 0,
+      "grossPct": 0.0,
+      "netPct": 0.0,
+      "cashTwd": 0,
+      "skips": {}
+    },
+    {
+      "symbol": "1303",
+      "name": "南亞",
+      "mode": "A",
+      "trades": [
+        {
+          "signal": "2026-10-08T09:04:30+08:00",
+          "entry": "2026-10-08T09:04:30+08:00",
+          "entryPrice": 311.5,
+          "exit": "2026-10-08T09:17:49+08:00",
+          "exitPrice": 310.0,
+          "reason": "OPEN_BELOW_STOP",
+          "grossPct": -0.4815,
+          "netPct": -0.8007
+        },
+        {
+          "signal": "2026-10-08T09:19:50+08:00",
+          "entry": "2026-10-08T09:19:50+08:00",
+          "entryPrice": 310.5,
+          "exit": "2026-10-08T09:22:08+08:00",
+          "exitPrice": 307.0,
+          "reason": "OPEN_BELOW_STOP",
+          "grossPct": -1.1272,
+          "netPct": -1.4443
+        }
+      ],
+      "count": 2,
+      "grossPct": -1.6033,
+      "netPct": -2.2334,
+      "cashTwd": -6984.85,
+      "skips": {
+        "POSITION_OPEN": 3,
+        "MAX_2": 2,
+        "AFTER_0930": 14
+      }
+    },
+    {
+      "symbol": "1727",
+      "name": "中華化",
+      "mode": "A",
+      "trades": [
+        {
+          "signal": "2026-10-08T09:07:00+08:00",
+          "entry": "2026-10-08T09:07:00+08:00",
+          "entryPrice": 109.0,
+          "exit": "2026-10-08T09:11:55+08:00",
+          "exitPrice": 111.305,
+          "reason": "PRIOR_WATERMARK_STOP",
+          "grossPct": 2.1147,
+          "netPct": 1.7872
+        }
+      ],
+      "count": 1,
+      "grossPct": 2.1147,
+      "netPct": 1.7872,
+      "cashTwd": 1949.68,
+      "skips": {
+        "POSITION_OPEN": 1,
+        "AFTER_0930": 1
+      }
+    },
+    {
+      "symbol": "2409",
+      "name": "友達",
+      "mode": "A",
+      "trades": [
+        {
+          "signal": "2026-10-08T09:02:05+08:00",
+          "entry": "2026-10-08T09:02:05+08:00",
+          "entryPrice": 37.7,
+          "exit": "2026-10-08T09:05:29+08:00",
+          "exitPrice": 37.323,
+          "reason": "PRIOR_WATERMARK_STOP",
+          "grossPct": -1.0,
+          "netPct": -1.3175
+        },
+        {
+          "signal": "2026-10-08T09:13:25+08:00",
+          "entry": "2026-10-08T09:13:25+08:00",
+          "entryPrice": 37.5,
+          "exit": "2026-10-08T09:21:20+08:00",
+          "exitPrice": 37.1345,
+          "reason": "PRIOR_WATERMARK_STOP",
+          "grossPct": -0.9747,
+          "netPct": -1.2923
+        }
+      ],
+      "count": 2,
+      "grossPct": -1.965,
+      "netPct": -2.5928,
+      "cashTwd": -982.14,
+      "skips": {
+        "MAX_2": 1,
+        "AFTER_0930": 1
+      }
+    },
+    {
+      "symbol": "3481",
+      "name": "群創",
+      "mode": "A",
+      "trades": [
+        {
+          "signal": "2026-10-08T09:00:35+08:00",
+          "entry": "2026-10-08T09:00:35+08:00",
+          "entryPrice": 52.1,
+          "exit": "2026-10-08T09:02:33+08:00",
+          "exitPrice": 51.614,
+          "reason": "PRIOR_WATERMARK_STOP",
+          "grossPct": -0.9328,
+          "netPct": -1.2506
+        },
+        {
+          "signal": "2026-10-08T09:08:40+08:00",
+          "entry": "2026-10-08T09:08:40+08:00",
+          "entryPrice": 51.9,
+          "exit": "2026-10-08T09:19:05+08:00",
+          "exitPrice": 51.7,
+          "reason": "OPEN_BELOW_STOP",
+          "grossPct": -0.3854,
+          "netPct": -0.7048
+        }
+      ],
+      "count": 2,
+      "grossPct": -1.3146,
+      "netPct": -1.9466,
+      "cashTwd": -1018.22,
+      "skips": {
+        "POSITION_OPEN": 1,
+        "MAX_2": 2
+      }
+    },
+    {
+      "symbol": "3042",
+      "name": "晶技",
+      "mode": "A",
+      "trades": [
+        {
+          "signal": "2026-10-08T09:01:55+08:00",
+          "entry": "2026-10-08T09:01:55+08:00",
+          "entryPrice": 208.5,
+          "exit": "2026-10-08T09:14:27+08:00",
+          "exitPrice": 206.415,
+          "reason": "PRIOR_WATERMARK_STOP",
+          "grossPct": -1.0,
+          "netPct": -1.3175
+        }
+      ],
+      "count": 1,
+      "grossPct": -1.0,
+      "netPct": -1.3175,
+      "cashTwd": -2749.37,
+      "skips": {
+        "AFTER_0930": 2
+      }
+    },
+    {
+      "symbol": "6257",
+      "name": "矽格",
+      "mode": "A",
+      "trades": [
+        {
+          "signal": "2026-10-08T09:00:20+08:00",
+          "entry": "2026-10-08T09:00:21+08:00",
+          "entryPrice": 277.0,
+          "exit": "2026-10-08T09:13:40+08:00",
+          "exitPrice": 287.1275,
+          "reason": "PRIOR_WATERMARK_STOP",
+          "grossPct": 3.6561,
+          "netPct": 3.3237
+        },
+        {
+          "signal": "2026-10-08T09:16:35+08:00",
+          "entry": "2026-10-08T09:16:35+08:00",
+          "entryPrice": 284.5,
+          "exit": "2026-10-08T09:20:58+08:00",
+          "exitPrice": 282.0,
+          "reason": "OPEN_BELOW_STOP",
+          "grossPct": -0.8787,
+          "netPct": -1.1966
+        }
+      ],
+      "count": 2,
+      "grossPct": 2.7453,
+      "netPct": 2.0873,
+      "cashTwd": 5807.12,
+      "skips": {
+        "POSITION_OPEN": 4,
+        "MAX_2": 2,
+        "AFTER_0930": 9
+      }
+    },
+    {
+      "symbol": "8150",
+      "name": "南茂",
+      "mode": "A",
+      "trades": [
+        {
+          "signal": "2026-10-08T09:08:00+08:00",
+          "entry": "2026-10-08T09:08:00+08:00",
+          "entryPrice": 129.0,
+          "exit": "2026-10-08T09:11:26+08:00",
+          "exitPrice": 127.5,
+          "reason": "OPEN_BELOW_STOP",
+          "grossPct": -1.1628,
+          "netPct": -1.4798
+        }
+      ],
+      "count": 1,
+      "grossPct": -1.1628,
+      "netPct": -1.4798,
+      "cashTwd": -1910.56,
+      "skips": {}
+    },
+    {
+      "symbol": "8042",
+      "name": "金山電",
+      "mode": "A",
+      "trades": [
+        {
+          "signal": "2026-10-08T09:09:00+08:00",
+          "entry": "2026-10-08T09:09:00+08:00",
+          "entryPrice": 124.5,
+          "exit": "2026-10-08T09:15:46+08:00",
+          "exitPrice": 124.0,
+          "reason": "OPEN_BELOW_STOP",
+          "grossPct": -0.4016,
+          "netPct": -0.721
+        }
+      ],
+      "count": 1,
+      "grossPct": -0.4016,
+      "netPct": -0.721,
+      "cashTwd": -898.47,
+      "skips": {
+        "AFTER_0930": 9
+      }
+    },
+    {
+      "symbol": "2492",
+      "name": "華新科",
+      "mode": "A",
+      "trades": [
+        {
+          "signal": "2026-10-08T09:01:45+08:00",
+          "entry": "2026-10-08T09:01:45+08:00",
+          "entryPrice": 430.0,
+          "exit": "2026-10-08T09:02:35+08:00",
+          "exitPrice": 425.7,
+          "reason": "PRIOR_WATERMARK_STOP",
+          "grossPct": -1.0,
+          "netPct": -1.3175
+        },
+        {
+          "signal": "2026-10-08T09:03:20+08:00",
+          "entry": "2026-10-08T09:03:20+08:00",
+          "entryPrice": 427.0,
+          "exit": "2026-10-08T09:04:31+08:00",
+          "exitPrice": 422.73,
+          "reason": "PRIOR_WATERMARK_STOP",
+          "grossPct": -1.0,
+          "netPct": -1.3175
+        }
+      ],
+      "count": 2,
+      "grossPct": -1.99,
+      "netPct": -2.6176,
+      "cashTwd": -11300.79,
+      "skips": {
+        "MAX_2": 9,
+        "AFTER_0930": 37
+      }
+    },
+    {
+      "symbol": "2327",
+      "name": "國巨*",
+      "mode": "A",
+      "trades": [
+        {
+          "signal": "2026-10-08T09:00:20+08:00",
+          "entry": "2026-10-08T09:00:20+08:00",
+          "entryPrice": 645.0,
+          "exit": "2026-10-08T09:01:05+08:00",
+          "exitPrice": 638.55,
+          "reason": "PRIOR_WATERMARK_STOP",
+          "grossPct": -1.0,
+          "netPct": -1.3175
+        },
+        {
+          "signal": "2026-10-08T09:02:00+08:00",
+          "entry": "2026-10-08T09:02:00+08:00",
+          "entryPrice": 643.0,
+          "exit": "2026-10-08T09:04:19+08:00",
+          "exitPrice": 636.0,
+          "reason": "OPEN_BELOW_STOP",
+          "grossPct": -1.0886,
+          "netPct": -1.4059
+        }
+      ],
+      "count": 2,
+      "grossPct": -2.0777,
+      "netPct": -2.7049,
+      "cashTwd": -17552.81,
+      "skips": {
+        "MAX_2": 4,
+        "AFTER_0930": 9
+      }
+    },
+    {
+      "symbol": "3665",
+      "name": "貿聯-KY",
+      "mode": "A",
+      "trades": [
+        {
+          "signal": "2026-10-08T09:01:20+08:00",
+          "entry": "2026-10-08T09:01:23+08:00",
+          "entryPrice": 2345.0,
+          "exit": "2026-10-08T09:21:43+08:00",
+          "exitPrice": 2354.15,
+          "reason": "PRIOR_WATERMARK_STOP",
+          "grossPct": 0.3902,
+          "netPct": 0.0682
+        }
+      ],
+      "count": 1,
+      "grossPct": 0.3902,
+      "netPct": 0.0682,
+      "cashTwd": 1601.0,
+      "skips": {
+        "POSITION_OPEN": 1,
+        "AFTER_0930": 2
+      }
+    },
+    {
+      "symbol": "6456",
+      "name": "GIS-KY",
+      "mode": "A",
+      "trades": [
+        {
+          "signal": "2026-10-08T09:01:45+08:00",
+          "entry": "2026-10-08T09:01:45+08:00",
+          "entryPrice": 103.0,
+          "exit": "2026-10-08T09:01:53+08:00",
+          "exitPrice": 101.97,
+          "reason": "PRIOR_WATERMARK_STOP",
+          "grossPct": -1.0,
+          "netPct": -1.3175
+        },
+        {
+          "signal": "2026-10-08T09:02:50+08:00",
+          "entry": "2026-10-08T09:02:52+08:00",
+          "entryPrice": 103.0,
+          "exit": "2026-10-08T09:04:40+08:00",
+          "exitPrice": 102.0,
+          "reason": "OPEN_BELOW_STOP",
+          "grossPct": -0.9709,
+          "netPct": -1.2885
+        }
+      ],
+      "count": 2,
+      "grossPct": -1.9612,
+      "netPct": -2.589,
+      "cashTwd": -2686.48,
+      "skips": {
+        "MAX_2": 1,
+        "AFTER_0930": 5
+      }
+    },
+    {
+      "symbol": "3673",
+      "name": "TPK-KY",
+      "mode": "A",
+      "trades": [
+        {
+          "signal": "2026-10-08T09:04:15+08:00",
+          "entry": "2026-10-08T09:04:17+08:00",
+          "entryPrice": 75.9,
+          "exit": "2026-10-08T09:20:26+08:00",
+          "exitPrice": 75.1,
+          "reason": "OPEN_BELOW_STOP",
+          "grossPct": -1.054,
+          "netPct": -1.3714
+        },
+        {
+          "signal": "2026-10-08T09:23:55+08:00",
+          "entry": "2026-10-08T09:23:57+08:00",
+          "entryPrice": 75.0,
+          "exit": "2026-10-08T09:29:59+08:00",
+          "exitPrice": 74.6,
+          "reason": "FLAT_BEFORE_0930",
+          "grossPct": -0.5333,
+          "netPct": -0.8523
+        }
+      ],
+      "count": 2,
+      "grossPct": -1.5817,
+      "netPct": -2.212,
+      "cashTwd": -1681.56,
+      "skips": {
+        "POSITION_OPEN": 1,
+        "AFTER_0930": 2
+      }
+    }
+  ],
+  "B": [
+    {
+      "symbol": "8039",
+      "name": "台虹",
+      "mode": "B",
+      "trades": [
+        {
+          "signal": "2026-10-08T09:01:05+08:00",
+          "entry": "2026-10-08T09:01:05+08:00",
+          "entryPrice": 309.5,
+          "exit": "2026-10-08T09:04:04+08:00",
+          "exitPrice": 325.05,
+          "reason": "PRIOR_WATERMARK_STOP",
+          "grossPct": 5.0242,
+          "netPct": 4.6874
+        },
+        {
+          "signal": "2026-10-08T09:04:10+08:00",
+          "entry": "2026-10-08T09:04:10+08:00",
+          "entryPrice": 324.5,
+          "exit": "2026-10-08T09:04:12+08:00",
+          "exitPrice": 325.5,
+          "reason": "OPEN_BELOW_STOP",
+          "grossPct": 0.3082,
+          "netPct": -0.0135
+        }
+      ],
+      "count": 2,
+      "grossPct": 5.3479,
+      "netPct": 4.6733,
+      "cashTwd": 14475.88,
+      "skips": {
+        "POSITION_OPEN": 7,
+        "MAX_2": 16,
+        "AFTER_0930": 42
+      }
+    },
+    {
+      "symbol": "3406",
+      "name": "玉晶光",
+      "mode": "B",
+      "trades": [
+        {
+          "signal": "2026-10-08T09:00:45+08:00",
+          "entry": "2026-10-08T09:00:46+08:00",
+          "entryPrice": 1080.0,
+          "exit": "2026-10-08T09:04:49+08:00",
+          "exitPrice": 1088.425,
+          "reason": "PRIOR_WATERMARK_STOP",
+          "grossPct": 0.7801,
+          "netPct": 0.4569
+        },
+        {
+          "signal": "2026-10-08T09:16:00+08:00",
+          "entry": "2026-10-08T09:16:04+08:00",
+          "entryPrice": 1100.0,
+          "exit": "2026-10-08T09:18:07+08:00",
+          "exitPrice": 1085.0,
+          "reason": "OPEN_BELOW_STOP",
+          "grossPct": -1.3636,
+          "netPct": -1.68
+        }
+      ],
+      "count": 2,
+      "grossPct": -0.5941,
+      "netPct": -1.2308,
+      "cashTwd": -13557.32,
+      "skips": {
+        "POSITION_OPEN": 2,
+        "MAX_2": 1
+      }
+    },
+    {
+      "symbol": "2303",
+      "name": "聯電",
+      "mode": "B",
+      "trades": [],
+      "count": 0,
+      "grossPct": 0.0,
+      "netPct": 0.0,
+      "cashTwd": 0,
+      "skips": {}
+    },
+    {
+      "symbol": "1303",
+      "name": "南亞",
+      "mode": "B",
+      "trades": [
+        {
+          "signal": "2026-10-08T09:04:30+08:00",
+          "entry": "2026-10-08T09:04:30+08:00",
+          "entryPrice": 311.5,
+          "exit": "2026-10-08T09:17:49+08:00",
+          "exitPrice": 310.0,
+          "reason": "OPEN_BELOW_STOP",
+          "grossPct": -0.4815,
+          "netPct": -0.8007
+        },
+        {
+          "signal": "2026-10-08T09:19:50+08:00",
+          "entry": "2026-10-08T09:19:50+08:00",
+          "entryPrice": 310.5,
+          "exit": "2026-10-08T09:22:08+08:00",
+          "exitPrice": 307.0,
+          "reason": "OPEN_BELOW_STOP",
+          "grossPct": -1.1272,
+          "netPct": -1.4443
+        }
+      ],
+      "count": 2,
+      "grossPct": -1.6033,
+      "netPct": -2.2334,
+      "cashTwd": -6984.85,
+      "skips": {
+        "POSITION_OPEN": 10,
+        "MAX_2": 3,
+        "AFTER_0930": 18
+      }
+    },
+    {
+      "symbol": "1727",
+      "name": "中華化",
+      "mode": "B",
+      "trades": [
+        {
+          "signal": "2026-10-08T09:07:00+08:00",
+          "entry": "2026-10-08T09:07:00+08:00",
+          "entryPrice": 109.0,
+          "exit": "2026-10-08T09:11:55+08:00",
+          "exitPrice": 111.305,
+          "reason": "PRIOR_WATERMARK_STOP",
+          "grossPct": 2.1147,
+          "netPct": 1.7872
+        }
+      ],
+      "count": 1,
+      "grossPct": 2.1147,
+      "netPct": 1.7872,
+      "cashTwd": 1949.68,
+      "skips": {
+        "POSITION_OPEN": 3,
+        "AFTER_0930": 1
+      }
+    },
+    {
+      "symbol": "2409",
+      "name": "友達",
+      "mode": "B",
+      "trades": [
+        {
+          "signal": "2026-10-08T09:02:05+08:00",
+          "entry": "2026-10-08T09:02:05+08:00",
+          "entryPrice": 37.7,
+          "exit": "2026-10-08T09:05:29+08:00",
+          "exitPrice": 37.323,
+          "reason": "PRIOR_WATERMARK_STOP",
+          "grossPct": -1.0,
+          "netPct": -1.3175
+        },
+        {
+          "signal": "2026-10-08T09:13:25+08:00",
+          "entry": "2026-10-08T09:13:25+08:00",
+          "entryPrice": 37.5,
+          "exit": "2026-10-08T09:21:20+08:00",
+          "exitPrice": 37.1345,
+          "reason": "PRIOR_WATERMARK_STOP",
+          "grossPct": -0.9747,
+          "netPct": -1.2923
+        }
+      ],
+      "count": 2,
+      "grossPct": -1.965,
+      "netPct": -2.5928,
+      "cashTwd": -982.14,
+      "skips": {
+        "MAX_2": 3,
+        "AFTER_0930": 1
+      }
+    },
+    {
+      "symbol": "3481",
+      "name": "群創",
+      "mode": "B",
+      "trades": [
+        {
+          "signal": "2026-10-08T09:00:35+08:00",
+          "entry": "2026-10-08T09:00:35+08:00",
+          "entryPrice": 52.1,
+          "exit": "2026-10-08T09:02:33+08:00",
+          "exitPrice": 51.614,
+          "reason": "PRIOR_WATERMARK_STOP",
+          "grossPct": -0.9328,
+          "netPct": -1.2506
+        },
+        {
+          "signal": "2026-10-08T09:08:40+08:00",
+          "entry": "2026-10-08T09:08:40+08:00",
+          "entryPrice": 51.9,
+          "exit": "2026-10-08T09:19:05+08:00",
+          "exitPrice": 51.7,
+          "reason": "OPEN_BELOW_STOP",
+          "grossPct": -0.3854,
+          "netPct": -0.7048
+        }
+      ],
+      "count": 2,
+      "grossPct": -1.3146,
+      "netPct": -1.9466,
+      "cashTwd": -1018.22,
+      "skips": {
+        "POSITION_OPEN": 3,
+        "MAX_2": 3
+      }
+    },
+    {
+      "symbol": "3042",
+      "name": "晶技",
+      "mode": "B",
+      "trades": [
+        {
+          "signal": "2026-10-08T09:01:55+08:00",
+          "entry": "2026-10-08T09:01:55+08:00",
+          "entryPrice": 208.5,
+          "exit": "2026-10-08T09:14:27+08:00",
+          "exitPrice": 206.415,
+          "reason": "PRIOR_WATERMARK_STOP",
+          "grossPct": -1.0,
+          "netPct": -1.3175
+        }
+      ],
+      "count": 1,
+      "grossPct": -1.0,
+      "netPct": -1.3175,
+      "cashTwd": -2749.37,
+      "skips": {
+        "AFTER_0930": 2
+      }
+    },
+    {
+      "symbol": "6257",
+      "name": "矽格",
+      "mode": "B",
+      "trades": [
+        {
+          "signal": "2026-10-08T09:00:20+08:00",
+          "entry": "2026-10-08T09:00:21+08:00",
+          "entryPrice": 277.0,
+          "exit": "2026-10-08T09:13:40+08:00",
+          "exitPrice": 287.1275,
+          "reason": "PRIOR_WATERMARK_STOP",
+          "grossPct": 3.6561,
+          "netPct": 3.3237
+        },
+        {
+          "signal": "2026-10-08T09:16:35+08:00",
+          "entry": "2026-10-08T09:16:35+08:00",
+          "entryPrice": 284.5,
+          "exit": "2026-10-08T09:20:58+08:00",
+          "exitPrice": 282.0,
+          "reason": "OPEN_BELOW_STOP",
+          "grossPct": -0.8787,
+          "netPct": -1.1966
+        }
+      ],
+      "count": 2,
+      "grossPct": 2.7453,
+      "netPct": 2.0873,
+      "cashTwd": 5807.12,
+      "skips": {
+        "POSITION_OPEN": 10,
+        "MAX_2": 6,
+        "AFTER_0930": 13
+      }
+    },
+    {
+      "symbol": "8150",
+      "name": "南茂",
+      "mode": "B",
+      "trades": [
+        {
+          "signal": "2026-10-08T09:08:00+08:00",
+          "entry": "2026-10-08T09:08:00+08:00",
+          "entryPrice": 129.0,
+          "exit": "2026-10-08T09:11:26+08:00",
+          "exitPrice": 127.5,
+          "reason": "OPEN_BELOW_STOP",
+          "grossPct": -1.1628,
+          "netPct": -1.4798
+        }
+      ],
+      "count": 1,
+      "grossPct": -1.1628,
+      "netPct": -1.4798,
+      "cashTwd": -1910.56,
+      "skips": {}
+    },
+    {
+      "symbol": "8042",
+      "name": "金山電",
+      "mode": "B",
+      "trades": [
+        {
+          "signal": "2026-10-08T09:09:00+08:00",
+          "entry": "2026-10-08T09:09:00+08:00",
+          "entryPrice": 124.5,
+          "exit": "2026-10-08T09:15:46+08:00",
+          "exitPrice": 124.0,
+          "reason": "OPEN_BELOW_STOP",
+          "grossPct": -0.4016,
+          "netPct": -0.721
+        }
+      ],
+      "count": 1,
+      "grossPct": -0.4016,
+      "netPct": -0.721,
+      "cashTwd": -898.47,
+      "skips": {
+        "AFTER_0930": 11
+      }
+    },
+    {
+      "symbol": "2492",
+      "name": "華新科",
+      "mode": "B",
+      "trades": [
+        {
+          "signal": "2026-10-08T09:01:45+08:00",
+          "entry": "2026-10-08T09:01:45+08:00",
+          "entryPrice": 430.0,
+          "exit": "2026-10-08T09:02:35+08:00",
+          "exitPrice": 425.7,
+          "reason": "PRIOR_WATERMARK_STOP",
+          "grossPct": -1.0,
+          "netPct": -1.3175
+        },
+        {
+          "signal": "2026-10-08T09:03:20+08:00",
+          "entry": "2026-10-08T09:03:20+08:00",
+          "entryPrice": 427.0,
+          "exit": "2026-10-08T09:04:31+08:00",
+          "exitPrice": 422.73,
+          "reason": "PRIOR_WATERMARK_STOP",
+          "grossPct": -1.0,
+          "netPct": -1.3175
+        }
+      ],
+      "count": 2,
+      "grossPct": -1.99,
+      "netPct": -2.6176,
+      "cashTwd": -11300.79,
+      "skips": {
+        "MAX_2": 17,
+        "AFTER_0930": 70
+      }
+    },
+    {
+      "symbol": "2327",
+      "name": "國巨*",
+      "mode": "B",
+      "trades": [
+        {
+          "signal": "2026-10-08T09:00:20+08:00",
+          "entry": "2026-10-08T09:00:20+08:00",
+          "entryPrice": 645.0,
+          "exit": "2026-10-08T09:01:05+08:00",
+          "exitPrice": 638.55,
+          "reason": "PRIOR_WATERMARK_STOP",
+          "grossPct": -1.0,
+          "netPct": -1.3175
+        },
+        {
+          "signal": "2026-10-08T09:02:00+08:00",
+          "entry": "2026-10-08T09:02:00+08:00",
+          "entryPrice": 643.0,
+          "exit": "2026-10-08T09:04:19+08:00",
+          "exitPrice": 636.0,
+          "reason": "OPEN_BELOW_STOP",
+          "grossPct": -1.0886,
+          "netPct": -1.4059
+        }
+      ],
+      "count": 2,
+      "grossPct": -2.0777,
+      "netPct": -2.7049,
+      "cashTwd": -17552.81,
+      "skips": {
+        "MAX_2": 11,
+        "AFTER_0930": 15
+      }
+    },
+    {
+      "symbol": "3665",
+      "name": "貿聯-KY",
+      "mode": "B",
+      "trades": [
+        {
+          "signal": "2026-10-08T09:01:20+08:00",
+          "entry": "2026-10-08T09:01:23+08:00",
+          "entryPrice": 2345.0,
+          "exit": "2026-10-08T09:21:43+08:00",
+          "exitPrice": 2354.15,
+          "reason": "PRIOR_WATERMARK_STOP",
+          "grossPct": 0.3902,
+          "netPct": 0.0682
+        }
+      ],
+      "count": 1,
+      "grossPct": 0.3902,
+      "netPct": 0.0682,
+      "cashTwd": 1601.0,
+      "skips": {
+        "POSITION_OPEN": 4,
+        "AFTER_0930": 3
+      }
+    },
+    {
+      "symbol": "6456",
+      "name": "GIS-KY",
+      "mode": "B",
+      "trades": [
+        {
+          "signal": "2026-10-08T09:01:45+08:00",
+          "entry": "2026-10-08T09:01:45+08:00",
+          "entryPrice": 103.0,
+          "exit": "2026-10-08T09:01:53+08:00",
+          "exitPrice": 101.97,
+          "reason": "PRIOR_WATERMARK_STOP",
+          "grossPct": -1.0,
+          "netPct": -1.3175
+        },
+        {
+          "signal": "2026-10-08T09:02:50+08:00",
+          "entry": "2026-10-08T09:02:52+08:00",
+          "entryPrice": 103.0,
+          "exit": "2026-10-08T09:04:40+08:00",
+          "exitPrice": 102.0,
+          "reason": "OPEN_BELOW_STOP",
+          "grossPct": -0.9709,
+          "netPct": -1.2885
+        }
+      ],
+      "count": 2,
+      "grossPct": -1.9612,
+      "netPct": -2.589,
+      "cashTwd": -2686.48,
+      "skips": {
+        "MAX_2": 1,
+        "AFTER_0930": 7
+      }
+    },
+    {
+      "symbol": "3673",
+      "name": "TPK-KY",
+      "mode": "B",
+      "trades": [
+        {
+          "signal": "2026-10-08T09:04:15+08:00",
+          "entry": "2026-10-08T09:04:17+08:00",
+          "entryPrice": 75.9,
+          "exit": "2026-10-08T09:20:26+08:00",
+          "exitPrice": 75.1,
+          "reason": "OPEN_BELOW_STOP",
+          "grossPct": -1.054,
+          "netPct": -1.3714
+        },
+        {
+          "signal": "2026-10-08T09:23:55+08:00",
+          "entry": "2026-10-08T09:23:57+08:00",
+          "entryPrice": 75.0,
+          "exit": "2026-10-08T09:29:59+08:00",
+          "exitPrice": 74.6,
+          "reason": "FLAT_BEFORE_0930",
+          "grossPct": -0.5333,
+          "netPct": -0.8523
+        }
+      ],
+      "count": 2,
+      "grossPct": -1.5817,
+      "netPct": -2.212,
+      "cashTwd": -1681.56,
+      "skips": {
+        "POSITION_OPEN": 2,
+        "AFTER_0930": 3
+      }
+    }
+  ],
+  "A_no80": [
+    {
+      "symbol": "8039",
+      "name": "台虹",
+      "mode": "A",
+      "trades": [
+        {
+          "signal": "2026-10-08T09:01:05+08:00",
+          "entry": "2026-10-08T09:01:05+08:00",
+          "entryPrice": 309.5,
+          "exit": "2026-10-08T09:04:04+08:00",
+          "exitPrice": 325.05,
+          "reason": "PRIOR_WATERMARK_STOP",
+          "grossPct": 5.0242,
+          "netPct": 4.6874
+        },
+        {
+          "signal": "2026-10-08T09:06:30+08:00",
+          "entry": "2026-10-08T09:06:30+08:00",
+          "entryPrice": 320.0,
+          "exit": "2026-10-08T09:07:07+08:00",
+          "exitPrice": 316.8,
+          "reason": "PRIOR_WATERMARK_STOP",
+          "grossPct": -1.0,
+          "netPct": -1.3175
+        }
+      ],
+      "count": 2,
+      "grossPct": 3.974,
+      "netPct": 3.3081,
+      "cashTwd": 10300.22,
+      "skips": {
+        "POSITION_OPEN": 3,
+        "MAX_2": 8,
+        "AFTER_0930": 27
+      }
+    },
+    {
+      "symbol": "3406",
+      "name": "玉晶光",
+      "mode": "A",
+      "trades": [
+        {
+          "signal": "2026-10-08T09:00:45+08:00",
+          "entry": "2026-10-08T09:00:46+08:00",
+          "entryPrice": 1080.0,
+          "exit": "2026-10-08T09:04:49+08:00",
+          "exitPrice": 1088.425,
+          "reason": "PRIOR_WATERMARK_STOP",
+          "grossPct": 0.7801,
+          "netPct": 0.4569
+        },
+        {
+          "signal": "2026-10-08T09:16:00+08:00",
+          "entry": "2026-10-08T09:16:04+08:00",
+          "entryPrice": 1100.0,
+          "exit": "2026-10-08T09:18:07+08:00",
+          "exitPrice": 1085.0,
+          "reason": "OPEN_BELOW_STOP",
+          "grossPct": -1.3636,
+          "netPct": -1.68
+        }
+      ],
+      "count": 2,
+      "grossPct": -0.5941,
+      "netPct": -1.2308,
+      "cashTwd": -13557.32,
+      "skips": {
+        "POSITION_OPEN": 1,
+        "MAX_2": 1
+      }
+    },
+    {
+      "symbol": "2303",
+      "name": "聯電",
+      "mode": "A",
+      "trades": [],
+      "count": 0,
+      "grossPct": 0.0,
+      "netPct": 0.0,
+      "cashTwd": 0,
+      "skips": {}
+    },
+    {
+      "symbol": "1303",
+      "name": "南亞",
+      "mode": "A",
+      "trades": [
+        {
+          "signal": "2026-10-08T09:04:30+08:00",
+          "entry": "2026-10-08T09:04:30+08:00",
+          "entryPrice": 311.5,
+          "exit": "2026-10-08T09:17:49+08:00",
+          "exitPrice": 310.0,
+          "reason": "OPEN_BELOW_STOP",
+          "grossPct": -0.4815,
+          "netPct": -0.8007
+        },
+        {
+          "signal": "2026-10-08T09:19:50+08:00",
+          "entry": "2026-10-08T09:19:50+08:00",
+          "entryPrice": 310.5,
+          "exit": "2026-10-08T09:22:08+08:00",
+          "exitPrice": 307.0,
+          "reason": "OPEN_BELOW_STOP",
+          "grossPct": -1.1272,
+          "netPct": -1.4443
+        }
+      ],
+      "count": 2,
+      "grossPct": -1.6033,
+      "netPct": -2.2334,
+      "cashTwd": -6984.85,
+      "skips": {
+        "POSITION_OPEN": 3,
+        "MAX_2": 2,
+        "AFTER_0930": 14
+      }
+    },
+    {
+      "symbol": "1727",
+      "name": "中華化",
+      "mode": "A",
+      "trades": [
+        {
+          "signal": "2026-10-08T09:07:00+08:00",
+          "entry": "2026-10-08T09:07:00+08:00",
+          "entryPrice": 109.0,
+          "exit": "2026-10-08T09:11:55+08:00",
+          "exitPrice": 111.305,
+          "reason": "PRIOR_WATERMARK_STOP",
+          "grossPct": 2.1147,
+          "netPct": 1.7872
+        }
+      ],
+      "count": 1,
+      "grossPct": 2.1147,
+      "netPct": 1.7872,
+      "cashTwd": 1949.68,
+      "skips": {
+        "POSITION_OPEN": 1,
+        "AFTER_0930": 1
+      }
+    },
+    {
+      "symbol": "2409",
+      "name": "友達",
+      "mode": "A",
+      "trades": [
+        {
+          "signal": "2026-10-08T09:02:05+08:00",
+          "entry": "2026-10-08T09:02:05+08:00",
+          "entryPrice": 37.7,
+          "exit": "2026-10-08T09:05:29+08:00",
+          "exitPrice": 37.323,
+          "reason": "PRIOR_WATERMARK_STOP",
+          "grossPct": -1.0,
+          "netPct": -1.3175
+        },
+        {
+          "signal": "2026-10-08T09:13:25+08:00",
+          "entry": "2026-10-08T09:13:25+08:00",
+          "entryPrice": 37.5,
+          "exit": "2026-10-08T09:21:20+08:00",
+          "exitPrice": 37.1345,
+          "reason": "PRIOR_WATERMARK_STOP",
+          "grossPct": -0.9747,
+          "netPct": -1.2923
+        }
+      ],
+      "count": 2,
+      "grossPct": -1.965,
+      "netPct": -2.5928,
+      "cashTwd": -982.14,
+      "skips": {
+        "MAX_2": 1,
+        "AFTER_0930": 1
+      }
+    },
+    {
+      "symbol": "3481",
+      "name": "群創",
+      "mode": "A",
+      "trades": [
+        {
+          "signal": "2026-10-08T09:00:35+08:00",
+          "entry": "2026-10-08T09:00:35+08:00",
+          "entryPrice": 52.1,
+          "exit": "2026-10-08T09:02:33+08:00",
+          "exitPrice": 51.614,
+          "reason": "PRIOR_WATERMARK_STOP",
+          "grossPct": -0.9328,
+          "netPct": -1.2506
+        },
+        {
+          "signal": "2026-10-08T09:08:40+08:00",
+          "entry": "2026-10-08T09:08:40+08:00",
+          "entryPrice": 51.9,
+          "exit": "2026-10-08T09:19:05+08:00",
+          "exitPrice": 51.7,
+          "reason": "OPEN_BELOW_STOP",
+          "grossPct": -0.3854,
+          "netPct": -0.7048
+        }
+      ],
+      "count": 2,
+      "grossPct": -1.3146,
+      "netPct": -1.9466,
+      "cashTwd": -1018.22,
+      "skips": {
+        "POSITION_OPEN": 1,
+        "MAX_2": 2
+      }
+    },
+    {
+      "symbol": "3042",
+      "name": "晶技",
+      "mode": "A",
+      "trades": [
+        {
+          "signal": "2026-10-08T09:01:55+08:00",
+          "entry": "2026-10-08T09:01:55+08:00",
+          "entryPrice": 208.5,
+          "exit": "2026-10-08T09:14:27+08:00",
+          "exitPrice": 206.415,
+          "reason": "PRIOR_WATERMARK_STOP",
+          "grossPct": -1.0,
+          "netPct": -1.3175
+        }
+      ],
+      "count": 1,
+      "grossPct": -1.0,
+      "netPct": -1.3175,
+      "cashTwd": -2749.37,
+      "skips": {
+        "AFTER_0930": 2
+      }
+    },
+    {
+      "symbol": "6257",
+      "name": "矽格",
+      "mode": "A",
+      "trades": [
+        {
+          "signal": "2026-10-08T09:00:20+08:00",
+          "entry": "2026-10-08T09:00:21+08:00",
+          "entryPrice": 277.0,
+          "exit": "2026-10-08T09:13:40+08:00",
+          "exitPrice": 287.1275,
+          "reason": "PRIOR_WATERMARK_STOP",
+          "grossPct": 3.6561,
+          "netPct": 3.3237
+        },
+        {
+          "signal": "2026-10-08T09:16:35+08:00",
+          "entry": "2026-10-08T09:16:35+08:00",
+          "entryPrice": 284.5,
+          "exit": "2026-10-08T09:20:58+08:00",
+          "exitPrice": 282.0,
+          "reason": "OPEN_BELOW_STOP",
+          "grossPct": -0.8787,
+          "netPct": -1.1966
+        }
+      ],
+      "count": 2,
+      "grossPct": 2.7453,
+      "netPct": 2.0873,
+      "cashTwd": 5807.12,
+      "skips": {
+        "POSITION_OPEN": 4,
+        "MAX_2": 2,
+        "AFTER_0930": 9
+      }
+    },
+    {
+      "symbol": "8150",
+      "name": "南茂",
+      "mode": "A",
+      "trades": [
+        {
+          "signal": "2026-10-08T09:08:00+08:00",
+          "entry": "2026-10-08T09:08:00+08:00",
+          "entryPrice": 129.0,
+          "exit": "2026-10-08T09:11:26+08:00",
+          "exitPrice": 127.5,
+          "reason": "OPEN_BELOW_STOP",
+          "grossPct": -1.1628,
+          "netPct": -1.4798
+        }
+      ],
+      "count": 1,
+      "grossPct": -1.1628,
+      "netPct": -1.4798,
+      "cashTwd": -1910.56,
+      "skips": {}
+    },
+    {
+      "symbol": "8042",
+      "name": "金山電",
+      "mode": "A",
+      "trades": [
+        {
+          "signal": "2026-10-08T09:09:00+08:00",
+          "entry": "2026-10-08T09:09:00+08:00",
+          "entryPrice": 124.5,
+          "exit": "2026-10-08T09:15:46+08:00",
+          "exitPrice": 124.0,
+          "reason": "OPEN_BELOW_STOP",
+          "grossPct": -0.4016,
+          "netPct": -0.721
+        }
+      ],
+      "count": 1,
+      "grossPct": -0.4016,
+      "netPct": -0.721,
+      "cashTwd": -898.47,
+      "skips": {
+        "AFTER_0930": 9
+      }
+    },
+    {
+      "symbol": "2492",
+      "name": "華新科",
+      "mode": "A",
+      "trades": [
+        {
+          "signal": "2026-10-08T09:01:45+08:00",
+          "entry": "2026-10-08T09:01:45+08:00",
+          "entryPrice": 430.0,
+          "exit": "2026-10-08T09:02:35+08:00",
+          "exitPrice": 425.7,
+          "reason": "PRIOR_WATERMARK_STOP",
+          "grossPct": -1.0,
+          "netPct": -1.3175
+        },
+        {
+          "signal": "2026-10-08T09:03:20+08:00",
+          "entry": "2026-10-08T09:03:20+08:00",
+          "entryPrice": 427.0,
+          "exit": "2026-10-08T09:04:31+08:00",
+          "exitPrice": 422.73,
+          "reason": "PRIOR_WATERMARK_STOP",
+          "grossPct": -1.0,
+          "netPct": -1.3175
+        }
+      ],
+      "count": 2,
+      "grossPct": -1.99,
+      "netPct": -2.6176,
+      "cashTwd": -11300.79,
+      "skips": {
+        "MAX_2": 9,
+        "AFTER_0930": 37
+      }
+    },
+    {
+      "symbol": "2327",
+      "name": "國巨*",
+      "mode": "A",
+      "trades": [
+        {
+          "signal": "2026-10-08T09:00:20+08:00",
+          "entry": "2026-10-08T09:00:20+08:00",
+          "entryPrice": 645.0,
+          "exit": "2026-10-08T09:01:05+08:00",
+          "exitPrice": 638.55,
+          "reason": "PRIOR_WATERMARK_STOP",
+          "grossPct": -1.0,
+          "netPct": -1.3175
+        },
+        {
+          "signal": "2026-10-08T09:02:00+08:00",
+          "entry": "2026-10-08T09:02:00+08:00",
+          "entryPrice": 643.0,
+          "exit": "2026-10-08T09:04:19+08:00",
+          "exitPrice": 636.0,
+          "reason": "OPEN_BELOW_STOP",
+          "grossPct": -1.0886,
+          "netPct": -1.4059
+        }
+      ],
+      "count": 2,
+      "grossPct": -2.0777,
+      "netPct": -2.7049,
+      "cashTwd": -17552.81,
+      "skips": {
+        "MAX_2": 4,
+        "AFTER_0930": 9
+      }
+    },
+    {
+      "symbol": "3665",
+      "name": "貿聯-KY",
+      "mode": "A",
+      "trades": [
+        {
+          "signal": "2026-10-08T09:01:20+08:00",
+          "entry": "2026-10-08T09:01:23+08:00",
+          "entryPrice": 2345.0,
+          "exit": "2026-10-08T09:21:43+08:00",
+          "exitPrice": 2354.15,
+          "reason": "PRIOR_WATERMARK_STOP",
+          "grossPct": 0.3902,
+          "netPct": 0.0682
+        }
+      ],
+      "count": 1,
+      "grossPct": 0.3902,
+      "netPct": 0.0682,
+      "cashTwd": 1601.0,
+      "skips": {
+        "POSITION_OPEN": 1,
+        "AFTER_0930": 2
+      }
+    },
+    {
+      "symbol": "6456",
+      "name": "GIS-KY",
+      "mode": "A",
+      "trades": [
+        {
+          "signal": "2026-10-08T09:01:45+08:00",
+          "entry": "2026-10-08T09:01:45+08:00",
+          "entryPrice": 103.0,
+          "exit": "2026-10-08T09:01:53+08:00",
+          "exitPrice": 101.97,
+          "reason": "PRIOR_WATERMARK_STOP",
+          "grossPct": -1.0,
+          "netPct": -1.3175
+        },
+        {
+          "signal": "2026-10-08T09:02:50+08:00",
+          "entry": "2026-10-08T09:02:52+08:00",
+          "entryPrice": 103.0,
+          "exit": "2026-10-08T09:04:40+08:00",
+          "exitPrice": 102.0,
+          "reason": "OPEN_BELOW_STOP",
+          "grossPct": -0.9709,
+          "netPct": -1.2885
+        }
+      ],
+      "count": 2,
+      "grossPct": -1.9612,
+      "netPct": -2.589,
+      "cashTwd": -2686.48,
+      "skips": {
+        "MAX_2": 1,
+        "AFTER_0930": 5
+      }
+    },
+    {
+      "symbol": "3673",
+      "name": "TPK-KY",
+      "mode": "A",
+      "trades": [
+        {
+          "signal": "2026-10-08T09:04:15+08:00",
+          "entry": "2026-10-08T09:04:17+08:00",
+          "entryPrice": 75.9,
+          "exit": "2026-10-08T09:20:26+08:00",
+          "exitPrice": 75.1,
+          "reason": "OPEN_BELOW_STOP",
+          "grossPct": -1.054,
+          "netPct": -1.3714
+        },
+        {
+          "signal": "2026-10-08T09:23:55+08:00",
+          "entry": "2026-10-08T09:23:57+08:00",
+          "entryPrice": 75.0,
+          "exit": "2026-10-08T09:29:59+08:00",
+          "exitPrice": 74.6,
+          "reason": "FLAT_BEFORE_0930",
+          "grossPct": -0.5333,
+          "netPct": -0.8523
+        }
+      ],
+      "count": 2,
+      "grossPct": -1.5817,
+      "netPct": -2.212,
+      "cashTwd": -1681.56,
+      "skips": {
+        "POSITION_OPEN": 1,
+        "AFTER_0930": 2
+      }
+    }
+  ]
+}
