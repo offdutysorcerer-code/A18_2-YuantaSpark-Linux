@@ -407,6 +407,48 @@ app.MapGet("/api/calendar/non-trading/{date}", (string date, HistoricalSecondBar
     return Results.Ok(new { date, nonTrading = history.IsKnownNonTradingDay(d) });
 });
 
+// Observation only: opening relative activity against previous four available trading sessions.
+// Never creates broker orders or changes entry/exit eligibility.
+app.MapGet("/api/swing/opening-activity/{symbol}", async (string symbol, string? date, HistoricalSecondBars history, CancellationToken ct) =>
+{
+    var taipei=TimeZoneInfo.FindSystemTimeZoneById("Asia/Taipei");
+    var today=DateOnly.FromDateTime(TimeZoneInfo.ConvertTime(DateTimeOffset.UtcNow,taipei).Date);
+    if (!DateOnly.TryParseExact(date,"yyyy-MM-dd",out var selected) || selected>today)
+        return Results.BadRequest(new { error="valid historical date required" });
+    var sessions=new List<object>();
+    var measures=new List<(DateOnly Date,long[] Volumes,long[] Ticks,bool[] Completed)>();
+    for(var d=selected;d>=selected.AddDays(-18)&&measures.Count<5;d=d.AddDays(-1))
+    {
+        if(history.IsKnownNonTradingDay(d)) continue;
+        var result=await history.GetAsync(symbol,d,ct);
+        if(result.Bars.Count==0) continue;
+        var bars=result.Bars.Where(x=>x.StartTime.ToOffset(TimeSpan.FromHours(8)).Date==d.ToDateTime(TimeOnly.MinValue).Date).OrderBy(x=>x.StartTime).ToArray();
+        if(bars.Length==0) continue;
+        var volume=new long[3];var ticks=new long[3];var complete=new bool[3];
+        for(var i=0;i<3;i++)
+        {
+            var minutes=new[]{5,15,30}[i];
+            var end=d.ToDateTime(new TimeOnly(9,0)).AddMinutes(minutes);
+            var segment=bars.Where(x=>x.StartTime.ToOffset(TimeSpan.FromHours(8)).DateTime>=d.ToDateTime(new TimeOnly(9,0))&&x.StartTime.ToOffset(TimeSpan.FromHours(8)).DateTime<end).ToArray();
+            volume[i]=segment.Sum(x=>x.Volume);ticks[i]=segment.Sum(x=>x.TickCount);
+            // A no-trade gap near the window boundary is valid; do not require a bar at 09:14:55.
+            // Verify opening participation and that the observation window has elapsed.
+            complete[i]=segment.Length>0 && segment[0].StartTime.ToOffset(TimeSpan.FromHours(8)).DateTime<=d.ToDateTime(new TimeOnly(9,1))
+                && bars[^1].StartTime.ToOffset(TimeSpan.FromHours(8)).DateTime>=end;
+        }
+        measures.Add((d,volume,ticks,complete));
+    }
+    if(measures.Count==0)return Results.Ok(new { symbol, date, state="NO_DATA", sessions=Array.Empty<object>() });
+    var current=measures[0];
+    var windows=new[]{5,15,30}.Select((minutes,i)=>
+    {
+        var prior=measures.Skip(1).Where(x=>x.Completed[i]).ToArray();
+        var avg=prior.Length>0?prior.Average(x=>(double)x.Volumes[i]):0;
+        return new { minutes, volume=current.Volumes[i],ticks=current.Ticks[i],complete=current.Completed[i],priorCount=prior.Length,priorAverage=avg>0?Math.Round(avg,2):0, rvol=current.Completed[i]&&prior.Length==4&&avg>0?(double?)Math.Round(current.Volumes[i]/avg,3):null };
+    }).ToArray();
+    return Results.Ok(new { symbol,date=selected.ToString("yyyy-MM-dd"),state=windows.All(x=>x.rvol.HasValue)?"AVAILABLE":"INSUFFICIENT_HISTORY",priorDates=measures.Skip(1).Select(x=>x.Date.ToString("yyyy-MM-dd")).ToArray(),windows,observationOnly=true });
+});
+
 app.MapGet("/api/bars/{symbol}", async (string symbol, string? date, int? interval, IMarketDataProvider provider, TaiwanSymbolDirectory symbols, HistoricalSecondBars history, CancellationToken ct) =>
 {
     try
