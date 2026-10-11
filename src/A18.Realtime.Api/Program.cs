@@ -113,6 +113,26 @@ app.MapPost("/api/auto-long/shadow-test/cancel", (AutoLongShadowCancel body, Htt
     !IsLocalShadowTest(ctx,cfg)?Results.StatusCode(404):Results.Ok(new{accepted=ledger.CancelReservation(body.Id)}));
 app.MapPost("/api/auto-long/shadow-test/expire", (HttpContext ctx,IConfiguration cfg,AutoLongPaperLedger ledger) =>
     !IsLocalShadowTest(ctx,cfg)?Results.StatusCode(404):Results.Ok(new{expired=ledger.ExpireUnfilled(DateTimeOffset.UtcNow,TimeSpan.FromSeconds(30))}));
+// Read-only integration readiness. This endpoint cannot place orders or unlock Live.
+app.MapGet("/api/auto-long/execution-readiness", (IConfiguration cfg, IMarketDataProvider provider, AutoLongPaperPositions positions) =>
+{
+    if (!cfg.GetValue<bool>("A18:StagingSafeMode")) return Results.StatusCode(404);
+    bool feedReady = !provider.Name.Equals("Stub", StringComparison.OrdinalIgnoreCase) && provider.IsReady;
+    bool paperEnabled = cfg.GetValue<bool>("AutoLong:EnableIsolatedPaperRunner");
+    bool reconciled = positions.UnreconciledSymbols().Length == 0;
+    return Results.Ok(new
+    {
+        environment = "Staging", liveTradingEnabled = false,
+        liveBlockReason = "STAGING_RUNTIME21_DISABLED",
+        shadowSignalsEnabled = true,
+        paperRunnerEnabled = paperEnabled,
+        marketProvider = provider.Name,
+        liveFeedReady = feedReady,
+        paperExecutionReady = paperEnabled && feedReady && reconciled,
+        paperReconciliationReady = reconciled,
+        details = "Read-only status. Staging cannot forward any request to Runtime21/broker."
+    });
+});
 app.MapGet("/api/auto-long/paper-integrity", (AutoLongPaperPositions positions,IConfiguration cfg) =>
     cfg.GetValue<bool>("A18:StagingSafeMode")?Results.Ok(new{unreconciledSymbols=positions.UnreconciledSymbols(),ready=positions.UnreconciledSymbols().Length==0}):Results.StatusCode(404));
 app.MapGet("/api/auto-long/paper-positions", (AutoLongPaperPositions positions,IConfiguration cfg) => cfg.GetValue<bool>("A18:StagingSafeMode")?Results.Ok(positions.List()):Results.StatusCode(404));
