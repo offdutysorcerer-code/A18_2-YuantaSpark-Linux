@@ -1,0 +1,2164 @@
+{
+  "1.02_0": {
+    "A": {
+      "8039": {
+        "trades": [
+          {
+            "entry": "2026-10-08T09:01:20+08:00",
+            "entryPrice": 313.5,
+            "exit": "2026-10-08T09:04:04+08:00",
+            "exitPrice": 325.05,
+            "netPct": 3.351668533929786,
+            "reason": "BASE_OR_TRAIL_STOP",
+            "mirrorStop": 310.365,
+            "mirrorUpdates": 0,
+            "mirrorWasBindingAtExit": false
+          },
+          {
+            "entry": "2026-10-08T09:11:45+08:00",
+            "entryPrice": 312.0,
+            "exit": "2026-10-08T09:19:32+08:00",
+            "exitPrice": 315.6925,
+            "netPct": 0.8589720412444768,
+            "reason": "BASE_OR_TRAIL_STOP",
+            "mirrorStop": 309.38,
+            "mirrorUpdates": 1,
+            "mirrorWasBindingAtExit": false
+          }
+        ],
+        "blocked": 0,
+        "netPct": 4.2394,
+        "netTwd": 13198.75,
+        "symbol": "8039",
+        "name": "台虹"
+      },
+      "3406": {
+        "trades": [
+          {
+            "entry": "2026-10-08T09:02:35+08:00",
+            "entryPrice": 1100.0,
+            "exit": "2026-10-08T09:04:49+08:00",
+            "exitPrice": 1089.0,
+            "netPct": -1.3175185216639962,
+            "reason": "BASE_OR_TRAIL_STOP",
+            "mirrorStop": 1089.0,
+            "mirrorUpdates": 0,
+            "mirrorWasBindingAtExit": false
+          }
+        ],
+        "blocked": 0,
+        "netPct": -1.3175,
+        "netTwd": -14505.1,
+        "symbol": "3406",
+        "name": "玉晶光"
+      },
+      "2303": {
+        "trades": [],
+        "blocked": 0,
+        "netPct": 0.0,
+        "netTwd": 0.0,
+        "symbol": "2303",
+        "name": "聯電"
+      },
+      "1303": {
+        "trades": [
+          {
+            "entry": "2026-10-08T09:12:10+08:00",
+            "entryPrice": 313.0,
+            "exit": "2026-10-08T09:17:49+08:00",
+            "exitPrice": 310.0,
+            "netPct": -1.2761181841283054,
+            "reason": "OPEN_BELOW_STOP",
+            "mirrorStop": 309.87,
+            "mirrorUpdates": 0,
+            "mirrorWasBindingAtExit": false
+          }
+        ],
+        "blocked": 1,
+        "netPct": -1.2761,
+        "netTwd": -3997.67,
+        "symbol": "1303",
+        "name": "南亞"
+      },
+      "1727": {
+        "trades": [],
+        "blocked": 0,
+        "netPct": 0.0,
+        "netTwd": 0.0,
+        "symbol": "1727",
+        "name": "中華化"
+      },
+      "2409": {
+        "trades": [],
+        "blocked": 0,
+        "netPct": 0.0,
+        "netTwd": 0.0,
+        "symbol": "2409",
+        "name": "友達"
+      },
+      "3481": {
+        "trades": [
+          {
+            "entry": "2026-10-08T09:02:00+08:00",
+            "entryPrice": 52.1,
+            "exit": "2026-10-08T09:02:33+08:00",
+            "exitPrice": 51.679,
+            "netPct": -1.1261955385151512,
+            "reason": "MIRROR_STOP",
+            "mirrorStop": 51.679,
+            "mirrorUpdates": 1,
+            "mirrorWasBindingAtExit": true
+          }
+        ],
+        "blocked": 0,
+        "netPct": -1.1262,
+        "netTwd": -587.25,
+        "symbol": "3481",
+        "name": "群創"
+      },
+      "3042": {
+        "trades": [],
+        "blocked": 0,
+        "netPct": 0.0,
+        "netTwd": 0.0,
+        "symbol": "3042",
+        "name": "晶技"
+      },
+      "6257": {
+        "trades": [
+          {
+            "entry": "2026-10-08T09:03:45+08:00",
+            "entryPrice": 285.0,
+            "exit": "2026-10-08T09:06:13+08:00",
+            "exitPrice": 282.65,
+            "netPct": -1.1426426019788272,
+            "reason": "MIRROR_STOP",
+            "mirrorStop": 282.65,
+            "mirrorUpdates": 1,
+            "mirrorWasBindingAtExit": true
+          },
+          {
+            "entry": "2026-10-08T09:08:05+08:00",
+            "entryPrice": 290.5,
+            "exit": "2026-10-08T09:13:37+08:00",
+            "exitPrice": 287.5,
+            "netPct": -1.3501158746792918,
+            "reason": "OPEN_BELOW_STOP",
+            "mirrorStop": 287.59499999999997,
+            "mirrorUpdates": 0,
+            "mirrorWasBindingAtExit": false
+          }
+        ],
+        "blocked": 0,
+        "netPct": -2.4773,
+        "netTwd": -7184.76,
+        "symbol": "6257",
+        "name": "矽格"
+      },
+      "8150": {
+        "trades": [],
+        "blocked": 0,
+        "netPct": 0.0,
+        "netTwd": 0.0,
+        "symbol": "8150",
+        "name": "南茂"
+      },
+      "8042": {
+        "trades": [],
+        "blocked": 0,
+        "netPct": 0.0,
+        "netTwd": 0.0,
+        "symbol": "8042",
+        "name": "金山電"
+      },
+      "2492": {
+        "trades": [
+          {
+            "entry": "2026-10-08T09:03:20+08:00",
+            "entryPrice": 427.0,
+            "exit": "2026-10-08T09:04:31+08:00",
+            "exitPrice": 423.23,
+            "netPct": -1.2007980600474255,
+            "reason": "MIRROR_STOP",
+            "mirrorStop": 423.23,
+            "mirrorUpdates": 1,
+            "mirrorWasBindingAtExit": true
+          }
+        ],
+        "blocked": 2,
+        "netPct": -1.2008,
+        "netTwd": -5131.79,
+        "symbol": "2492",
+        "name": "華新科"
+      },
+      "2327": {
+        "trades": [
+          {
+            "entry": "2026-10-08T09:02:00+08:00",
+            "entryPrice": 643.0,
+            "exit": "2026-10-08T09:04:19+08:00",
+            "exitPrice": 636.0,
+            "netPct": -1.4058811753276057,
+            "reason": "OPEN_BELOW_STOP",
+            "mirrorStop": 636.57,
+            "mirrorUpdates": 0,
+            "mirrorWasBindingAtExit": false
+          }
+        ],
+        "blocked": 0,
+        "netPct": -1.4059,
+        "netTwd": -9047.55,
+        "symbol": "2327",
+        "name": "國巨*"
+      },
+      "3665": {
+        "trades": [],
+        "blocked": 0,
+        "netPct": 0.0,
+        "netTwd": 0.0,
+        "symbol": "3665",
+        "name": "貿聯-KY"
+      },
+      "6456": {
+        "trades": [
+          {
+            "entry": "2026-10-08T09:02:52+08:00",
+            "entryPrice": 103.0,
+            "exit": "2026-10-08T09:04:40+08:00",
+            "exitPrice": 102.0,
+            "netPct": -1.2884857233473213,
+            "reason": "OPEN_BELOW_STOP",
+            "mirrorStop": 101.97,
+            "mirrorUpdates": 0,
+            "mirrorWasBindingAtExit": false
+          }
+        ],
+        "blocked": 0,
+        "netPct": -1.2885,
+        "netTwd": -1328.28,
+        "symbol": "6456",
+        "name": "GIS-KY"
+      },
+      "3673": {
+        "trades": [],
+        "blocked": 0,
+        "netPct": 0.0,
+        "netTwd": 0.0,
+        "symbol": "3673",
+        "name": "TPK-KY"
+      }
+    },
+    "B": {
+      "8039": {
+        "trades": [
+          {
+            "entry": "2026-10-08T09:01:10+08:00",
+            "entryPrice": 310.5,
+            "exit": "2026-10-08T09:04:04+08:00",
+            "exitPrice": 325.05,
+            "netPct": 4.350235379668255,
+            "reason": "BASE_OR_TRAIL_STOP",
+            "mirrorStop": 307.395,
+            "mirrorUpdates": 0,
+            "mirrorWasBindingAtExit": false
+          },
+          {
+            "entry": "2026-10-08T09:04:10+08:00",
+            "entryPrice": 324.5,
+            "exit": "2026-10-08T09:04:12+08:00",
+            "exitPrice": 325.5,
+            "netPct": -0.013547738717289981,
+            "reason": "OPEN_BELOW_STOP",
+            "mirrorStop": 321.255,
+            "mirrorUpdates": 0,
+            "mirrorWasBindingAtExit": false
+          }
+        ],
+        "blocked": 0,
+        "netPct": 4.3361,
+        "netTwd": 13475.03,
+        "symbol": "8039",
+        "name": "台虹"
+      },
+      "3406": {
+        "trades": [
+          {
+            "entry": "2026-10-08T09:01:00+08:00",
+            "entryPrice": 1085.0,
+            "exit": "2026-10-08T09:04:49+08:00",
+            "exitPrice": 1088.425,
+            "netPct": -0.006070005997427241,
+            "reason": "BASE_OR_TRAIL_STOP",
+            "mirrorStop": 1074.15,
+            "mirrorUpdates": 0,
+            "mirrorWasBindingAtExit": false
+          }
+        ],
+        "blocked": 0,
+        "netPct": -0.0061,
+        "netTwd": -65.92,
+        "symbol": "3406",
+        "name": "玉晶光"
+      },
+      "2303": {
+        "trades": [],
+        "blocked": 0,
+        "netPct": 0.0,
+        "netTwd": 0.0,
+        "symbol": "2303",
+        "name": "聯電"
+      },
+      "1303": {
+        "trades": [
+          {
+            "entry": "2026-10-08T09:04:35+08:00",
+            "entryPrice": 312.0,
+            "exit": "2026-10-08T09:17:49+08:00",
+            "exitPrice": 310.0,
+            "netPct": -0.9596954860005114,
+            "reason": "OPEN_BELOW_STOP",
+            "mirrorStop": 308.88,
+            "mirrorUpdates": 0,
+            "mirrorWasBindingAtExit": false
+          }
+        ],
+        "blocked": 1,
+        "netPct": -0.9597,
+        "netTwd": -2996.81,
+        "symbol": "1303",
+        "name": "南亞"
+      },
+      "1727": {
+        "trades": [
+          {
+            "entry": "2026-10-08T09:09:50+08:00",
+            "entryPrice": 111.0,
+            "exit": "2026-10-08T09:11:55+08:00",
+            "exitPrice": 111.30499999999999,
+            "netPct": -0.04683227822195324,
+            "reason": "BASE_OR_TRAIL_STOP",
+            "mirrorStop": 109.89,
+            "mirrorUpdates": 0,
+            "mirrorWasBindingAtExit": false
+          }
+        ],
+        "blocked": 0,
+        "netPct": -0.0468,
+        "netTwd": -52.03,
+        "symbol": "1727",
+        "name": "中華化"
+      },
+      "2409": {
+        "trades": [
+          {
+            "entry": "2026-10-08T09:13:40+08:00",
+            "entryPrice": 37.6,
+            "exit": "2026-10-08T09:18:56+08:00",
+            "exitPrice": 37.25,
+            "netPct": -1.2485913639582957,
+            "reason": "OPEN_BELOW_STOP",
+            "mirrorStop": 37.274,
+            "mirrorUpdates": 1,
+            "mirrorWasBindingAtExit": true
+          }
+        ],
+        "blocked": 0,
+        "netPct": -1.2486,
+        "netTwd": -469.87,
+        "symbol": "2409",
+        "name": "友達"
+      },
+      "3481": {
+        "trades": [
+          {
+            "entry": "2026-10-08T09:00:40+08:00",
+            "entryPrice": 52.2,
+            "exit": "2026-10-08T09:02:33+08:00",
+            "exitPrice": 51.678000000000004,
+            "netPct": -1.317518521663985,
+            "reason": "BASE_OR_TRAIL_STOP",
+            "mirrorStop": 51.678000000000004,
+            "mirrorUpdates": 0,
+            "mirrorWasBindingAtExit": false
+          }
+        ],
+        "blocked": 1,
+        "netPct": -1.3175,
+        "netTwd": -688.33,
+        "symbol": "3481",
+        "name": "群創"
+      },
+      "3042": {
+        "trades": [],
+        "blocked": 0,
+        "netPct": 0.0,
+        "netTwd": 0.0,
+        "symbol": "3042",
+        "name": "晶技"
+      },
+      "6257": {
+        "trades": [
+          {
+            "entry": "2026-10-08T09:00:25+08:00",
+            "entryPrice": 277.0,
+            "exit": "2026-10-08T09:13:40+08:00",
+            "exitPrice": 287.1275,
+            "netPct": 3.323685230175122,
+            "reason": "BASE_OR_TRAIL_STOP",
+            "mirrorStop": 275.23,
+            "mirrorUpdates": 1,
+            "mirrorWasBindingAtExit": false
+          },
+          {
+            "entry": "2026-10-08T09:16:41+08:00",
+            "entryPrice": 285.0,
+            "exit": "2026-10-08T09:20:58+08:00",
+            "exitPrice": 282.0,
+            "netPct": -1.3699812975695225,
+            "reason": "OPEN_BELOW_STOP",
+            "mirrorStop": 282.15,
+            "mirrorUpdates": 0,
+            "mirrorWasBindingAtExit": false
+          }
+        ],
+        "blocked": 0,
+        "netPct": 1.9082,
+        "netTwd": 5306.69,
+        "symbol": "6257",
+        "name": "矽格"
+      },
+      "8150": {
+        "trades": [],
+        "blocked": 0,
+        "netPct": 0.0,
+        "netTwd": 0.0,
+        "symbol": "8150",
+        "name": "南茂"
+      },
+      "8042": {
+        "trades": [],
+        "blocked": 0,
+        "netPct": 0.0,
+        "netTwd": 0.0,
+        "symbol": "8042",
+        "name": "金山電"
+      },
+      "2492": {
+        "trades": [
+          {
+            "entry": "2026-10-08T09:03:20+08:00",
+            "entryPrice": 427.0,
+            "exit": "2026-10-08T09:04:31+08:00",
+            "exitPrice": 423.23,
+            "netPct": -1.2007980600474255,
+            "reason": "MIRROR_STOP",
+            "mirrorStop": 423.23,
+            "mirrorUpdates": 1,
+            "mirrorWasBindingAtExit": true
+          }
+        ],
+        "blocked": 6,
+        "netPct": -1.2008,
+        "netTwd": -5131.79,
+        "symbol": "2492",
+        "name": "華新科"
+      },
+      "2327": {
+        "trades": [
+          {
+            "entry": "2026-10-08T09:02:00+08:00",
+            "entryPrice": 643.0,
+            "exit": "2026-10-08T09:04:19+08:00",
+            "exitPrice": 636.0,
+            "netPct": -1.4058811753276057,
+            "reason": "OPEN_BELOW_STOP",
+            "mirrorStop": 636.57,
+            "mirrorUpdates": 0,
+            "mirrorWasBindingAtExit": false
+          }
+        ],
+        "blocked": 3,
+        "netPct": -1.4059,
+        "netTwd": -9047.55,
+        "symbol": "2327",
+        "name": "國巨*"
+      },
+      "3665": {
+        "trades": [
+          {
+            "entry": "2026-10-08T09:01:41+08:00",
+            "entryPrice": 2355.0,
+            "exit": "2026-10-08T09:21:43+08:00",
+            "exitPrice": 2354.15,
+            "netPct": -0.35670343682054906,
+            "reason": "BASE_OR_TRAIL_STOP",
+            "mirrorStop": 2331.45,
+            "mirrorUpdates": 0,
+            "mirrorWasBindingAtExit": false
+          }
+        ],
+        "blocked": 0,
+        "netPct": -0.3567,
+        "netTwd": -8407.55,
+        "symbol": "3665",
+        "name": "貿聯-KY"
+      },
+      "6456": {
+        "trades": [
+          {
+            "entry": "2026-10-08T09:02:52+08:00",
+            "entryPrice": 103.0,
+            "exit": "2026-10-08T09:04:40+08:00",
+            "exitPrice": 102.0,
+            "netPct": -1.2884857233473213,
+            "reason": "OPEN_BELOW_STOP",
+            "mirrorStop": 101.97,
+            "mirrorUpdates": 0,
+            "mirrorWasBindingAtExit": false
+          }
+        ],
+        "blocked": 0,
+        "netPct": -1.2885,
+        "netTwd": -1328.28,
+        "symbol": "6456",
+        "name": "GIS-KY"
+      },
+      "3673": {
+        "trades": [
+          {
+            "entry": "2026-10-08T09:04:26+08:00",
+            "entryPrice": 76.0,
+            "exit": "2026-10-08T09:16:33+08:00",
+            "exitPrice": 75.4,
+            "netPct": -1.10766741804178,
+            "reason": "OPEN_BELOW_STOP",
+            "mirrorStop": 75.44,
+            "mirrorUpdates": 3,
+            "mirrorWasBindingAtExit": true
+          }
+        ],
+        "blocked": 0,
+        "netPct": -1.1077,
+        "netTwd": -842.55,
+        "symbol": "3673",
+        "name": "TPK-KY"
+      }
+    }
+  },
+  "1.02_1": {
+    "A": {
+      "8039": {
+        "trades": [
+          {
+            "entry": "2026-10-08T09:01:20+08:00",
+            "entryPrice": 313.5,
+            "exit": "2026-10-08T09:04:04+08:00",
+            "exitPrice": 325.05,
+            "netPct": 3.351668533929786,
+            "reason": "BASE_OR_TRAIL_STOP",
+            "mirrorStop": 310.365,
+            "mirrorUpdates": 0,
+            "mirrorWasBindingAtExit": false
+          },
+          {
+            "entry": "2026-10-08T09:11:45+08:00",
+            "entryPrice": 312.0,
+            "exit": "2026-10-08T09:19:32+08:00",
+            "exitPrice": 315.6925,
+            "netPct": 0.8589720412444768,
+            "reason": "BASE_OR_TRAIL_STOP",
+            "mirrorStop": 308.88,
+            "mirrorUpdates": 0,
+            "mirrorWasBindingAtExit": false
+          }
+        ],
+        "blocked": 0,
+        "netPct": 4.2394,
+        "netTwd": 13198.75,
+        "symbol": "8039",
+        "name": "台虹"
+      },
+      "3406": {
+        "trades": [
+          {
+            "entry": "2026-10-08T09:02:35+08:00",
+            "entryPrice": 1100.0,
+            "exit": "2026-10-08T09:04:49+08:00",
+            "exitPrice": 1089.0,
+            "netPct": -1.3175185216639962,
+            "reason": "BASE_OR_TRAIL_STOP",
+            "mirrorStop": 1089.0,
+            "mirrorUpdates": 0,
+            "mirrorWasBindingAtExit": false
+          }
+        ],
+        "blocked": 0,
+        "netPct": -1.3175,
+        "netTwd": -14505.1,
+        "symbol": "3406",
+        "name": "玉晶光"
+      },
+      "2303": {
+        "trades": [],
+        "blocked": 0,
+        "netPct": 0.0,
+        "netTwd": 0.0,
+        "symbol": "2303",
+        "name": "聯電"
+      },
+      "1303": {
+        "trades": [
+          {
+            "entry": "2026-10-08T09:12:10+08:00",
+            "entryPrice": 313.0,
+            "exit": "2026-10-08T09:17:49+08:00",
+            "exitPrice": 310.0,
+            "netPct": -1.2761181841283054,
+            "reason": "OPEN_BELOW_STOP",
+            "mirrorStop": 309.87,
+            "mirrorUpdates": 0,
+            "mirrorWasBindingAtExit": false
+          }
+        ],
+        "blocked": 1,
+        "netPct": -1.2761,
+        "netTwd": -3997.67,
+        "symbol": "1303",
+        "name": "南亞"
+      },
+      "1727": {
+        "trades": [],
+        "blocked": 0,
+        "netPct": 0.0,
+        "netTwd": 0.0,
+        "symbol": "1727",
+        "name": "中華化"
+      },
+      "2409": {
+        "trades": [],
+        "blocked": 0,
+        "netPct": 0.0,
+        "netTwd": 0.0,
+        "symbol": "2409",
+        "name": "友達"
+      },
+      "3481": {
+        "trades": [
+          {
+            "entry": "2026-10-08T09:02:00+08:00",
+            "entryPrice": 52.1,
+            "exit": "2026-10-08T09:02:33+08:00",
+            "exitPrice": 51.679,
+            "netPct": -1.1261955385151512,
+            "reason": "MIRROR_STOP",
+            "mirrorStop": 51.679,
+            "mirrorUpdates": 1,
+            "mirrorWasBindingAtExit": true
+          }
+        ],
+        "blocked": 0,
+        "netPct": -1.1262,
+        "netTwd": -587.25,
+        "symbol": "3481",
+        "name": "群創"
+      },
+      "3042": {
+        "trades": [],
+        "blocked": 0,
+        "netPct": 0.0,
+        "netTwd": 0.0,
+        "symbol": "3042",
+        "name": "晶技"
+      },
+      "6257": {
+        "trades": [
+          {
+            "entry": "2026-10-08T09:03:45+08:00",
+            "entryPrice": 285.0,
+            "exit": "2026-10-08T09:06:13+08:00",
+            "exitPrice": 282.65,
+            "netPct": -1.1426426019788272,
+            "reason": "MIRROR_STOP",
+            "mirrorStop": 282.65,
+            "mirrorUpdates": 1,
+            "mirrorWasBindingAtExit": true
+          },
+          {
+            "entry": "2026-10-08T09:08:05+08:00",
+            "entryPrice": 290.5,
+            "exit": "2026-10-08T09:13:37+08:00",
+            "exitPrice": 287.5,
+            "netPct": -1.3501158746792918,
+            "reason": "OPEN_BELOW_STOP",
+            "mirrorStop": 287.59499999999997,
+            "mirrorUpdates": 0,
+            "mirrorWasBindingAtExit": false
+          }
+        ],
+        "blocked": 0,
+        "netPct": -2.4773,
+        "netTwd": -7184.76,
+        "symbol": "6257",
+        "name": "矽格"
+      },
+      "8150": {
+        "trades": [],
+        "blocked": 0,
+        "netPct": 0.0,
+        "netTwd": 0.0,
+        "symbol": "8150",
+        "name": "南茂"
+      },
+      "8042": {
+        "trades": [],
+        "blocked": 0,
+        "netPct": 0.0,
+        "netTwd": 0.0,
+        "symbol": "8042",
+        "name": "金山電"
+      },
+      "2492": {
+        "trades": [
+          {
+            "entry": "2026-10-08T09:03:20+08:00",
+            "entryPrice": 427.0,
+            "exit": "2026-10-08T09:04:31+08:00",
+            "exitPrice": 422.73,
+            "netPct": -1.317518521663974,
+            "reason": "BASE_OR_TRAIL_STOP",
+            "mirrorStop": 422.73,
+            "mirrorUpdates": 0,
+            "mirrorWasBindingAtExit": false
+          }
+        ],
+        "blocked": 2,
+        "netPct": -1.3175,
+        "netTwd": -5630.61,
+        "symbol": "2492",
+        "name": "華新科"
+      },
+      "2327": {
+        "trades": [
+          {
+            "entry": "2026-10-08T09:02:00+08:00",
+            "entryPrice": 643.0,
+            "exit": "2026-10-08T09:04:19+08:00",
+            "exitPrice": 636.0,
+            "netPct": -1.4058811753276057,
+            "reason": "OPEN_BELOW_STOP",
+            "mirrorStop": 636.57,
+            "mirrorUpdates": 0,
+            "mirrorWasBindingAtExit": false
+          }
+        ],
+        "blocked": 0,
+        "netPct": -1.4059,
+        "netTwd": -9047.55,
+        "symbol": "2327",
+        "name": "國巨*"
+      },
+      "3665": {
+        "trades": [],
+        "blocked": 0,
+        "netPct": 0.0,
+        "netTwd": 0.0,
+        "symbol": "3665",
+        "name": "貿聯-KY"
+      },
+      "6456": {
+        "trades": [
+          {
+            "entry": "2026-10-08T09:02:52+08:00",
+            "entryPrice": 103.0,
+            "exit": "2026-10-08T09:04:40+08:00",
+            "exitPrice": 102.0,
+            "netPct": -1.2884857233473213,
+            "reason": "OPEN_BELOW_STOP",
+            "mirrorStop": 101.97,
+            "mirrorUpdates": 0,
+            "mirrorWasBindingAtExit": false
+          }
+        ],
+        "blocked": 0,
+        "netPct": -1.2885,
+        "netTwd": -1328.28,
+        "symbol": "6456",
+        "name": "GIS-KY"
+      },
+      "3673": {
+        "trades": [],
+        "blocked": 0,
+        "netPct": 0.0,
+        "netTwd": 0.0,
+        "symbol": "3673",
+        "name": "TPK-KY"
+      }
+    },
+    "B": {
+      "8039": {
+        "trades": [
+          {
+            "entry": "2026-10-08T09:01:10+08:00",
+            "entryPrice": 310.5,
+            "exit": "2026-10-08T09:04:04+08:00",
+            "exitPrice": 325.05,
+            "netPct": 4.350235379668255,
+            "reason": "BASE_OR_TRAIL_STOP",
+            "mirrorStop": 307.395,
+            "mirrorUpdates": 0,
+            "mirrorWasBindingAtExit": false
+          },
+          {
+            "entry": "2026-10-08T09:04:10+08:00",
+            "entryPrice": 324.5,
+            "exit": "2026-10-08T09:04:12+08:00",
+            "exitPrice": 325.5,
+            "netPct": -0.013547738717289981,
+            "reason": "OPEN_BELOW_STOP",
+            "mirrorStop": 321.255,
+            "mirrorUpdates": 0,
+            "mirrorWasBindingAtExit": false
+          }
+        ],
+        "blocked": 0,
+        "netPct": 4.3361,
+        "netTwd": 13475.03,
+        "symbol": "8039",
+        "name": "台虹"
+      },
+      "3406": {
+        "trades": [
+          {
+            "entry": "2026-10-08T09:01:00+08:00",
+            "entryPrice": 1085.0,
+            "exit": "2026-10-08T09:04:49+08:00",
+            "exitPrice": 1088.425,
+            "netPct": -0.006070005997427241,
+            "reason": "BASE_OR_TRAIL_STOP",
+            "mirrorStop": 1074.15,
+            "mirrorUpdates": 0,
+            "mirrorWasBindingAtExit": false
+          }
+        ],
+        "blocked": 0,
+        "netPct": -0.0061,
+        "netTwd": -65.92,
+        "symbol": "3406",
+        "name": "玉晶光"
+      },
+      "2303": {
+        "trades": [],
+        "blocked": 0,
+        "netPct": 0.0,
+        "netTwd": 0.0,
+        "symbol": "2303",
+        "name": "聯電"
+      },
+      "1303": {
+        "trades": [
+          {
+            "entry": "2026-10-08T09:04:35+08:00",
+            "entryPrice": 312.0,
+            "exit": "2026-10-08T09:17:49+08:00",
+            "exitPrice": 310.0,
+            "netPct": -0.9596954860005114,
+            "reason": "OPEN_BELOW_STOP",
+            "mirrorStop": 308.88,
+            "mirrorUpdates": 0,
+            "mirrorWasBindingAtExit": false
+          }
+        ],
+        "blocked": 1,
+        "netPct": -0.9597,
+        "netTwd": -2996.81,
+        "symbol": "1303",
+        "name": "南亞"
+      },
+      "1727": {
+        "trades": [
+          {
+            "entry": "2026-10-08T09:09:50+08:00",
+            "entryPrice": 111.0,
+            "exit": "2026-10-08T09:11:55+08:00",
+            "exitPrice": 111.30499999999999,
+            "netPct": -0.04683227822195324,
+            "reason": "BASE_OR_TRAIL_STOP",
+            "mirrorStop": 109.89,
+            "mirrorUpdates": 0,
+            "mirrorWasBindingAtExit": false
+          }
+        ],
+        "blocked": 0,
+        "netPct": -0.0468,
+        "netTwd": -52.03,
+        "symbol": "1727",
+        "name": "中華化"
+      },
+      "2409": {
+        "trades": [
+          {
+            "entry": "2026-10-08T09:13:40+08:00",
+            "entryPrice": 37.6,
+            "exit": "2026-10-08T09:18:56+08:00",
+            "exitPrice": 37.25,
+            "netPct": -1.2485913639582957,
+            "reason": "OPEN_BELOW_STOP",
+            "mirrorStop": 37.274,
+            "mirrorUpdates": 1,
+            "mirrorWasBindingAtExit": true
+          }
+        ],
+        "blocked": 0,
+        "netPct": -1.2486,
+        "netTwd": -469.87,
+        "symbol": "2409",
+        "name": "友達"
+      },
+      "3481": {
+        "trades": [
+          {
+            "entry": "2026-10-08T09:00:40+08:00",
+            "entryPrice": 52.2,
+            "exit": "2026-10-08T09:02:33+08:00",
+            "exitPrice": 51.678000000000004,
+            "netPct": -1.317518521663985,
+            "reason": "BASE_OR_TRAIL_STOP",
+            "mirrorStop": 51.678000000000004,
+            "mirrorUpdates": 0,
+            "mirrorWasBindingAtExit": false
+          }
+        ],
+        "blocked": 1,
+        "netPct": -1.3175,
+        "netTwd": -688.33,
+        "symbol": "3481",
+        "name": "群創"
+      },
+      "3042": {
+        "trades": [],
+        "blocked": 0,
+        "netPct": 0.0,
+        "netTwd": 0.0,
+        "symbol": "3042",
+        "name": "晶技"
+      },
+      "6257": {
+        "trades": [
+          {
+            "entry": "2026-10-08T09:00:25+08:00",
+            "entryPrice": 277.0,
+            "exit": "2026-10-08T09:13:40+08:00",
+            "exitPrice": 287.1275,
+            "netPct": 3.323685230175122,
+            "reason": "BASE_OR_TRAIL_STOP",
+            "mirrorStop": 275.23,
+            "mirrorUpdates": 1,
+            "mirrorWasBindingAtExit": false
+          },
+          {
+            "entry": "2026-10-08T09:16:41+08:00",
+            "entryPrice": 285.0,
+            "exit": "2026-10-08T09:20:58+08:00",
+            "exitPrice": 282.0,
+            "netPct": -1.3699812975695225,
+            "reason": "OPEN_BELOW_STOP",
+            "mirrorStop": 282.15,
+            "mirrorUpdates": 0,
+            "mirrorWasBindingAtExit": false
+          }
+        ],
+        "blocked": 0,
+        "netPct": 1.9082,
+        "netTwd": 5306.69,
+        "symbol": "6257",
+        "name": "矽格"
+      },
+      "8150": {
+        "trades": [],
+        "blocked": 0,
+        "netPct": 0.0,
+        "netTwd": 0.0,
+        "symbol": "8150",
+        "name": "南茂"
+      },
+      "8042": {
+        "trades": [],
+        "blocked": 0,
+        "netPct": 0.0,
+        "netTwd": 0.0,
+        "symbol": "8042",
+        "name": "金山電"
+      },
+      "2492": {
+        "trades": [
+          {
+            "entry": "2026-10-08T09:03:20+08:00",
+            "entryPrice": 427.0,
+            "exit": "2026-10-08T09:04:31+08:00",
+            "exitPrice": 422.73,
+            "netPct": -1.317518521663974,
+            "reason": "BASE_OR_TRAIL_STOP",
+            "mirrorStop": 422.73,
+            "mirrorUpdates": 0,
+            "mirrorWasBindingAtExit": false
+          }
+        ],
+        "blocked": 6,
+        "netPct": -1.3175,
+        "netTwd": -5630.61,
+        "symbol": "2492",
+        "name": "華新科"
+      },
+      "2327": {
+        "trades": [
+          {
+            "entry": "2026-10-08T09:02:00+08:00",
+            "entryPrice": 643.0,
+            "exit": "2026-10-08T09:04:19+08:00",
+            "exitPrice": 636.0,
+            "netPct": -1.4058811753276057,
+            "reason": "OPEN_BELOW_STOP",
+            "mirrorStop": 636.57,
+            "mirrorUpdates": 0,
+            "mirrorWasBindingAtExit": false
+          }
+        ],
+        "blocked": 3,
+        "netPct": -1.4059,
+        "netTwd": -9047.55,
+        "symbol": "2327",
+        "name": "國巨*"
+      },
+      "3665": {
+        "trades": [
+          {
+            "entry": "2026-10-08T09:01:41+08:00",
+            "entryPrice": 2355.0,
+            "exit": "2026-10-08T09:21:43+08:00",
+            "exitPrice": 2354.15,
+            "netPct": -0.35670343682054906,
+            "reason": "BASE_OR_TRAIL_STOP",
+            "mirrorStop": 2331.45,
+            "mirrorUpdates": 0,
+            "mirrorWasBindingAtExit": false
+          }
+        ],
+        "blocked": 0,
+        "netPct": -0.3567,
+        "netTwd": -8407.55,
+        "symbol": "3665",
+        "name": "貿聯-KY"
+      },
+      "6456": {
+        "trades": [
+          {
+            "entry": "2026-10-08T09:02:52+08:00",
+            "entryPrice": 103.0,
+            "exit": "2026-10-08T09:04:40+08:00",
+            "exitPrice": 102.0,
+            "netPct": -1.2884857233473213,
+            "reason": "OPEN_BELOW_STOP",
+            "mirrorStop": 101.97,
+            "mirrorUpdates": 0,
+            "mirrorWasBindingAtExit": false
+          }
+        ],
+        "blocked": 0,
+        "netPct": -1.2885,
+        "netTwd": -1328.28,
+        "symbol": "6456",
+        "name": "GIS-KY"
+      },
+      "3673": {
+        "trades": [
+          {
+            "entry": "2026-10-08T09:04:26+08:00",
+            "entryPrice": 76.0,
+            "exit": "2026-10-08T09:16:33+08:00",
+            "exitPrice": 75.4,
+            "netPct": -1.10766741804178,
+            "reason": "OPEN_BELOW_STOP",
+            "mirrorStop": 75.44,
+            "mirrorUpdates": 3,
+            "mirrorWasBindingAtExit": true
+          }
+        ],
+        "blocked": 0,
+        "netPct": -1.1077,
+        "netTwd": -842.55,
+        "symbol": "3673",
+        "name": "TPK-KY"
+      }
+    }
+  },
+  "1.03_0": {
+    "A": {
+      "8039": {
+        "trades": [
+          {
+            "entry": "2026-10-08T09:01:20+08:00",
+            "entryPrice": 313.5,
+            "exit": "2026-10-08T09:04:04+08:00",
+            "exitPrice": 325.05,
+            "netPct": 3.351668533929786,
+            "reason": "BASE_OR_TRAIL_STOP",
+            "mirrorStop": 310.365,
+            "mirrorUpdates": 0,
+            "mirrorWasBindingAtExit": false
+          },
+          {
+            "entry": "2026-10-08T09:11:45+08:00",
+            "entryPrice": 312.0,
+            "exit": "2026-10-08T09:19:32+08:00",
+            "exitPrice": 315.6925,
+            "netPct": 0.8589720412444768,
+            "reason": "BASE_OR_TRAIL_STOP",
+            "mirrorStop": 309.38,
+            "mirrorUpdates": 1,
+            "mirrorWasBindingAtExit": false
+          }
+        ],
+        "blocked": 0,
+        "netPct": 4.2394,
+        "netTwd": 13198.75,
+        "symbol": "8039",
+        "name": "台虹"
+      },
+      "3406": {
+        "trades": [
+          {
+            "entry": "2026-10-08T09:02:35+08:00",
+            "entryPrice": 1100.0,
+            "exit": "2026-10-08T09:04:49+08:00",
+            "exitPrice": 1089.0,
+            "netPct": -1.3175185216639962,
+            "reason": "BASE_OR_TRAIL_STOP",
+            "mirrorStop": 1089.0,
+            "mirrorUpdates": 0,
+            "mirrorWasBindingAtExit": false
+          }
+        ],
+        "blocked": 0,
+        "netPct": -1.3175,
+        "netTwd": -14505.1,
+        "symbol": "3406",
+        "name": "玉晶光"
+      },
+      "2303": {
+        "trades": [],
+        "blocked": 0,
+        "netPct": 0.0,
+        "netTwd": 0.0,
+        "symbol": "2303",
+        "name": "聯電"
+      },
+      "1303": {
+        "trades": [
+          {
+            "entry": "2026-10-08T09:12:10+08:00",
+            "entryPrice": 313.0,
+            "exit": "2026-10-08T09:17:49+08:00",
+            "exitPrice": 310.0,
+            "netPct": -1.2761181841283054,
+            "reason": "OPEN_BELOW_STOP",
+            "mirrorStop": 309.87,
+            "mirrorUpdates": 0,
+            "mirrorWasBindingAtExit": false
+          }
+        ],
+        "blocked": 1,
+        "netPct": -1.2761,
+        "netTwd": -3997.67,
+        "symbol": "1303",
+        "name": "南亞"
+      },
+      "1727": {
+        "trades": [],
+        "blocked": 0,
+        "netPct": 0.0,
+        "netTwd": 0.0,
+        "symbol": "1727",
+        "name": "中華化"
+      },
+      "2409": {
+        "trades": [],
+        "blocked": 0,
+        "netPct": 0.0,
+        "netTwd": 0.0,
+        "symbol": "2409",
+        "name": "友達"
+      },
+      "3481": {
+        "trades": [
+          {
+            "entry": "2026-10-08T09:02:00+08:00",
+            "entryPrice": 52.1,
+            "exit": "2026-10-08T09:02:33+08:00",
+            "exitPrice": 51.679,
+            "netPct": -1.1261955385151512,
+            "reason": "MIRROR_STOP",
+            "mirrorStop": 51.679,
+            "mirrorUpdates": 1,
+            "mirrorWasBindingAtExit": true
+          }
+        ],
+        "blocked": 0,
+        "netPct": -1.1262,
+        "netTwd": -587.25,
+        "symbol": "3481",
+        "name": "群創"
+      },
+      "3042": {
+        "trades": [],
+        "blocked": 0,
+        "netPct": 0.0,
+        "netTwd": 0.0,
+        "symbol": "3042",
+        "name": "晶技"
+      },
+      "6257": {
+        "trades": [
+          {
+            "entry": "2026-10-08T09:03:45+08:00",
+            "entryPrice": 285.0,
+            "exit": "2026-10-08T09:06:13+08:00",
+            "exitPrice": 282.65,
+            "netPct": -1.1426426019788272,
+            "reason": "MIRROR_STOP",
+            "mirrorStop": 282.65,
+            "mirrorUpdates": 1,
+            "mirrorWasBindingAtExit": true
+          }
+        ],
+        "blocked": 2,
+        "netPct": -1.1426,
+        "netTwd": -3259.32,
+        "symbol": "6257",
+        "name": "矽格"
+      },
+      "8150": {
+        "trades": [],
+        "blocked": 0,
+        "netPct": 0.0,
+        "netTwd": 0.0,
+        "symbol": "8150",
+        "name": "南茂"
+      },
+      "8042": {
+        "trades": [],
+        "blocked": 0,
+        "netPct": 0.0,
+        "netTwd": 0.0,
+        "symbol": "8042",
+        "name": "金山電"
+      },
+      "2492": {
+        "trades": [
+          {
+            "entry": "2026-10-08T09:03:20+08:00",
+            "entryPrice": 427.0,
+            "exit": "2026-10-08T09:04:31+08:00",
+            "exitPrice": 423.23,
+            "netPct": -1.2007980600474255,
+            "reason": "MIRROR_STOP",
+            "mirrorStop": 423.23,
+            "mirrorUpdates": 1,
+            "mirrorWasBindingAtExit": true
+          }
+        ],
+        "blocked": 2,
+        "netPct": -1.2008,
+        "netTwd": -5131.79,
+        "symbol": "2492",
+        "name": "華新科"
+      },
+      "2327": {
+        "trades": [
+          {
+            "entry": "2026-10-08T09:02:00+08:00",
+            "entryPrice": 643.0,
+            "exit": "2026-10-08T09:04:19+08:00",
+            "exitPrice": 636.0,
+            "netPct": -1.4058811753276057,
+            "reason": "OPEN_BELOW_STOP",
+            "mirrorStop": 636.57,
+            "mirrorUpdates": 0,
+            "mirrorWasBindingAtExit": false
+          }
+        ],
+        "blocked": 0,
+        "netPct": -1.4059,
+        "netTwd": -9047.55,
+        "symbol": "2327",
+        "name": "國巨*"
+      },
+      "3665": {
+        "trades": [],
+        "blocked": 0,
+        "netPct": 0.0,
+        "netTwd": 0.0,
+        "symbol": "3665",
+        "name": "貿聯-KY"
+      },
+      "6456": {
+        "trades": [
+          {
+            "entry": "2026-10-08T09:02:52+08:00",
+            "entryPrice": 103.0,
+            "exit": "2026-10-08T09:04:40+08:00",
+            "exitPrice": 102.0,
+            "netPct": -1.2884857233473213,
+            "reason": "OPEN_BELOW_STOP",
+            "mirrorStop": 101.97,
+            "mirrorUpdates": 0,
+            "mirrorWasBindingAtExit": false
+          }
+        ],
+        "blocked": 0,
+        "netPct": -1.2885,
+        "netTwd": -1328.28,
+        "symbol": "6456",
+        "name": "GIS-KY"
+      },
+      "3673": {
+        "trades": [],
+        "blocked": 0,
+        "netPct": 0.0,
+        "netTwd": 0.0,
+        "symbol": "3673",
+        "name": "TPK-KY"
+      }
+    },
+    "B": {
+      "8039": {
+        "trades": [
+          {
+            "entry": "2026-10-08T09:01:10+08:00",
+            "entryPrice": 310.5,
+            "exit": "2026-10-08T09:04:04+08:00",
+            "exitPrice": 325.05,
+            "netPct": 4.350235379668255,
+            "reason": "BASE_OR_TRAIL_STOP",
+            "mirrorStop": 307.395,
+            "mirrorUpdates": 0,
+            "mirrorWasBindingAtExit": false
+          },
+          {
+            "entry": "2026-10-08T09:04:10+08:00",
+            "entryPrice": 324.5,
+            "exit": "2026-10-08T09:04:12+08:00",
+            "exitPrice": 325.5,
+            "netPct": -0.013547738717289981,
+            "reason": "OPEN_BELOW_STOP",
+            "mirrorStop": 321.255,
+            "mirrorUpdates": 0,
+            "mirrorWasBindingAtExit": false
+          }
+        ],
+        "blocked": 0,
+        "netPct": 4.3361,
+        "netTwd": 13475.03,
+        "symbol": "8039",
+        "name": "台虹"
+      },
+      "3406": {
+        "trades": [
+          {
+            "entry": "2026-10-08T09:01:00+08:00",
+            "entryPrice": 1085.0,
+            "exit": "2026-10-08T09:04:49+08:00",
+            "exitPrice": 1088.425,
+            "netPct": -0.006070005997427241,
+            "reason": "BASE_OR_TRAIL_STOP",
+            "mirrorStop": 1074.15,
+            "mirrorUpdates": 0,
+            "mirrorWasBindingAtExit": false
+          }
+        ],
+        "blocked": 0,
+        "netPct": -0.0061,
+        "netTwd": -65.92,
+        "symbol": "3406",
+        "name": "玉晶光"
+      },
+      "2303": {
+        "trades": [],
+        "blocked": 0,
+        "netPct": 0.0,
+        "netTwd": 0.0,
+        "symbol": "2303",
+        "name": "聯電"
+      },
+      "1303": {
+        "trades": [
+          {
+            "entry": "2026-10-08T09:04:35+08:00",
+            "entryPrice": 312.0,
+            "exit": "2026-10-08T09:17:49+08:00",
+            "exitPrice": 310.0,
+            "netPct": -0.9596954860005114,
+            "reason": "OPEN_BELOW_STOP",
+            "mirrorStop": 308.88,
+            "mirrorUpdates": 0,
+            "mirrorWasBindingAtExit": false
+          }
+        ],
+        "blocked": 1,
+        "netPct": -0.9597,
+        "netTwd": -2996.81,
+        "symbol": "1303",
+        "name": "南亞"
+      },
+      "1727": {
+        "trades": [
+          {
+            "entry": "2026-10-08T09:09:50+08:00",
+            "entryPrice": 111.0,
+            "exit": "2026-10-08T09:11:55+08:00",
+            "exitPrice": 111.30499999999999,
+            "netPct": -0.04683227822195324,
+            "reason": "BASE_OR_TRAIL_STOP",
+            "mirrorStop": 109.89,
+            "mirrorUpdates": 0,
+            "mirrorWasBindingAtExit": false
+          }
+        ],
+        "blocked": 0,
+        "netPct": -0.0468,
+        "netTwd": -52.03,
+        "symbol": "1727",
+        "name": "中華化"
+      },
+      "2409": {
+        "trades": [
+          {
+            "entry": "2026-10-08T09:13:40+08:00",
+            "entryPrice": 37.6,
+            "exit": "2026-10-08T09:18:56+08:00",
+            "exitPrice": 37.25,
+            "netPct": -1.2485913639582957,
+            "reason": "OPEN_BELOW_STOP",
+            "mirrorStop": 37.274,
+            "mirrorUpdates": 1,
+            "mirrorWasBindingAtExit": true
+          }
+        ],
+        "blocked": 0,
+        "netPct": -1.2486,
+        "netTwd": -469.87,
+        "symbol": "2409",
+        "name": "友達"
+      },
+      "3481": {
+        "trades": [
+          {
+            "entry": "2026-10-08T09:00:40+08:00",
+            "entryPrice": 52.2,
+            "exit": "2026-10-08T09:02:33+08:00",
+            "exitPrice": 51.678000000000004,
+            "netPct": -1.317518521663985,
+            "reason": "BASE_OR_TRAIL_STOP",
+            "mirrorStop": 51.678000000000004,
+            "mirrorUpdates": 0,
+            "mirrorWasBindingAtExit": false
+          }
+        ],
+        "blocked": 1,
+        "netPct": -1.3175,
+        "netTwd": -688.33,
+        "symbol": "3481",
+        "name": "群創"
+      },
+      "3042": {
+        "trades": [],
+        "blocked": 0,
+        "netPct": 0.0,
+        "netTwd": 0.0,
+        "symbol": "3042",
+        "name": "晶技"
+      },
+      "6257": {
+        "trades": [
+          {
+            "entry": "2026-10-08T09:00:25+08:00",
+            "entryPrice": 277.0,
+            "exit": "2026-10-08T09:13:40+08:00",
+            "exitPrice": 287.1275,
+            "netPct": 3.323685230175122,
+            "reason": "BASE_OR_TRAIL_STOP",
+            "mirrorStop": 275.23,
+            "mirrorUpdates": 1,
+            "mirrorWasBindingAtExit": false
+          },
+          {
+            "entry": "2026-10-08T09:16:41+08:00",
+            "entryPrice": 285.0,
+            "exit": "2026-10-08T09:20:58+08:00",
+            "exitPrice": 282.0,
+            "netPct": -1.3699812975695225,
+            "reason": "OPEN_BELOW_STOP",
+            "mirrorStop": 282.15,
+            "mirrorUpdates": 0,
+            "mirrorWasBindingAtExit": false
+          }
+        ],
+        "blocked": 0,
+        "netPct": 1.9082,
+        "netTwd": 5306.69,
+        "symbol": "6257",
+        "name": "矽格"
+      },
+      "8150": {
+        "trades": [],
+        "blocked": 0,
+        "netPct": 0.0,
+        "netTwd": 0.0,
+        "symbol": "8150",
+        "name": "南茂"
+      },
+      "8042": {
+        "trades": [],
+        "blocked": 0,
+        "netPct": 0.0,
+        "netTwd": 0.0,
+        "symbol": "8042",
+        "name": "金山電"
+      },
+      "2492": {
+        "trades": [
+          {
+            "entry": "2026-10-08T09:03:20+08:00",
+            "entryPrice": 427.0,
+            "exit": "2026-10-08T09:04:31+08:00",
+            "exitPrice": 423.23,
+            "netPct": -1.2007980600474255,
+            "reason": "MIRROR_STOP",
+            "mirrorStop": 423.23,
+            "mirrorUpdates": 1,
+            "mirrorWasBindingAtExit": true
+          }
+        ],
+        "blocked": 6,
+        "netPct": -1.2008,
+        "netTwd": -5131.79,
+        "symbol": "2492",
+        "name": "華新科"
+      },
+      "2327": {
+        "trades": [
+          {
+            "entry": "2026-10-08T09:02:00+08:00",
+            "entryPrice": 643.0,
+            "exit": "2026-10-08T09:04:19+08:00",
+            "exitPrice": 636.0,
+            "netPct": -1.4058811753276057,
+            "reason": "OPEN_BELOW_STOP",
+            "mirrorStop": 636.57,
+            "mirrorUpdates": 0,
+            "mirrorWasBindingAtExit": false
+          }
+        ],
+        "blocked": 3,
+        "netPct": -1.4059,
+        "netTwd": -9047.55,
+        "symbol": "2327",
+        "name": "國巨*"
+      },
+      "3665": {
+        "trades": [
+          {
+            "entry": "2026-10-08T09:01:41+08:00",
+            "entryPrice": 2355.0,
+            "exit": "2026-10-08T09:21:43+08:00",
+            "exitPrice": 2354.15,
+            "netPct": -0.35670343682054906,
+            "reason": "BASE_OR_TRAIL_STOP",
+            "mirrorStop": 2331.45,
+            "mirrorUpdates": 0,
+            "mirrorWasBindingAtExit": false
+          }
+        ],
+        "blocked": 0,
+        "netPct": -0.3567,
+        "netTwd": -8407.55,
+        "symbol": "3665",
+        "name": "貿聯-KY"
+      },
+      "6456": {
+        "trades": [
+          {
+            "entry": "2026-10-08T09:02:52+08:00",
+            "entryPrice": 103.0,
+            "exit": "2026-10-08T09:04:40+08:00",
+            "exitPrice": 102.0,
+            "netPct": -1.2884857233473213,
+            "reason": "OPEN_BELOW_STOP",
+            "mirrorStop": 101.97,
+            "mirrorUpdates": 0,
+            "mirrorWasBindingAtExit": false
+          }
+        ],
+        "blocked": 0,
+        "netPct": -1.2885,
+        "netTwd": -1328.28,
+        "symbol": "6456",
+        "name": "GIS-KY"
+      },
+      "3673": {
+        "trades": [
+          {
+            "entry": "2026-10-08T09:04:26+08:00",
+            "entryPrice": 76.0,
+            "exit": "2026-10-08T09:16:33+08:00",
+            "exitPrice": 75.4,
+            "netPct": -1.10766741804178,
+            "reason": "OPEN_BELOW_STOP",
+            "mirrorStop": 75.44,
+            "mirrorUpdates": 3,
+            "mirrorWasBindingAtExit": true
+          }
+        ],
+        "blocked": 0,
+        "netPct": -1.1077,
+        "netTwd": -842.55,
+        "symbol": "3673",
+        "name": "TPK-KY"
+      }
+    }
+  },
+  "1.03_1": {
+    "A": {
+      "8039": {
+        "trades": [
+          {
+            "entry": "2026-10-08T09:01:20+08:00",
+            "entryPrice": 313.5,
+            "exit": "2026-10-08T09:04:04+08:00",
+            "exitPrice": 325.05,
+            "netPct": 3.351668533929786,
+            "reason": "BASE_OR_TRAIL_STOP",
+            "mirrorStop": 310.365,
+            "mirrorUpdates": 0,
+            "mirrorWasBindingAtExit": false
+          },
+          {
+            "entry": "2026-10-08T09:11:45+08:00",
+            "entryPrice": 312.0,
+            "exit": "2026-10-08T09:19:32+08:00",
+            "exitPrice": 315.6925,
+            "netPct": 0.8589720412444768,
+            "reason": "BASE_OR_TRAIL_STOP",
+            "mirrorStop": 308.88,
+            "mirrorUpdates": 0,
+            "mirrorWasBindingAtExit": false
+          }
+        ],
+        "blocked": 0,
+        "netPct": 4.2394,
+        "netTwd": 13198.75,
+        "symbol": "8039",
+        "name": "台虹"
+      },
+      "3406": {
+        "trades": [
+          {
+            "entry": "2026-10-08T09:02:35+08:00",
+            "entryPrice": 1100.0,
+            "exit": "2026-10-08T09:04:49+08:00",
+            "exitPrice": 1089.0,
+            "netPct": -1.3175185216639962,
+            "reason": "BASE_OR_TRAIL_STOP",
+            "mirrorStop": 1089.0,
+            "mirrorUpdates": 0,
+            "mirrorWasBindingAtExit": false
+          }
+        ],
+        "blocked": 0,
+        "netPct": -1.3175,
+        "netTwd": -14505.1,
+        "symbol": "3406",
+        "name": "玉晶光"
+      },
+      "2303": {
+        "trades": [],
+        "blocked": 0,
+        "netPct": 0.0,
+        "netTwd": 0.0,
+        "symbol": "2303",
+        "name": "聯電"
+      },
+      "1303": {
+        "trades": [
+          {
+            "entry": "2026-10-08T09:12:10+08:00",
+            "entryPrice": 313.0,
+            "exit": "2026-10-08T09:17:49+08:00",
+            "exitPrice": 310.0,
+            "netPct": -1.2761181841283054,
+            "reason": "OPEN_BELOW_STOP",
+            "mirrorStop": 309.87,
+            "mirrorUpdates": 0,
+            "mirrorWasBindingAtExit": false
+          }
+        ],
+        "blocked": 1,
+        "netPct": -1.2761,
+        "netTwd": -3997.67,
+        "symbol": "1303",
+        "name": "南亞"
+      },
+      "1727": {
+        "trades": [],
+        "blocked": 0,
+        "netPct": 0.0,
+        "netTwd": 0.0,
+        "symbol": "1727",
+        "name": "中華化"
+      },
+      "2409": {
+        "trades": [],
+        "blocked": 0,
+        "netPct": 0.0,
+        "netTwd": 0.0,
+        "symbol": "2409",
+        "name": "友達"
+      },
+      "3481": {
+        "trades": [
+          {
+            "entry": "2026-10-08T09:02:00+08:00",
+            "entryPrice": 52.1,
+            "exit": "2026-10-08T09:02:33+08:00",
+            "exitPrice": 51.679,
+            "netPct": -1.1261955385151512,
+            "reason": "MIRROR_STOP",
+            "mirrorStop": 51.679,
+            "mirrorUpdates": 1,
+            "mirrorWasBindingAtExit": true
+          }
+        ],
+        "blocked": 0,
+        "netPct": -1.1262,
+        "netTwd": -587.25,
+        "symbol": "3481",
+        "name": "群創"
+      },
+      "3042": {
+        "trades": [],
+        "blocked": 0,
+        "netPct": 0.0,
+        "netTwd": 0.0,
+        "symbol": "3042",
+        "name": "晶技"
+      },
+      "6257": {
+        "trades": [
+          {
+            "entry": "2026-10-08T09:03:45+08:00",
+            "entryPrice": 285.0,
+            "exit": "2026-10-08T09:06:13+08:00",
+            "exitPrice": 282.65,
+            "netPct": -1.1426426019788272,
+            "reason": "MIRROR_STOP",
+            "mirrorStop": 282.65,
+            "mirrorUpdates": 1,
+            "mirrorWasBindingAtExit": true
+          }
+        ],
+        "blocked": 2,
+        "netPct": -1.1426,
+        "netTwd": -3259.32,
+        "symbol": "6257",
+        "name": "矽格"
+      },
+      "8150": {
+        "trades": [],
+        "blocked": 0,
+        "netPct": 0.0,
+        "netTwd": 0.0,
+        "symbol": "8150",
+        "name": "南茂"
+      },
+      "8042": {
+        "trades": [],
+        "blocked": 0,
+        "netPct": 0.0,
+        "netTwd": 0.0,
+        "symbol": "8042",
+        "name": "金山電"
+      },
+      "2492": {
+        "trades": [
+          {
+            "entry": "2026-10-08T09:03:20+08:00",
+            "entryPrice": 427.0,
+            "exit": "2026-10-08T09:04:31+08:00",
+            "exitPrice": 422.73,
+            "netPct": -1.317518521663974,
+            "reason": "BASE_OR_TRAIL_STOP",
+            "mirrorStop": 422.73,
+            "mirrorUpdates": 0,
+            "mirrorWasBindingAtExit": false
+          }
+        ],
+        "blocked": 2,
+        "netPct": -1.3175,
+        "netTwd": -5630.61,
+        "symbol": "2492",
+        "name": "華新科"
+      },
+      "2327": {
+        "trades": [
+          {
+            "entry": "2026-10-08T09:02:00+08:00",
+            "entryPrice": 643.0,
+            "exit": "2026-10-08T09:04:19+08:00",
+            "exitPrice": 636.0,
+            "netPct": -1.4058811753276057,
+            "reason": "OPEN_BELOW_STOP",
+            "mirrorStop": 636.57,
+            "mirrorUpdates": 0,
+            "mirrorWasBindingAtExit": false
+          }
+        ],
+        "blocked": 0,
+        "netPct": -1.4059,
+        "netTwd": -9047.55,
+        "symbol": "2327",
+        "name": "國巨*"
+      },
+      "3665": {
+        "trades": [],
+        "blocked": 0,
+        "netPct": 0.0,
+        "netTwd": 0.0,
+        "symbol": "3665",
+        "name": "貿聯-KY"
+      },
+      "6456": {
+        "trades": [
+          {
+            "entry": "2026-10-08T09:02:52+08:00",
+            "entryPrice": 103.0,
+            "exit": "2026-10-08T09:04:40+08:00",
+            "exitPrice": 102.0,
+            "netPct": -1.2884857233473213,
+            "reason": "OPEN_BELOW_STOP",
+            "mirrorStop": 101.97,
+            "mirrorUpdates": 0,
+            "mirrorWasBindingAtExit": false
+          }
+        ],
+        "blocked": 0,
+        "netPct": -1.2885,
+        "netTwd": -1328.28,
+        "symbol": "6456",
+        "name": "GIS-KY"
+      },
+      "3673": {
+        "trades": [],
+        "blocked": 0,
+        "netPct": 0.0,
+        "netTwd": 0.0,
+        "symbol": "3673",
+        "name": "TPK-KY"
+      }
+    },
+    "B": {
+      "8039": {
+        "trades": [
+          {
+            "entry": "2026-10-08T09:01:10+08:00",
+            "entryPrice": 310.5,
+            "exit": "2026-10-08T09:04:04+08:00",
+            "exitPrice": 325.05,
+            "netPct": 4.350235379668255,
+            "reason": "BASE_OR_TRAIL_STOP",
+            "mirrorStop": 307.395,
+            "mirrorUpdates": 0,
+            "mirrorWasBindingAtExit": false
+          },
+          {
+            "entry": "2026-10-08T09:04:10+08:00",
+            "entryPrice": 324.5,
+            "exit": "2026-10-08T09:04:12+08:00",
+            "exitPrice": 325.5,
+            "netPct": -0.013547738717289981,
+            "reason": "OPEN_BELOW_STOP",
+            "mirrorStop": 321.255,
+            "mirrorUpdates": 0,
+            "mirrorWasBindingAtExit": false
+          }
+        ],
+        "blocked": 0,
+        "netPct": 4.3361,
+        "netTwd": 13475.03,
+        "symbol": "8039",
+        "name": "台虹"
+      },
+      "3406": {
+        "trades": [
+          {
+            "entry": "2026-10-08T09:01:00+08:00",
+            "entryPrice": 1085.0,
+            "exit": "2026-10-08T09:04:49+08:00",
+            "exitPrice": 1088.425,
+            "netPct": -0.006070005997427241,
+            "reason": "BASE_OR_TRAIL_STOP",
+            "mirrorStop": 1074.15,
+            "mirrorUpdates": 0,
+            "mirrorWasBindingAtExit": false
+          }
+        ],
+        "blocked": 0,
+        "netPct": -0.0061,
+        "netTwd": -65.92,
+        "symbol": "3406",
+        "name": "玉晶光"
+      },
+      "2303": {
+        "trades": [],
+        "blocked": 0,
+        "netPct": 0.0,
+        "netTwd": 0.0,
+        "symbol": "2303",
+        "name": "聯電"
+      },
+      "1303": {
+        "trades": [
+          {
+            "entry": "2026-10-08T09:04:35+08:00",
+            "entryPrice": 312.0,
+            "exit": "2026-10-08T09:17:49+08:00",
+            "exitPrice": 310.0,
+            "netPct": -0.9596954860005114,
+            "reason": "OPEN_BELOW_STOP",
+            "mirrorStop": 308.88,
+            "mirrorUpdates": 0,
+            "mirrorWasBindingAtExit": false
+          }
+        ],
+        "blocked": 1,
+        "netPct": -0.9597,
+        "netTwd": -2996.81,
+        "symbol": "1303",
+        "name": "南亞"
+      },
+      "1727": {
+        "trades": [
+          {
+            "entry": "2026-10-08T09:09:50+08:00",
+            "entryPrice": 111.0,
+            "exit": "2026-10-08T09:11:55+08:00",
+            "exitPrice": 111.30499999999999,
+            "netPct": -0.04683227822195324,
+            "reason": "BASE_OR_TRAIL_STOP",
+            "mirrorStop": 109.89,
+            "mirrorUpdates": 0,
+            "mirrorWasBindingAtExit": false
+          }
+        ],
+        "blocked": 0,
+        "netPct": -0.0468,
+        "netTwd": -52.03,
+        "symbol": "1727",
+        "name": "中華化"
+      },
+      "2409": {
+        "trades": [
+          {
+            "entry": "2026-10-08T09:13:40+08:00",
+            "entryPrice": 37.6,
+            "exit": "2026-10-08T09:18:56+08:00",
+            "exitPrice": 37.25,
+            "netPct": -1.2485913639582957,
+            "reason": "OPEN_BELOW_STOP",
+            "mirrorStop": 37.274,
+            "mirrorUpdates": 1,
+            "mirrorWasBindingAtExit": true
+          }
+        ],
+        "blocked": 0,
+        "netPct": -1.2486,
+        "netTwd": -469.87,
+        "symbol": "2409",
+        "name": "友達"
+      },
+      "3481": {
+        "trades": [
+          {
+            "entry": "2026-10-08T09:00:40+08:00",
+            "entryPrice": 52.2,
+            "exit": "2026-10-08T09:02:33+08:00",
+            "exitPrice": 51.678000000000004,
+            "netPct": -1.317518521663985,
+            "reason": "BASE_OR_TRAIL_STOP",
+            "mirrorStop": 51.678000000000004,
+            "mirrorUpdates": 0,
+            "mirrorWasBindingAtExit": false
+          }
+        ],
+        "blocked": 1,
+        "netPct": -1.3175,
+        "netTwd": -688.33,
+        "symbol": "3481",
+        "name": "群創"
+      },
+      "3042": {
+        "trades": [],
+        "blocked": 0,
+        "netPct": 0.0,
+        "netTwd": 0.0,
+        "symbol": "3042",
+        "name": "晶技"
+      },
+      "6257": {
+        "trades": [
+          {
+            "entry": "2026-10-08T09:00:25+08:00",
+            "entryPrice": 277.0,
+            "exit": "2026-10-08T09:13:40+08:00",
+            "exitPrice": 287.1275,
+            "netPct": 3.323685230175122,
+            "reason": "BASE_OR_TRAIL_STOP",
+            "mirrorStop": 275.23,
+            "mirrorUpdates": 1,
+            "mirrorWasBindingAtExit": false
+          },
+          {
+            "entry": "2026-10-08T09:16:41+08:00",
+            "entryPrice": 285.0,
+            "exit": "2026-10-08T09:20:58+08:00",
+            "exitPrice": 282.0,
+            "netPct": -1.3699812975695225,
+            "reason": "OPEN_BELOW_STOP",
+            "mirrorStop": 282.15,
+            "mirrorUpdates": 0,
+            "mirrorWasBindingAtExit": false
+          }
+        ],
+        "blocked": 0,
+        "netPct": 1.9082,
+        "netTwd": 5306.69,
+        "symbol": "6257",
+        "name": "矽格"
+      },
+      "8150": {
+        "trades": [],
+        "blocked": 0,
+        "netPct": 0.0,
+        "netTwd": 0.0,
+        "symbol": "8150",
+        "name": "南茂"
+      },
+      "8042": {
+        "trades": [],
+        "blocked": 0,
+        "netPct": 0.0,
+        "netTwd": 0.0,
+        "symbol": "8042",
+        "name": "金山電"
+      },
+      "2492": {
+        "trades": [
+          {
+            "entry": "2026-10-08T09:03:20+08:00",
+            "entryPrice": 427.0,
+            "exit": "2026-10-08T09:04:31+08:00",
+            "exitPrice": 422.73,
+            "netPct": -1.317518521663974,
+            "reason": "BASE_OR_TRAIL_STOP",
+            "mirrorStop": 422.73,
+            "mirrorUpdates": 0,
+            "mirrorWasBindingAtExit": false
+          }
+        ],
+        "blocked": 6,
+        "netPct": -1.3175,
+        "netTwd": -5630.61,
+        "symbol": "2492",
+        "name": "華新科"
+      },
+      "2327": {
+        "trades": [
+          {
+            "entry": "2026-10-08T09:02:00+08:00",
+            "entryPrice": 643.0,
+            "exit": "2026-10-08T09:04:19+08:00",
+            "exitPrice": 636.0,
+            "netPct": -1.4058811753276057,
+            "reason": "OPEN_BELOW_STOP",
+            "mirrorStop": 636.57,
+            "mirrorUpdates": 0,
+            "mirrorWasBindingAtExit": false
+          }
+        ],
+        "blocked": 3,
+        "netPct": -1.4059,
+        "netTwd": -9047.55,
+        "symbol": "2327",
+        "name": "國巨*"
+      },
+      "3665": {
+        "trades": [
+          {
+            "entry": "2026-10-08T09:01:41+08:00",
+            "entryPrice": 2355.0,
+            "exit": "2026-10-08T09:21:43+08:00",
+            "exitPrice": 2354.15,
+            "netPct": -0.35670343682054906,
+            "reason": "BASE_OR_TRAIL_STOP",
+            "mirrorStop": 2331.45,
+            "mirrorUpdates": 0,
+            "mirrorWasBindingAtExit": false
+          }
+        ],
+        "blocked": 0,
+        "netPct": -0.3567,
+        "netTwd": -8407.55,
+        "symbol": "3665",
+        "name": "貿聯-KY"
+      },
+      "6456": {
+        "trades": [
+          {
+            "entry": "2026-10-08T09:02:52+08:00",
+            "entryPrice": 103.0,
+            "exit": "2026-10-08T09:04:40+08:00",
+            "exitPrice": 102.0,
+            "netPct": -1.2884857233473213,
+            "reason": "OPEN_BELOW_STOP",
+            "mirrorStop": 101.97,
+            "mirrorUpdates": 0,
+            "mirrorWasBindingAtExit": false
+          }
+        ],
+        "blocked": 0,
+        "netPct": -1.2885,
+        "netTwd": -1328.28,
+        "symbol": "6456",
+        "name": "GIS-KY"
+      },
+      "3673": {
+        "trades": [
+          {
+            "entry": "2026-10-08T09:04:26+08:00",
+            "entryPrice": 76.0,
+            "exit": "2026-10-08T09:16:33+08:00",
+            "exitPrice": 75.4,
+            "netPct": -1.10766741804178,
+            "reason": "OPEN_BELOW_STOP",
+            "mirrorStop": 75.44,
+            "mirrorUpdates": 3,
+            "mirrorWasBindingAtExit": true
+          }
+        ],
+        "blocked": 0,
+        "netPct": -1.1077,
+        "netTwd": -842.55,
+        "symbol": "3673",
+        "name": "TPK-KY"
+      }
+    }
+  }
+}
