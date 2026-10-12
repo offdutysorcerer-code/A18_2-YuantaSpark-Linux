@@ -14,6 +14,7 @@ services:
       A18__StagingSafeMode: "true"
       A18__Provider: Stub
       AutoLong__EnableIsolatedPaperRunner: "true"
+      AutoLong__ReadOnlyFeedUrl: http://host.docker.internal:5220
       A18__OperationMode: Legacy
       A18__FullMarketStartShioajiCollectors: "false"
       A18__SymbolsPath: /data/reference/symbols.csv
@@ -22,6 +23,8 @@ services:
       History__Fetcher: /disabled/history_fetch.py
       History__Python: /usr/bin/false
       Runtime21__BaseUrl: http://127.0.0.1:9/
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
     volumes:
       - ./staging-data:/data
       - /mnt/d/AIProjects/A18_10_量化交易資料倉庫:/warehouse:ro

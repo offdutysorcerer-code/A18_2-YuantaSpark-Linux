@@ -15,7 +15,9 @@ builder.Services.PostConfigure<YuantaSparkOptions>(options =>
     if (operationMode.IsFullMarketExperimental)
     {
         options.RequiredSymbolsPath = builder.Configuration["A18:FullMarketYuantaRequiredSymbolsPath"] ?? "/data/fullmarket-required-symbols.json";
-        options.MaxSubscriptions = 200;
+        // Keep the fixed 200 full-market symbols, while reserving capacity for
+        // on-demand Swing symbols. Respect the configured total broker limit.
+        options.MaxSubscriptions = Math.Max(200, options.MaxSubscriptions);
         // The fixed 200-symbol full-market slice can legitimately be quiet for longer
         // than the mature Legacy watchlist. Avoid rebuilding the entire SPARK session
         // every 90 seconds solely because no assigned symbol traded in that window.
@@ -113,6 +115,29 @@ app.MapPost("/api/auto-long/shadow-test/cancel", (AutoLongShadowCancel body, Htt
     !IsLocalShadowTest(ctx,cfg)?Results.StatusCode(404):Results.Ok(new{accepted=ledger.CancelReservation(body.Id)}));
 app.MapPost("/api/auto-long/shadow-test/expire", (HttpContext ctx,IConfiguration cfg,AutoLongPaperLedger ledger) =>
     !IsLocalShadowTest(ctx,cfg)?Results.StatusCode(404):Results.Ok(new{expired=ledger.ExpireUnfilled(DateTimeOffset.UtcNow,TimeSpan.FromSeconds(30))}));
+// Upstream read-only feed probe; does not inject ticks or create orders.
+app.MapGet("/api/auto-long/feed-probe/{symbol}", async (string symbol, IConfiguration cfg, IHttpClientFactory clients, CancellationToken ct) =>
+{
+    if (!cfg.GetValue<bool>("A18:StagingSafeMode")) return Results.StatusCode(404);
+    if (symbol.Length != 4 || !symbol.All(char.IsAsciiDigit)) return Results.BadRequest(new { error = "INVALID_SYMBOL" });
+    var upstream = cfg["AutoLong:ReadOnlyFeedUrl"];
+    if (!Uri.TryCreate(upstream, UriKind.Absolute, out var baseUrl) || baseUrl.Scheme != "http" || baseUrl.Host != "host.docker.internal")
+        return Results.Ok(new { sourceConfigured = false, fresh = false, reason = "READ_ONLY_FEED_NOT_CONFIGURED" });
+    try
+    {
+        using var client = clients.CreateClient(); client.Timeout = TimeSpan.FromSeconds(4);
+        using var response = await client.GetAsync(new Uri(baseUrl, "/api/ticks/" + symbol), ct);
+        if (!response.IsSuccessStatusCode) return Results.Ok(new { sourceConfigured = true, fresh = false, reason = "UPSTREAM_HTTP_" + (int)response.StatusCode });
+        using var json = await JsonDocument.ParseAsync(await response.Content.ReadAsStreamAsync(ct), cancellationToken: ct);
+        var root = json.RootElement;
+        var ticks = root.TryGetProperty("ticks", out var arr) && arr.ValueKind == JsonValueKind.Array ? arr : default;
+        var last = ticks.ValueKind == JsonValueKind.Array && ticks.GetArrayLength()>0 ? ticks[ticks.GetArrayLength()-1] : default;
+        var timestamp = last.ValueKind == JsonValueKind.Object && last.TryGetProperty("exchangeAt", out var time) && DateTimeOffset.TryParse(time.GetString(), out var parsed) ? parsed : (DateTimeOffset?)null;
+        var age = timestamp is null ? (double?)null : (DateTimeOffset.UtcNow-timestamp.Value).TotalSeconds;
+        return Results.Ok(new { sourceConfigured = true, symbol, tickCount = ticks.ValueKind == JsonValueKind.Array ? ticks.GetArrayLength() : 0, lastExchangeAt = timestamp, ageSeconds = age, fresh = age is >= 0 and < 10, reason = age is >= 0 and < 10 ? "FRESH_TICKS" : "NO_FRESH_TICKS", executionEnabled = false });
+    }
+    catch (Exception) when (!ct.IsCancellationRequested) { return Results.Ok(new { sourceConfigured = true, fresh = false, reason = "UPSTREAM_UNAVAILABLE" }); }
+});
 // Read-only integration readiness. This endpoint cannot place orders or unlock Live.
 app.MapGet("/api/auto-long/execution-readiness", (IConfiguration cfg, IMarketDataProvider provider, AutoLongPaperPositions positions) =>
 {
@@ -509,10 +534,21 @@ app.MapGet("/api/bars/{symbol}", async (string symbol, string? date, int? interv
         }
 
         var normalizedTodaySymbol = symbol.Trim().ToUpperInvariant();
+        // Ensure live subscription is requested before reading ticks.
+        if (requested == today)
+        {
+            try { await provider.SubscribeAsync(symbols.GetMarket(normalizedTodaySymbol), normalizedTodaySymbol, ct); }
+            catch (InvalidOperationException ex)
+            {
+                return Results.Json(new { symbol = normalizedTodaySymbol, tradeDate = requested,
+                    dataState = "LIVE_SUBSCRIPTION_FAILED", error = ex.Message,
+                    hasData = false, source = "YUANTA_SPARK", bars = Array.Empty<object>() },
+                    statusCode: 503);
+            }
+        }
         var ticks = provider.GetTicks(normalizedTodaySymbol, requested).Where(x => x.Price > 0).OrderBy(x => x.ExchangeAt).ToArray();
         if (requested == today)
         {
-            try { await provider.SubscribeAsync(symbols.GetMarket(normalizedTodaySymbol), normalizedTodaySymbol, ct); } catch (InvalidOperationException) { }
             if (ticks.Length == 0)
             {
                 var historical = await history.GetAsync(normalizedTodaySymbol, requested, ct);
