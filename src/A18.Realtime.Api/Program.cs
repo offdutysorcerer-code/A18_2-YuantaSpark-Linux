@@ -500,7 +500,7 @@ app.MapGet("/api/swing/opening-activity/{symbol}", async (string symbol, string?
     return Results.Ok(new { symbol,date=selected.ToString("yyyy-MM-dd"),state=windows.All(x=>x.rvol.HasValue)?"AVAILABLE":"INSUFFICIENT_HISTORY",priorDates=measures.Skip(1).Select(x=>x.Date.ToString("yyyy-MM-dd")).ToArray(),windows,observationOnly=true });
 });
 
-app.MapGet("/api/bars/{symbol}", async (string symbol, string? date, int? interval, IMarketDataProvider provider, TaiwanSymbolDirectory symbols, HistoricalSecondBars history, CancellationToken ct) =>
+app.MapGet("/api/bars/{symbol}", async (string symbol, string? date, int? interval, IMarketDataProvider provider, TaiwanSymbolDirectory symbols, HistoricalSecondBars history, IConfiguration cfg, IHttpClientFactory clients, CancellationToken ct) =>
 {
     try
     {
@@ -516,6 +516,35 @@ app.MapGet("/api/bars/{symbol}", async (string symbol, string? date, int? interv
         {
             var futureSymbol = symbol.Trim().ToUpperInvariant();
             return Results.Ok(new { symbol = futureSymbol, name = symbols.GetName(futureSymbol), tradeDate = requested, intervalSeconds = seconds, hasData = false, dataState = "FUTURE_DATE", source = "NONE", bars = Array.Empty<object>() });
+        }
+
+        // Staging uses an isolated Stub; its captured intraday file may stop after the open.
+        // For *today only*, serve the production quote service's read-only bars directly.
+        // Fail closed rather than presenting a stale partial chart as current data.
+        if (requested == today && cfg.GetValue<bool>("A18:StagingSafeMode"))
+        {
+            var source = cfg["AutoLong:ReadOnlyFeedUrl"];
+            if (!Uri.TryCreate(source, UriKind.Absolute, out var sourceUrl) || sourceUrl.Scheme != "http" || sourceUrl.Host != "host.docker.internal" || sourceUrl.Port != 5220)
+                return Results.Json(new { error = "STAGING_LIVE_BARS_SOURCE_UNAVAILABLE", bars = Array.Empty<object>() }, statusCode: 503);
+            var requestedSymbol = symbol.Trim().ToUpperInvariant();
+            if (requestedSymbol.Length is < 4 or > 8 || !requestedSymbol.All(c => char.IsAsciiLetterOrDigit(c)))
+                return Results.BadRequest(new { error = "INVALID_SYMBOL" });
+            try
+            {
+                using var http = clients.CreateClient(); http.Timeout = TimeSpan.FromSeconds(8);
+                var uri = new Uri(sourceUrl, "/api/bars/" + requestedSymbol + "?date=" + requested.ToString("yyyy-MM-dd") + "&interval=" + seconds);
+                using var upstream = await http.GetAsync(uri, ct);
+                if (!upstream.IsSuccessStatusCode) return Results.Json(new { error = "UPSTREAM_LIVE_BARS_HTTP_" + (int)upstream.StatusCode, bars = Array.Empty<object>() }, statusCode: 503);
+                var body = await upstream.Content.ReadAsStringAsync(ct);
+                using var parsed = JsonDocument.Parse(body);
+                if (!parsed.RootElement.TryGetProperty("tradeDate", out var tradeDay) || tradeDay.GetString() != requested.ToString("yyyy-MM-dd"))
+                    return Results.Json(new { error = "UPSTREAM_LIVE_BARS_DATE_MISMATCH", bars = Array.Empty<object>() }, statusCode: 503);
+                return Results.Content(body, "application/json");
+            }
+            catch (Exception) when (!ct.IsCancellationRequested)
+            {
+                return Results.Json(new { error = "UPSTREAM_LIVE_BARS_UNAVAILABLE", bars = Array.Empty<object>() }, statusCode: 503);
+            }
         }
 
         if (requested < today)
