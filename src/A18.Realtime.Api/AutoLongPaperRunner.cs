@@ -11,6 +11,7 @@ internal sealed class AutoLongPaperRunner(IMarketDataProvider provider,AutoLongS
     {
         if(!config.GetValue<bool>("A18:StagingSafeMode")||!config.GetValue<bool>("AutoLong:EnableIsolatedPaperRunner"))return;
         if(provider.Name.Equals("Stub",StringComparison.OrdinalIgnoreCase)||!provider.IsReady)return;
+        var today=DateOnly.FromDateTime(TimeZoneInfo.ConvertTime(now,Taipei).Date);
         // Never alter a confirmed fill. Stale, unfilled shadow reservations free
         // buy budget on the next scan (also after process restart).
         ledger.ExpireUnfilled(now,TimeSpan.FromSeconds(30));
@@ -22,7 +23,7 @@ internal sealed class AutoLongPaperRunner(IMarketDataProvider provider,AutoLongS
         {
             var after=position.LastObservedAt??position.EnteredAt;
             var ticks=provider.GetTicks(position.Symbol,date)
-                .Where(t=>t.Price>0&&t.ExchangeAt<=now&&t.ExchangeAt>after)
+                .Where(t=>t.Price>0&&t.ExchangeAt<=now&&t.ExchangeAt>after&&DateOnly.FromDateTime(TimeZoneInfo.ConvertTime(t.ExchangeAt,Taipei).Date)==today)
                 .OrderBy(t=>t.ExchangeAt).ThenBy(t=>t.Sequence).ToArray();
             foreach(var tick in ticks)
             {
@@ -46,7 +47,7 @@ internal sealed class AutoLongPaperRunner(IMarketDataProvider provider,AutoLongS
             // Require a new tick strictly AFTER the completed five-second signal.
             if(now-signalAt>TimeSpan.FromSeconds(8)||signalAt>now)continue;
             var tick=provider.GetTicks(watch.Symbol,date)
-                .Where(t=>t.Price>0&&t.ExchangeAt>signalAt&&t.ExchangeAt<=now&&now-t.ExchangeAt<TimeSpan.FromSeconds(4))
+                .Where(t=>t.Price>0&&t.ExchangeAt>signalAt&&t.ExchangeAt<=now&&now-t.ExchangeAt<TimeSpan.FromSeconds(4)&&DateOnly.FromDateTime(TimeZoneInfo.ConvertTime(t.ExchangeAt,Taipei).Date)==today)
                 .OrderBy(t=>t.ExchangeAt).FirstOrDefault();
             if(tick is null)continue;
             var remaining=watch.BuyBudgetTwd-ledger.List().Where(x=>x.Symbol==watch.Symbol).Sum(x=>x.FilledBuyTwd+x.ReservedBuyTwd);

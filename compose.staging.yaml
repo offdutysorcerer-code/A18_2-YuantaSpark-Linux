@@ -13,6 +13,7 @@ services:
       ASPNETCORE_ENVIRONMENT: Staging
       A18__StagingSafeMode: "true"
       A18__Provider: Stub
+      AutoLong__EnableIsolatedPaperRunner: "true"
       A18__OperationMode: Legacy
       A18__FullMarketStartShioajiCollectors: "false"
       A18__SymbolsPath: /data/reference/symbols.csv
