@@ -4,13 +4,13 @@ namespace A18.Realtime.Api;
 /// Opt-in staging PAPER execution loop. Stub/no feed => inert. No runtime21/broker calls.
 /// Uses signal-confirmed fresh ticks for entry and independently manages open exits.
 /// </summary>
-internal sealed class AutoLongPaperRunner(IMarketDataProvider provider,AutoLongSignalMonitor signals,AutoLongPaperLedger ledger,AutoLongPaperPositions positions,AutoLongWatch watches,IConfiguration config,ILogger<AutoLongPaperRunner> log)
+internal sealed class AutoLongPaperRunner(IMarketDataProvider provider,AutoLongSignalMonitor signals,AutoLongPaperLedger ledger,AutoLongPaperPositions positions,AutoLongWatch watches,AutoLongReadOnlyTicks upstream,IConfiguration config,ILogger<AutoLongPaperRunner> log)
 {
     private static readonly TimeZoneInfo Taipei=TimeZoneInfo.FindSystemTimeZoneById("Asia/Taipei");
     public void Step(DateTimeOffset now)
     {
         if(!config.GetValue<bool>("A18:StagingSafeMode")||!config.GetValue<bool>("AutoLong:EnableIsolatedPaperRunner"))return;
-        if(provider.Name.Equals("Stub",StringComparison.OrdinalIgnoreCase)||!provider.IsReady)return;
+        if(!upstream.Configured&&(provider.Name.Equals("Stub",StringComparison.OrdinalIgnoreCase)||!provider.IsReady))return;
         var today=DateOnly.FromDateTime(TimeZoneInfo.ConvertTime(now,Taipei).Date);
         // Never alter a confirmed fill. Stale, unfilled shadow reservations free
         // buy budget on the next scan (also after process restart).
@@ -22,7 +22,7 @@ internal sealed class AutoLongPaperRunner(IMarketDataProvider provider,AutoLongS
         foreach(var position in open)
         {
             var after=position.LastObservedAt??position.EnteredAt;
-            var ticks=provider.GetTicks(position.Symbol,date)
+            var ticks=(upstream.Configured?upstream.GetTicks(position.Symbol,date,now):provider.GetTicks(position.Symbol,date))
                 .Where(t=>t.Price>0&&t.ExchangeAt<=now&&t.ExchangeAt>after&&DateOnly.FromDateTime(TimeZoneInfo.ConvertTime(t.ExchangeAt,Taipei).Date)==today)
                 .OrderBy(t=>t.ExchangeAt).ThenBy(t=>t.Sequence).ToArray();
             foreach(var tick in ticks)
@@ -46,7 +46,7 @@ internal sealed class AutoLongPaperRunner(IMarketDataProvider provider,AutoLongS
             if(signal?.LastSignalAt is not { } signalAt||signal.LastSignalPrice is not >0)continue;
             // Require a new tick strictly AFTER the completed five-second signal.
             if(now-signalAt>TimeSpan.FromSeconds(8)||signalAt>now)continue;
-            var tick=provider.GetTicks(watch.Symbol,date)
+            var tick=(upstream.Configured?upstream.GetTicks(watch.Symbol,date,now):provider.GetTicks(watch.Symbol,date))
                 .Where(t=>t.Price>0&&t.ExchangeAt>signalAt&&t.ExchangeAt<=now&&now-t.ExchangeAt<TimeSpan.FromSeconds(4)&&DateOnly.FromDateTime(TimeZoneInfo.ConvertTime(t.ExchangeAt,Taipei).Date)==today)
                 .OrderBy(t=>t.ExchangeAt).FirstOrDefault();
             if(tick is null)continue;

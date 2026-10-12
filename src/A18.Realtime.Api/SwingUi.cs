@@ -984,7 +984,7 @@ if(location.hostname.startsWith('staging-')||location.hostname==='127.0.0.1'||lo
   }
   async function refreshAutoLongReadiness(){
     try{const res=await fetch('/api/auto-long/execution-readiness',{cache:'no-store'});if(!res.ok)throw Error('HTTP '+res.status);const x=await res.json();
-      const msg=x.paperExecutionReady?'Paper 執行器已就緒':(!x.paperRunnerEnabled?'Paper 尚未啟動':(!x.liveFeedReady?'Paper 等待即時行情':'Paper 部位資料需對帳'));
+      const msg=x.paperExecutionReady?'Paper 執行器已就緒':(!x.paperRunnerEnabled?'Paper 尚未啟動':(!(x.liveFeedReady||x.paperQuoteFresh)?'Paper 等待所選標的的新鮮即時行情':'Paper 部位資料需對帳'));
       for(const name of ['Full','Simple'])$('autoLong'+name+'Readiness').textContent='Shadow：可記錄訊號｜'+msg+'｜Live：禁止（Staging 隔離）';
     }catch{for(const name of ['Full','Simple'])$('autoLong'+name+'Readiness').textContent='無法驗證委託環境，請勿假設已啟動';}
   }

@@ -2,7 +2,7 @@ using A18.Realtime.Core;
 namespace A18.Realtime.Api;
 internal sealed record AutoLongSignalObservation(string Symbol,string State,string Reason,DateTimeOffset? LastCompletedBarAt,DateTimeOffset? LastSignalAt,decimal? LastSignalPrice,DateTimeOffset UpdatedAt);
 /// <summary>Signal-only observer, no PAPER or broker order functionality.</summary>
-internal sealed class AutoLongSignalMonitor(IMarketDataProvider provider,AutoLongWatch watches)
+internal sealed class AutoLongSignalMonitor(IMarketDataProvider provider,AutoLongWatch watches,AutoLongReadOnlyTicks upstream)
 {
     private readonly object _gate=new();
     private readonly Dictionary<string,AutoLongSignalObservation> _rows=new();
@@ -15,11 +15,11 @@ internal sealed class AutoLongSignalMonitor(IMarketDataProvider provider,AutoLon
         {
             var reason="NO_LIVE_FEED";string state="WAITING_DATA";DateTimeOffset? completed=null,signal=null;decimal? price=null;
             if(local.TimeOfDay<new TimeSpan(9,0,0)||local.TimeOfDay>=new TimeSpan(9,30,0))reason="OUTSIDE_ENTRY_WINDOW";
-            else if(provider.Name.Equals("Stub",StringComparison.OrdinalIgnoreCase))reason="STUB_PROVIDER_NO_EXECUTION";
-            else if(!provider.IsReady)reason="PROVIDER_NOT_READY";
+            else if(provider.Name.Equals("Stub",StringComparison.OrdinalIgnoreCase)&&!upstream.Configured)reason="NO_READ_ONLY_FEED";
+            else if(!provider.IsReady&&!upstream.Configured)reason="PROVIDER_NOT_READY";
             else
             {
-                var ticks=provider.GetTicks(task.Symbol,DateOnly.FromDateTime(local.Date))
+                var ticks=(upstream.Configured?upstream.GetTicks(task.Symbol,DateOnly.FromDateTime(local.Date),now):provider.GetTicks(task.Symbol,DateOnly.FromDateTime(local.Date)))
                     .Where(t=>t.Price>0&&t.ExchangeAt<=now&&t.ExchangeAt>=now.AddMinutes(-3))
                     .OrderBy(t=>t.ExchangeAt).ToArray();
                 var buckets=ticks.GroupBy(t=>t.ExchangeAt.ToUnixTimeSeconds()/5*5).OrderBy(x=>x.Key)

@@ -54,6 +54,7 @@ builder.Services.AddSingleton<AutoLongWatch>();
 builder.Services.AddHostedService<AutoLongScheduleHostedService>();
 builder.Services.AddSingleton<AutoLongPaperLedger>();
 builder.Services.AddSingleton<AutoLongPaperPositions>();
+builder.Services.AddSingleton<AutoLongReadOnlyTicks>();
 builder.Services.AddSingleton<AutoLongPaperRunner>();
 builder.Services.AddSingleton<AutoLongSignalMonitor>();
 builder.Services.AddHostedService<AutoLongSignalHostedService>();
@@ -139,12 +140,14 @@ app.MapGet("/api/auto-long/feed-probe/{symbol}", async (string symbol, IConfigur
     catch (Exception) when (!ct.IsCancellationRequested) { return Results.Ok(new { sourceConfigured = true, fresh = false, reason = "UPSTREAM_UNAVAILABLE" }); }
 });
 // Read-only integration readiness. This endpoint cannot place orders or unlock Live.
-app.MapGet("/api/auto-long/execution-readiness", (IConfiguration cfg, IMarketDataProvider provider, AutoLongPaperPositions positions) =>
+app.MapGet("/api/auto-long/execution-readiness", (IConfiguration cfg, IMarketDataProvider provider, AutoLongPaperPositions positions, AutoLongReadOnlyTicks upstream, AutoLongWatch watches) =>
 {
     if (!cfg.GetValue<bool>("A18:StagingSafeMode")) return Results.StatusCode(404);
     bool feedReady = !provider.Name.Equals("Stub", StringComparison.OrdinalIgnoreCase) && provider.IsReady;
     bool paperEnabled = cfg.GetValue<bool>("AutoLong:EnableIsolatedPaperRunner");
     bool reconciled = positions.UnreconciledSymbols().Length == 0;
+    var paperSymbols = watches.List().Where(w=>w.EntryEnabled&&w.ExecutionMode=="PAPER").Select(w=>w.Symbol).ToArray();
+    bool quoteFresh = upstream.Configured&&paperSymbols.Length>0&&paperSymbols.All(s=>upstream.HasFreshTicks(s,DateTimeOffset.UtcNow));
     return Results.Ok(new
     {
         environment = "Staging", liveTradingEnabled = false,
@@ -153,7 +156,10 @@ app.MapGet("/api/auto-long/execution-readiness", (IConfiguration cfg, IMarketDat
         paperRunnerEnabled = paperEnabled,
         marketProvider = provider.Name,
         liveFeedReady = feedReady,
-        paperExecutionReady = paperEnabled && feedReady && reconciled,
+        readOnlyQuoteFeedConfigured = upstream.Configured,
+        paperSymbols = paperSymbols,
+        paperQuoteFresh = quoteFresh,
+        paperExecutionReady = paperEnabled && (feedReady || quoteFresh) && reconciled,
         paperReconciliationReady = reconciled,
         details = "Read-only status. Staging cannot forward any request to Runtime21/broker."
     });
