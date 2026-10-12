@@ -175,7 +175,7 @@ header{display:flex;align-items:center;justify-content:space-between;gap:16px;pa
     <div id="threeGreenPanel" class="detector-box sim-grid-full" style="display:none;margin:10px 0">
       <div class="detector-head"><strong>研究觀察：累積三次 5 秒 K 收盤上升</strong><label class="ui-toggle"><input id="threeGreenOverlay" type="checkbox"><span class="ui-toggle-track"></span><span>在 K 線標記</span></label><label>版本 <select id="threeGreenMode"><option value="NON_OVERLAP">A 三根後重新累積</option><option value="SLIDING">B 滑動偵測（允許重疊）</option></select></label><label>策略 <select id="threeGreenVersion"><option value="V1">V1 原始累積（不限時間）</option><option value="V2">V2 限時累積</option></select></label><label id="threeGreenLimitWrap">期限 <select id="threeGreenLimit"><option value="30">30 秒內</option><option value="60">1 分鐘內</option></select></label><button type="button" id="threeGreenScan">掃描目前股票／日期</button><span class="sim-hint">只看相鄰實際 5 秒 K 的 Close：後 C &gt; 前 C 累積 +1；相等不加不歸零；後 C &lt; 前 C 歸零。累積 3 次觸發。V2 從第一次上升 K 開始，到第三根 K 完成須在期限內（含端點）。</span></div>
       <div id="threeGreenResult" role="status" class="detector-result">按「掃描」尋找型態。</div>
-      <div id="threeGreenList" style="max-height:320px;overflow:auto"></div>
+      <details id="threeGreenResultsFold" open style="margin-top:6px"><summary style="cursor:pointer;padding:7px 0;color:var(--muted)">觸發時間明細（點擊摺疊／展開）</summary><div id="threeGreenList" style="max-height:320px;overflow:auto"></div></details>
     </div>
   </details>
   </div>
