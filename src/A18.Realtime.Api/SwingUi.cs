@@ -173,7 +173,7 @@ header{display:flex;align-items:center;justify-content:space-between;gap:16px;pa
       <div class="detector-box detector-explain-box sim-grid-full"><div class="detector-head"><label class="ui-toggle"><input id="probeDetectorEnabled" type="checkbox"><span class="ui-toggle-track"></span><span>手動試算探測器</span></label><label class="ui-toggle"><input id="liveDetectorEnabled" type="checkbox"><span class="ui-toggle-track"></span><span>盤中即時探測</span></label><label>版本 <select id="probeDetectorVersion"><option value="D1">D1 原始 Regime</option><option value="D2">D2 Regime＋5秒 Timing</option></select></label><button type="button" id="probeDetectorRun">解讀選定進場點</button><button type="button" id="regimeGuideOpen" aria-haspopup="dialog" aria-controls="regimeGuideModal">狀態與計算說明</button><span class="sim-hint">D1/D2 都只使用選定時間前已完整形成的 K 棒，不偷看未來。</span></div><div id="probeDetectorResult" class="detector-result">探測器關閉。</div></div>
     </div>
     <div id="threeGreenPanel" class="detector-box sim-grid-full" style="display:none;margin:10px 0">
-      <div class="detector-head"><strong>Staging 實驗：累積三次 5 秒 K 收盤上升</strong><label class="ui-toggle"><input id="threeGreenOverlay" type="checkbox"><span class="ui-toggle-track"></span><span>在 K 線標記</span></label><label>版本 <select id="threeGreenMode"><option value="NON_OVERLAP">A 三根後重新累積</option><option value="SLIDING">B 滑動偵測（允許重疊）</option></select></label><label>策略 <select id="threeGreenVersion"><option value="V1">V1 原始累積（不限時間）</option><option value="V2">V2 限時累積</option></select></label><label id="threeGreenLimitWrap">期限 <select id="threeGreenLimit"><option value="30">30 秒內</option><option value="60">1 分鐘內</option></select></label><button type="button" id="threeGreenScan">掃描目前股票／日期</button><span class="sim-hint">只看相鄰實際 5 秒 K 的 Close：後 C &gt; 前 C 累積 +1；相等不加不歸零；後 C &lt; 前 C 歸零。累積 3 次觸發。V2 從第一次上升 K 開始，到第三根 K 完成須在期限內（含端點）。</span></div>
+      <div class="detector-head"><strong>研究觀察：累積三次 5 秒 K 收盤上升</strong><label class="ui-toggle"><input id="threeGreenOverlay" type="checkbox"><span class="ui-toggle-track"></span><span>在 K 線標記</span></label><label>版本 <select id="threeGreenMode"><option value="NON_OVERLAP">A 三根後重新累積</option><option value="SLIDING">B 滑動偵測（允許重疊）</option></select></label><label>策略 <select id="threeGreenVersion"><option value="V1">V1 原始累積（不限時間）</option><option value="V2">V2 限時累積</option></select></label><label id="threeGreenLimitWrap">期限 <select id="threeGreenLimit"><option value="30">30 秒內</option><option value="60">1 分鐘內</option></select></label><button type="button" id="threeGreenScan">掃描目前股票／日期</button><span class="sim-hint">只看相鄰實際 5 秒 K 的 Close：後 C &gt; 前 C 累積 +1；相等不加不歸零；後 C &lt; 前 C 歸零。累積 3 次觸發。V2 從第一次上升 K 開始，到第三根 K 完成須在期限內（含端點）。</span></div>
       <div id="threeGreenResult" role="status" class="detector-result">按「掃描」尋找型態。</div>
       <div id="threeGreenList" style="max-height:320px;overflow:auto"></div>
     </div>
@@ -911,8 +911,8 @@ async function loadThreeGreenOverlay(force=false){
   }catch(e){$('threeGreenResult').textContent='K 線標記載入失敗：'+e.message}
   finally{threeGreenOverlayState.busy=false;draw()}
 }
-// Staging-only research signal: three truly adjacent completed 5-second bullish bars.
-if(location.hostname.startsWith('staging-') || location.hostname==='127.0.0.1' || location.hostname==='localhost'){
+// Read-only research indicator available on both production and staging; never sends orders.
+{
   const panel=$('threeGreenPanel');panel.style.display='block';
   $('threeGreenOverlay').addEventListener('change',()=>{savePrefs();loadThreeGreenOverlay(true)});
   $('threeGreenMode').addEventListener('change',()=>{threeGreenOverlayState.key='';savePrefs();loadThreeGreenOverlay(true);$('threeGreenScan').click()});
