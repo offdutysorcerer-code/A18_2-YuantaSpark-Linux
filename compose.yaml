@@ -40,6 +40,8 @@ services:
       Yuanta__Password: ${YUANTA_PASSWORD:-}
       Yuanta__CertificatePath: ${YUANTA_PFX_PATH:-/run/secrets/yuanta.pfx}
       Yuanta__CertificatePassword: ${YUANTA_PFX_PASSWORD:-}
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
     volumes:
       - ./data:/data
       - ./shioaji:/opt/shioaji-runtime:ro
