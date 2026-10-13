@@ -469,7 +469,10 @@ public sealed class YuantaSparkMarketDataProvider : IMarketDataProvider, IDispos
             {
                 bool accepted;
                 lock (_sdkGate)
-                    accepted = _api.GetStkTickDetail(_sessionAccount, ParseMarket(market), symbol, (enumStkTickSelectType)0, "09:00:00", end, 0);
+                    // SDK CheckMarket resolves dicAcno by Acno.HeaderAccount (the Login argument),
+                    // not by LoginResult.LoginList[0].Account (the brokerage account).
+                    // Scope this experimental correction to historical tick queries only.
+                    accepted = _api.GetStkTickDetail(_options.Account, ParseMarket(market), symbol, (enumStkTickSelectType)0, "09:00:00", end, 0);
                 if (!accepted) throw new InvalidOperationException($"GetStkTickDetail was not accepted for {symbol}.");
 
                 var rows = await ready.Task.WaitAsync(TimeSpan.FromSeconds(Math.Max(1, _options.BackfillTimeoutSeconds)), cancellationToken);
