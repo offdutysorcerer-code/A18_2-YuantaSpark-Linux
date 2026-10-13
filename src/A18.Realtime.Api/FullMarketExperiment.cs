@@ -45,9 +45,30 @@ public sealed class FullMarketStateStore
     private readonly ConcurrentDictionary<string, FullMarketLatestState> _latest = new(StringComparer.OrdinalIgnoreCase);
     private readonly ConcurrentDictionary<string, long> _providerEvents = new(StringComparer.OrdinalIgnoreCase);
     private long _events;
+    // Read-only fallback cache for symbols explicitly viewed in Swing. No broker orders
+    // and no all-market tick retention. Bound each symbol to 20k recent trades.
+    private readonly ConcurrentDictionary<string, ConcurrentQueue<FullMarketIngressTick>> _tracked = new(StringComparer.OrdinalIgnoreCase);
+    public void WatchBars(string symbol) => _tracked.TryAdd(symbol.Trim().ToUpperInvariant(), new());
+    public IReadOnlyList<FullMarketIngressTick> RecentBarsTicks(string symbol)
+    {
+        symbol = symbol.Trim().ToUpperInvariant();
+        if (!_tracked.TryGetValue(symbol, out var queue)) return Array.Empty<FullMarketIngressTick>();
+        var today = DateTimeOffset.UtcNow.ToOffset(TimeSpan.FromHours(8)).Date;
+        return queue.Where(x=>DateTimeOffset.FromUnixTimeMilliseconds(x.TimestampUnixMs).ToOffset(TimeSpan.FromHours(8)).Date==today)
+                    .OrderBy(x=>x.TimestampUnixMs).ToArray();
+    }
+    public FullMarketLatestState? LatestFor(string symbol)
+        => _latest.TryGetValue(symbol.Trim().ToUpperInvariant(), out var tick) ? tick : null;
 
     public bool Publish(FullMarketIngressTick tick)
     {
+        // Older Shioaji collectors serialized naive Asia/Taipei datetimes as UTC.
+        // Normalize their +8h shift at ingress; fresh timestamps are left untouched.
+        var nowMs = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds();
+        if (tick.Provider.Equals("shioaji", StringComparison.OrdinalIgnoreCase)
+            && tick.TimestampUnixMs - nowMs >= 7L * 3600000
+            && tick.TimestampUnixMs - nowMs <= 9L * 3600000)
+            tick = tick with { TimestampUnixMs = tick.TimestampUnixMs - 8L * 3600000 };
         var symbol = tick.Symbol?.Trim().ToUpperInvariant() ?? "";
         if (symbol.Length == 0 || tick.Price <= 0 || tick.TimestampUnixMs <= 0) return false;
         var provider = tick.Provider?.Trim() ?? "";
@@ -55,6 +76,11 @@ public sealed class FullMarketStateStore
         _latest.AddOrUpdate(symbol,
             _ => new(provider, session, symbol, tick.Price, tick.Quantity, tick.TimestampUnixMs, 1),
             (_, old) => new(provider, session, symbol, tick.Price, tick.Quantity, tick.TimestampUnixMs, old.EventCount + 1));
+        if (_tracked.TryGetValue(symbol, out var q))
+        {
+            q.Enqueue(tick);
+            while (q.Count > 20_000 && q.TryDequeue(out _)) { }
+        }
         Interlocked.Increment(ref _events);
         _providerEvents.AddOrUpdate($"{provider}:{session}", 1, (_, value) => value + 1);
         return true;

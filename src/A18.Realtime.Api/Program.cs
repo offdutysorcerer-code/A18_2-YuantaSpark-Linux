@@ -500,7 +500,7 @@ app.MapGet("/api/swing/opening-activity/{symbol}", async (string symbol, string?
     return Results.Ok(new { symbol,date=selected.ToString("yyyy-MM-dd"),state=windows.All(x=>x.rvol.HasValue)?"AVAILABLE":"INSUFFICIENT_HISTORY",priorDates=measures.Skip(1).Select(x=>x.Date.ToString("yyyy-MM-dd")).ToArray(),windows,observationOnly=true });
 });
 
-app.MapGet("/api/bars/{symbol}", async (string symbol, string? date, int? interval, IMarketDataProvider provider, TaiwanSymbolDirectory symbols, HistoricalSecondBars history, IConfiguration cfg, IHttpClientFactory clients, CancellationToken ct) =>
+app.MapGet("/api/bars/{symbol}", async (string symbol, string? date, int? interval, IMarketDataProvider provider, TaiwanSymbolDirectory symbols, HistoricalSecondBars history, FullMarketStateStore fullMarket, IConfiguration cfg, IHttpClientFactory clients, CancellationToken ct) =>
 {
     try
     {
@@ -547,7 +547,12 @@ app.MapGet("/api/bars/{symbol}", async (string symbol, string? date, int? interv
             }
         }
 
-        if (requested < today)
+        // Once the regular session has closed, today's K lines must also use the
+        // warehouse + captured-tick merge. Live SPARK subscriptions may have ended
+        // before 13:30, even though the history warehouse has a complete session.
+        var taipeiNow = TimeZoneInfo.ConvertTime(DateTimeOffset.UtcNow, taipei);
+        var sessionClosed = taipeiNow.TimeOfDay >= new TimeSpan(13, 31, 0);
+        if (requested < today || (requested == today && sessionClosed))
         {
             var historical = await history.GetAsync(symbol, requested, ct);
             var secondBars = historical.Bars;
@@ -569,6 +574,7 @@ app.MapGet("/api/bars/{symbol}", async (string symbol, string? date, int? interv
         }
 
         var normalizedTodaySymbol = symbol.Trim().ToUpperInvariant();
+        if (requested == today) fullMarket.WatchBars(normalizedTodaySymbol);
         // Ensure live subscription is requested before reading ticks.
         if (requested == today)
         {
@@ -593,6 +599,50 @@ app.MapGet("/api/bars/{symbol}", async (string symbol, string? date, int? interv
                     return Results.Ok(new { symbol = normalizedTodaySymbol, name = symbols.GetName(normalizedTodaySymbol), tradeDate = requested, intervalSeconds = seconds, hasData = true, dataState = "AVAILABLE", source = historical.Source, bars = backfillBars });
                 }
             }
+        }
+        // Full-market collectors continue streaming independently if the Yuanta
+        // quote SDK loses callbacks. Use them ONLY for chart display and explicitly
+        // label the fallback; SPARK remains the trading provider.
+        if (requested == today && fullMarket.LatestFor(normalizedTodaySymbol) is { } fm &&
+            DateTimeOffset.UtcNow.ToUnixTimeMilliseconds() - fm.TimestampUnixMs < 30_000 &&
+            (!provider.GetReadiness(new[] { normalizedTodaySymbol }).ReadyForRequestedSymbols ||
+             ticks.Length == 0 || fm.TimestampUnixMs > ticks[^1].ExchangeAt.ToUnixTimeMilliseconds() + 5_000))
+        {
+            var historical = await history.GetAsync(normalizedTodaySymbol, requested, ct);
+            var storeTicks = fullMarket.RecentBarsTicks(normalizedTodaySymbol);
+            var feed = storeTicks.Select(x => new SecondBar(
+                DateTimeOffset.FromUnixTimeMilliseconds(x.TimestampUnixMs).ToOffset(TimeSpan.FromHours(8)),
+                x.Price, x.Price, x.Price, x.Price, Math.Max(0, x.Quantity),
+                x.Price * Math.Max(0, x.Quantity), 1)).ToArray();
+            if (feed.Length == 0)
+                feed = new[] { new SecondBar(
+                    DateTimeOffset.FromUnixTimeMilliseconds(fm.TimestampUnixMs).ToOffset(TimeSpan.FromHours(8)),
+                    fm.Price, fm.Price, fm.Price, fm.Price, Math.Max(0, fm.Quantity),
+                    fm.Price * Math.Max(0, fm.Quantity), 1) };
+            // Recompute the watched live seconds and replace only those warehouse
+            // seconds; older warehouse records remain intact, never invented.
+            var liveSeconds = feed.GroupBy(x=>x.StartTime.ToUnixTimeSeconds())
+                .Select(g=>new SecondBar(DateTimeOffset.FromUnixTimeSeconds(g.Key).ToOffset(TimeSpan.FromHours(8)),
+                    g.First().Open,g.Max(x=>x.High),g.Min(x=>x.Low),g.Last().Close,
+                    g.Sum(x=>x.Volume),g.Sum(x=>x.Turnover),g.Sum(x=>x.TickCount))).ToArray();
+            var overwritten = liveSeconds.Select(x=>x.StartTime.ToUnixTimeSeconds()).ToHashSet();
+            var combined = historical.Bars.Where(x=>!overwritten.Contains(x.StartTime.ToUnixTimeSeconds()))
+                .Concat(liveSeconds).OrderBy(x=>x.StartTime).ToArray();
+            var aggregate = combined.GroupBy(x=>x.StartTime.ToUnixTimeSeconds()/seconds*seconds)
+                .OrderBy(g=>g.Key)
+                .Select(g=>new {startTime=DateTimeOffset.FromUnixTimeSeconds(g.Key).ToOffset(TimeSpan.FromHours(8)),
+                  open=g.First().Open,high=g.Max(x=>x.High),low=g.Min(x=>x.Low),close=g.Last().Close,
+                  volume=g.Sum(x=>x.Volume),tickCount=g.Sum(x=>x.TickCount)}).ToArray();
+            var lastHistory = historical.Bars.LastOrDefault()?.StartTime;
+            var firstStream = liveSeconds.FirstOrDefault()?.StartTime;
+            var gap = lastHistory.HasValue && firstStream.HasValue &&
+                (firstStream.Value-lastHistory.Value).TotalSeconds>15;
+            return Results.Ok(new {symbol=normalizedTodaySymbol,name=symbols.GetName(normalizedTodaySymbol),
+              tradeDate=requested,intervalSeconds=seconds,hasData=aggregate.Length>0,
+              dataState=gap?"PARTIAL_LIVE_GAP":"AVAILABLE",
+              source=historical.Source+"+SHIOAJI_LIVE_FALLBACK",
+              warning=gap?"Some seconds between warehouse and fallback stream are missing; do not use this series for execution.":null,
+              bars=aggregate});
         }
         var bars = ticks
             .GroupBy(x =>

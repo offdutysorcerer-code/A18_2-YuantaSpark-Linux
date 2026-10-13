@@ -1,13 +1,13 @@
 from __future__ import annotations
 import argparse, json, os, queue, signal, threading, time, urllib.request
-from datetime import datetime, timezone
+from datetime import datetime, timezone, timedelta
 from pathlib import Path
 import shioaji as sj
 
 def ts_ms(value):
     if isinstance(value, datetime):
         if value.tzinfo is None:
-            value=value.replace(tzinfo=timezone.utc)
+            value=value.replace(tzinfo=timezone(timedelta(hours=8)))
         return int(value.timestamp()*1000)
     return int(time.time()*1000)
 

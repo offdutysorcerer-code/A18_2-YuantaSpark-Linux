@@ -93,6 +93,8 @@ public sealed class HistoricalSecondBars(ILogger<HistoricalSecondBars> logger, I
 
     public bool IsKnownNonTradingDay(DateOnly date)
     {
+        // Weekends are always non-trading for Taiwan stock exchange.
+        if (date.DayOfWeek is DayOfWeek.Saturday or DayOfWeek.Sunday) return true;
         if (!File.Exists(_nonTradingDaysPath)) return false;
         var key = date.ToString("yyyy-MM-dd");
         return File.ReadLines(_nonTradingDaysPath).Any(x => x.Trim() == key);
